@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cryptodrive-luxury.com/sitemap.xml
+
