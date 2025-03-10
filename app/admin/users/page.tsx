@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { getUsers } from "@/services/userService"
+// import { getUsers } from "@/services/userService"
 import { AdminUsersTable } from "@/components/admin/AdminUsersTable"
 import { FileDown, Plus, Search, Filter } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -7,13 +7,13 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default async function AdminUsersPage() {
-  const users = await getUsers()
+  // const users = await getUsers()
 
   // Calculate statistics
-  const totalUsers = users.length
-  const activeUsers = users.filter((u) => u.status === "active").length
-  const pendingUsers = users.filter((u) => u.status === "pending").length
-  const suspendedUsers = users.filter((u) => u.status === "suspended").length
+  // const totalUsers = users.length
+  // const activeUsers = users.filter((u) => u.status === "active").length
+  // const pendingUsers = users.filter((u) => u.status === "pending").length
+  // const suspendedUsers = users.filter((u) => u.status === "suspended").length
 
   return (
     <div className="space-y-6">
@@ -36,27 +36,27 @@ export default async function AdminUsersPage() {
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
           <CardHeader className="pb-2">
             <CardDescription>Total Users</CardDescription>
-            <CardTitle className="text-2xl">{totalUsers}</CardTitle>
+            {/* <CardTitle className="text-2xl">{totalUsers}</CardTitle> */}
           </CardHeader>
         </Card>
         <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
           <CardHeader className="pb-2">
             <CardDescription>Active</CardDescription>
-            <CardTitle className="text-2xl">{activeUsers}</CardTitle>
+            {/* <CardTitle className="text-2xl">{activeUsers}</CardTitle> */}
           </CardHeader>
         </Card>
         <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border-amber-200 dark:border-amber-800">
           <CardHeader className="pb-2">
             <CardDescription>Pending</CardDescription>
-            <CardTitle className="text-2xl">{pendingUsers}</CardTitle>
+            {/* <CardTitle className="text-2xl">{pendingUsers}</CardTitle> */}
           </CardHeader>
         </Card>
-        <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800">
+        {/* <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800">
           <CardHeader className="pb-2">
             <CardDescription>Suspended</CardDescription>
             <CardTitle className="text-2xl">{suspendedUsers}</CardTitle>
           </CardHeader>
-        </Card>
+        </Card> */}
       </div>
 
       <Tabs defaultValue="all" className="w-full">
@@ -82,7 +82,7 @@ export default async function AdminUsersPage() {
                 </div>
               </div>
             </div>
-            <AdminUsersTable users={users} />
+            {/* <AdminUsersTable users={users} /> */}
           </div>
         </TabsContent>
 
@@ -102,7 +102,7 @@ export default async function AdminUsersPage() {
                 </div>
               </div>
             </div>
-            <AdminUsersTable users={users.filter((u) => u.status === "active")} />
+            {/* <AdminUsersTable users={users.filter((u) => u.status === "active")} /> */}
           </div>
         </TabsContent>
 

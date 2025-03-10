@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { VehicleGallery } from "@/components/vehicle-gallery"
 import { VehicleDetails } from "@/components/vehicle-details"
 import { SimilarVehicles } from "@/components/similar-vehicles"
-import { Breadcrumbs } from "@/components/breadcrumbs"
+// import { Breadcrumbs } from "@/components/breadcrumbs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Share, Phone } from "lucide-react"
@@ -60,7 +60,7 @@ export default function VehiclePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Breadcrumbs items={breadcrumbItems} />
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
         <div>

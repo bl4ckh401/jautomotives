@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AdminAnalyticsOverview } from "@/components/admin/AdminAnalyticsOverview"
 import { AdminAnalyticsTraffic } from "@/components/admin/AdminAnalyticsTraffic"
-import { AdminAnalyticsConversion } from "@/components/admin/AdminAnalyticsConversion"
-import { AdminAnalyticsRevenue } from "@/components/admin/AdminAnalyticsRevenue"
+// import { AdminAnalyticsConversion } from "@/components/admin/AdminAnalyticsConversion"
+// import { AdminAnalyticsRevenue } from "@/components/admin/AdminAnalyticsRevenue"
 import { Calendar, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -40,13 +40,13 @@ export default function AdminAnalyticsPage() {
           <AdminAnalyticsTraffic />
         </TabsContent>
 
-        <TabsContent value="conversion" className="mt-6">
+        {/* <TabsContent value="conversion" className="mt-6">
           <AdminAnalyticsConversion />
-        </TabsContent>
+        </TabsContent> */}
 
-        <TabsContent value="revenue" className="mt-6">
+        {/* <TabsContent value="revenue" className="mt-6">
           <AdminAnalyticsRevenue />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   )
