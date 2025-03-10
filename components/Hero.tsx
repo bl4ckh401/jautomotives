@@ -7,7 +7,7 @@ export default function Hero() {
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4">
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-8DWVje9EQMww2xFWpHdyWUwaA3AJD9.png"
+          src="https://dragon2000-multisite.s3.eu-west-2.amazonaws.com/wp-content/uploads/sites/309/2022/06/15163512/Avanti-car-hero_result.jpg"
           alt="Mercedes G-Wagon"
           layout="fill"
           objectFit="cover"

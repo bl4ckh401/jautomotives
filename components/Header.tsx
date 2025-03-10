@@ -25,113 +25,102 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1f24] backdrop-blur-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1f24]/90 backdrop-blur-sm border-b border-gray-800/50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <Link href="/" className="text-xl md:text-2xl font-bold text-white hover:opacity-90 transition-opacity">
             JABA Automobiles
           </Link>
 
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/marketplace" className="text-white hover:text-gray-300">
+          <nav className="hidden lg:flex space-x-6">
+            <Link href="/marketplace" className="text-white/90 hover:text-white transition-colors">
               Marketplace
             </Link>
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-white hover:text-gray-300">
+              <DropdownMenuTrigger className="text-white/90 hover:text-white transition-colors">
                 Car Rental Services <ChevronDown className="inline-block ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href="/rental/wedding">Wedding Car Rental</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/office">Office Pick-Up and Drop-Off</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/chauffeur">Chauffeur-Driven Rentals</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/vip">VIP Rental</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/corporate">Corporate Car Rental</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/long-term">Long-Term Car Hire</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/airport">Airport Transfer</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/self-drive">Self-Drive Car Hire</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/rental/event">Event Car Hire</Link>
-                </DropdownMenuItem>
+              <DropdownMenuContent className="w-56">
+                {[
+                  { href: '/rental/wedding', label: 'Wedding Car Rental' },
+                  { href: '/rental/office', label: 'Office Pick-Up and Drop-Off' },
+                  { href: '/rental/chauffeur', label: 'Chauffeur-Driven Rentals' },
+                  { href: '/rental/vip', label: 'VIP Rental' },
+                  { href: '/rental/corporate', label: 'Corporate Car Rental' },
+                  { href: '/rental/long-term', label: 'Long-Term Car Hire' },
+                  { href: '/rental/airport', label: 'Airport Transfer' },
+                  { href: '/rental/self-drive', label: 'Self-Drive Car Hire' },
+                  { href: '/rental/event', label: 'Event Car Hire' }
+                ].map((item) => (
+                  <DropdownMenuItem key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="w-full text-sm"
+                    >
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-white hover:text-gray-300">
+              <DropdownMenuTrigger className="text-white/90 hover:text-white transition-colors">
                 24/7 Assistance <ChevronDown className="inline-block ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href="/assistance/towing">24-Hour Towing</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/unlocking">Unlocking Doors</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/battery">Car Battery Replacement</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/emergency">Emergency Road Services</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/truck-towing">Truck Towing</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/motorcycle-towing">Motorcycle Towing</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/out-of-gas">Out-of-Gas Services</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/roadside">Roadside Assistance</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/assistance/long-distance">Long Distance Towing</Link>
-                </DropdownMenuItem>
+              <DropdownMenuContent className="w-56">
+                {[
+                  { href: '/assistance/towing', label: '24-Hour Towing' },
+                  { href: '/assistance/unlocking', label: 'Unlocking Doors' },
+                  { href: '/assistance/battery', label: 'Car Battery Replacement' },
+                  { href: '/assistance/emergency', label: 'Emergency Road Services' },
+                  { href: '/assistance/truck-towing', label: 'Truck Towing' },
+                  { href: '/assistance/motorcycle-towing', label: 'Motorcycle Towing' },
+                  { href: '/assistance/out-of-gas', label: 'Out-of-Gas Services' },
+                  { href: '/assistance/roadside', label: 'Roadside Assistance' },
+                  { href: '/assistance/long-distance', label: 'Long Distance Towing' }
+                ].map((item) => (
+                  <DropdownMenuItem key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="w-full text-sm"
+                    >
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link href="/fleet" className="text-white hover:text-gray-300">
+            <Link href="/fleet" className="text-white/90 hover:text-white transition-colors">
               Our Fleet
             </Link>
-            <Link href="/about" className="text-white hover:text-gray-300">
+            <Link href="/about" className="text-white/90 hover:text-white transition-colors">
               About Us
             </Link>
-            <Link href="/contact" className="text-white hover:text-gray-300">
+            <Link href="/contact" className="text-white/90 hover:text-white transition-colors">
               Contact
             </Link>
           </nav>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <ThemeToggle />
 
-            {/* Authentication UI */}
             <SignedOut>
-              <div className="hidden md:flex space-x-2">
-                <SignInButton>
+              <div className="hidden md:flex items-center gap-2">
+                <SignInButton mode="modal">
                   <Button
-                    variant="outline"
-                    className="text-white border-white hover:bg-white hover:text-black"
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/10 transition-colors"
                   >
-                    Sign In
+                    Sign in
                   </Button>
                 </SignInButton>
-                <SignUpButton>
-                  <Button className="bg-primary hover:bg-primary/90">
-                    Register
+                <SignUpButton mode="modal">
+                  <Button
+                    size="sm"
+                    className="bg-white text-black hover:bg-white/90 transition-colors"
+                  >
+                    Get started
                   </Button>
                 </SignUpButton>
               </div>
@@ -141,21 +130,29 @@ export default function Header() {
               <div className="hidden md:block">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="p-0 h-8 w-8 rounded-full">
-                      <UserButton afterSignOutUrl="/" />
+                    <Button variant="ghost" size="sm" className="p-0">
+                      <UserButton
+                        afterSignOutUrl="/"
+                        appearance={{
+                          elements: {
+                            avatarBox: "w-8 h-8",
+                            userButtonPopoverCard: "w-[240px]"
+                          }
+                        }}
+                      />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <AdminInitButton />
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </SignedIn>
 
-            <Button className="md:hidden" variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <Menu className="h-6 w-6 text-white" />
+            <Button
+              className="lg:hidden"
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <Menu className="h-5 w-5 text-white" />
             </Button>
           </div>
         </div>
@@ -163,50 +160,113 @@ export default function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-[#1a1f24] border-t border-gray-800">
+        <div className="lg:hidden bg-[#1a1f24] border-t border-gray-800">
           <div className="container mx-auto px-4 py-4">
-            <nav className="flex flex-col space-y-4">
-              <Link href="/marketplace" className="text-white hover:text-gray-300">
+            <nav className="flex flex-col space-y-3">
+              <Link
+                href="/marketplace"
+                className="text-white/90 hover:text-white transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Marketplace
               </Link>
-              <Link href="/rental" className="text-white hover:text-gray-300">
-                Car Rental Services
-              </Link>
-              <Link href="/assistance" className="text-white hover:text-gray-300">
-                24/7 Assistance
-              </Link>
-              <Link href="/fleet" className="text-white hover:text-gray-300">
-                Our Fleet
-              </Link>
-              <Link href="/about" className="text-white hover:text-gray-300">
-                About Us
-              </Link>
-              <Link href="/contact" className="text-white hover:text-gray-300">
-                Contact
-              </Link>
+
+              <div className="space-y-2">
+                <span className="text-white/90">Car Rental Services</span>
+                <div className="pl-4 flex flex-col space-y-2">
+                  {[
+                    { href: '/rental/wedding', label: 'Wedding Car Rental' },
+                    { href: '/rental/office', label: 'Office Pick-Up and Drop-Off' },
+                    { href: '/rental/chauffeur', label: 'Chauffeur-Driven Rentals' },
+                    { href: '/rental/vip', label: 'VIP Rental' },
+                    { href: '/rental/corporate', label: 'Corporate Car Rental' },
+                    { href: '/rental/long-term', label: 'Long-Term Car Hire' },
+                    { href: '/rental/airport', label: 'Airport Transfer' },
+                    { href: '/rental/self-drive', label: 'Self-Drive Car Hire' },
+                    { href: '/rental/event', label: 'Event Car Hire' }
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-white/75 hover:text-white text-sm transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-white/90">24/7 Assistance</span>
+                <div className="pl-4 flex flex-col space-y-2">
+                  {[
+                    { href: '/assistance/towing', label: '24-Hour Towing' },
+                    { href: '/assistance/unlocking', label: 'Unlocking Doors' },
+                    { href: '/assistance/battery', label: 'Car Battery Replacement' },
+                    { href: '/assistance/emergency', label: 'Emergency Road Services' },
+                    { href: '/assistance/truck-towing', label: 'Truck Towing' },
+                    { href: '/assistance/motorcycle-towing', label: 'Motorcycle Towing' },
+                    { href: '/assistance/out-of-gas', label: 'Out-of-Gas Services' },
+                    { href: '/assistance/roadside', label: 'Roadside Assistance' },
+                    { href: '/assistance/long-distance', label: 'Long Distance Towing' }
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-white/75 hover:text-white text-sm transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {['fleet', 'about', 'contact'].map((item) => (
+                <Link
+                  key={item}
+                  href={`/${item}`}
+                  className="text-white/90 hover:text-white transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </Link>
+              ))}
 
               <SignedOut>
-                <div className="flex flex-col space-y-2 pt-2">
-                  <SignInButton>
+                <div className="flex flex-col gap-2 pt-4 border-t border-gray-700">
+                  <SignInButton mode="modal">
                     <Button
-                      variant="outline"
-                      className="w-full text-white border-white hover:bg-white hover:text-black"
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/10 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
                     >
-                      Sign In
+                      Sign in
                     </Button>
                   </SignInButton>
-                  <SignUpButton>
-                    <Button className="w-full bg-primary hover:bg-primary/90">
-                      Register
+                  <SignUpButton mode="modal">
+                    <Button
+                      className="w-full bg-white text-black hover:bg-white/90 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Get started
                     </Button>
                   </SignUpButton>
                 </div>
               </SignedOut>
 
               <SignedIn>
-                <div className="flex items-center justify-between pt-2 border-t border-gray-700">
-                  <span className="text-white">Your Account</span>
-                  <UserButton afterSignOutUrl="/" />
+                <div className="flex items-center justify-between pt-4 border-t border-gray-700">
+                  <span className="text-white/90">Account</span>
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-8 h-8"
+                      }
+                    }}
+                  />
                 </div>
               </SignedIn>
             </nav>

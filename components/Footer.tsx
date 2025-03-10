@@ -84,7 +84,7 @@ export default function Footer() {
             <p>Email: info@jabaautomobiles.com</p>
           </div>
         </div>
-        <Card>
+        {/* <Card>
   <CardHeader>
     <CardTitle>Admin Setup</CardTitle>
   </CardHeader>
@@ -92,7 +92,7 @@ export default function Footer() {
     <p>Initialize admin access for your account.</p>
     <AdminInitButton />
   </CardContent>
-</Card>
+</Card> */}
         <div className="mt-8 text-center">
           <p>&copy; 2023 JABA Automobiles. All rights reserved.</p>
         </div>
