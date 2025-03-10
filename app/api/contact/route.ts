@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { addContactRequest, getContactRequests, updateContactRequest } from "@/services/contactService"
-import { currentUser } from "@clerk/nextjs"
+import { currentUser } from "@clerk/nextjs/server"
 
 export async function POST(req: Request) {
   const contactRequest = await req.json()

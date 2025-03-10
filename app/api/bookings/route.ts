@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { addBooking, getBookings, updateBooking, deleteBooking } from "@/services/bookingService"
-import { auth } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 
 export async function POST(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 })
   }
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 })
   }
@@ -26,7 +26,7 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 })
   }
@@ -37,7 +37,7 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 })
   }

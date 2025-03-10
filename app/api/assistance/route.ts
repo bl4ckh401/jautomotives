@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { addAssistanceRequest, getAssistanceRequests, updateAssistanceRequest } from "@/services/assistanceService"
-import { auth } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 
 export async function POST(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 })
   }
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 })
   }
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const { userId } = auth()
+  const { userId } = await auth()
   if (!userId || !isAdmin(userId)) {
     return new NextResponse("Unauthorized", { status: 401 })
   }

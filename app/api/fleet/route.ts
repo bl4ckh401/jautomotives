@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { addFleetVehicle, getFleetVehicles, updateFleetVehicle, deleteFleetVehicle } from "@/services/fleetService"
-import { currentUser } from "@clerk/nextjs"
+import { currentUser } from "@clerk/nextjs/server"
 
 export async function POST(req: Request) {
   const user = await currentUser()
