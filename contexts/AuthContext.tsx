@@ -4,12 +4,21 @@ import type React from "react"
 
 import { createContext, useContext, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+} from "firebase/auth"
+import { app } from "@/lib/firebase"
 
 interface User {
   id: string
-  name: string
-  email: string
-  role: "user" | "admin"
+  name: string | null
+  email: string | null
+  photoURL: string | null
 }
 
 interface AuthContextType {
@@ -26,74 +35,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const auth = getAuth(app)
 
   useEffect(() => {
-    // Check if user is logged in
-    const checkAuth = async () => {
-      try {
-        // Replace with your actual auth check
-        const token = localStorage.getItem("token")
-        if (token) {
-          // Verify token and get user data
-          setUser({
-            id: "1",
-            name: "John Doe",
-            email: "john@example.com",
-            role: "user",
-          })
-        }
-      } catch (error) {
-        console.error("Auth check failed:", error)
-      } finally {
-        setLoading(false)
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          id: firebaseUser.uid,
+          name: firebaseUser.displayName,
+          email: firebaseUser.email,
+          photoURL: firebaseUser.photoURL,
+        })
+      } else {
+        setUser(null)
       }
-    }
+      setLoading(false)
+    })
 
-    checkAuth()
-  }, [])
+    return () => unsubscribe()
+  }, [auth])
 
   const login = async (email: string, password: string) => {
     try {
-      // Replace with your actual login logic
-      setUser({
-        id: "1",
-        name: "John Doe",
-        email,
-        role: "user",
-      })
-      localStorage.setItem("token", "dummy-token")
+      await signInWithEmailAndPassword(auth, email, password)
       router.push("/dashboard")
-    } catch (error) {
-      console.error("Login failed:", error)
-      throw error
+    } catch (error: any) {
+      throw new Error(error.message || "Failed to sign in")
     }
   }
 
   const logout = async () => {
     try {
-      localStorage.removeItem("token")
-      setUser(null)
+      await signOut(auth)
       router.push("/")
-    } catch (error) {
-      console.error("Logout failed:", error)
-      throw error
+    } catch (error: any) {
+      throw new Error(error.message || "Failed to sign out")
     }
   }
 
   const register = async (name: string, email: string, password: string) => {
     try {
-      // Replace with your actual registration logic
-      setUser({
-        id: "1",
-        name,
-        email,
-        role: "user",
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      await updateProfile(userCredential.user, {
+        displayName: name,
       })
-      localStorage.setItem("token", "dummy-token")
       router.push("/dashboard")
-    } catch (error) {
-      console.error("Registration failed:", error)
-      throw error
+    } catch (error: any) {
+      throw new Error(error.message || "Failed to register")
     }
   }
 

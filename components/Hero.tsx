@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react"
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4">
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center w-full">
       <div className="absolute inset-0 z-0">
         <Image
           src="https://dragon2000-multisite.s3.eu-west-2.amazonaws.com/wp-content/uploads/sites/309/2022/06/15163512/Avanti-car-hero_result.jpg"
@@ -14,7 +14,7 @@ export default function Hero() {
           priority
           className="opacity-50"
         />
-        <div className="absolute inset-0 bg-[#1a1f24]/80" />
+        <div className="absolute inset-0 " />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto">
