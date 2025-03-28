@@ -5,7 +5,7 @@ import type React from "react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, ChevronDown, User, LogOut, Car, Calendar, PhoneCall, Info, Mail, X } from "lucide-react"
+import { Menu, ChevronDown, User, LogOut, Car, Calendar, PhoneCall, Info, Mail, X, Shield, Banknote } from "lucide-react"
 import { ThemeToggle } from "./ThemeToggle"
 import {
   DropdownMenu,
@@ -136,20 +136,30 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            <NavLink href="/financing">
+              <Banknote className="w-4 h-4 mr-1" />
+              <span>Financing</span>
+            </NavLink>
+
+            <NavLink href="/insurance">
+              <Shield className="w-4 h-4 mr-1"/>
+              <span>Insurance</span>
+            </NavLink>
+
             <NavLink href="/fleet">
               <Car className="w-4 h-4 mr-1" />
-              <span>Our Fleet</span>
+              <span>Fleet</span>
             </NavLink>
 
-            <NavLink href="/about">
+            {/* <NavLink href="/about">
               <Info className="w-4 h-4 mr-1" />
               <span>About</span>
-            </NavLink>
+            </NavLink> */}
 
-            <NavLink href="/contact">
+            {/* <NavLink href="/contact">
               <Mail className="w-4 h-4 mr-1" />
               <span>Contact</span>
-            </NavLink>
+            </NavLink> */}
           </nav>
 
           {/* Right side actions */}
