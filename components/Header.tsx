@@ -268,16 +268,18 @@ export default function Header() {
                 ]}
               />
 
+              
+
+              <MobileNavLink href="/financing" icon={<Info className="w-5 h-5" />}>
+                Financing
+              </MobileNavLink>
+
+              <MobileNavLink href="/insurance" icon={<Mail className="w-5 h-5" />}>
+                Insurance
+              </MobileNavLink>
+
               <MobileNavLink href="/fleet" icon={<Car className="w-5 h-5" />}>
                 Our Fleet
-              </MobileNavLink>
-
-              <MobileNavLink href="/about" icon={<Info className="w-5 h-5" />}>
-                About Us
-              </MobileNavLink>
-
-              <MobileNavLink href="/contact" icon={<Mail className="w-5 h-5" />}>
-                Contact
               </MobileNavLink>
 
               {!user ? (
