@@ -1,46 +1,97 @@
 "use client"
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts"
+import type { ChartDataPoint } from "@/services/analyticsService"
 
-const data = [
-  { name: "Jan", listings: 65, bookings: 42, revenue: 24 },
-  { name: "Feb", listings: 59, bookings: 39, revenue: 22 },
-  { name: "Mar", listings: 80, bookings: 48, revenue: 28 },
-  { name: "Apr", listings: 81, bookings: 52, revenue: 30 },
-  { name: "May", listings: 56, bookings: 38, revenue: 21 },
-  { name: "Jun", listings: 55, bookings: 43, revenue: 25 },
-  { name: "Jul", listings: 40, bookings: 39, revenue: 22 },
-  { name: "Aug", listings: 72, bookings: 51, revenue: 32 },
-  { name: "Sep", listings: 90, bookings: 68, revenue: 42 },
-  { name: "Oct", listings: 95, bookings: 71, revenue: 45 },
-  { name: "Nov", listings: 85, bookings: 65, revenue: 40 },
-  { name: "Dec", listings: 110, bookings: 82, revenue: 52 },
-]
+interface AdminChartProps {
+  data: ChartDataPoint[]
+  loading?: boolean
+}
 
-export function AdminChart() {
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(value)
+}
+
+export function AdminChart({ data, loading }: AdminChartProps) {
+  if (loading) {
+    return (
+      <div className="w-full h-full bg-gray-50 dark:bg-gray-800/50 rounded-lg animate-pulse" />
+    )
+  }
+
   return (
-    <div className="h-80">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" className="stroke-gray-600/10" />
+        <XAxis
+          dataKey="date"
+          className="text-xs font-medium"
+        />
+        <YAxis
+          yAxisId="left"
+          className="text-xs font-medium"
+        />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          className="text-xs font-medium"
+          tickFormatter={(value) => formatCurrency(value)}
+        />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "hsl(var(--background))",
+            border: "1px solid hsl(var(--border))",
+            borderRadius: "8px",
+            fontSize: "12px"
           }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="listings" stroke="#3b82f6" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="bookings" stroke="#10b981" />
-          <Line type="monotone" dataKey="revenue" stroke="#8b5cf6" />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+          formatter={(value: number, name: string) => [
+            name === "revenue" ? formatCurrency(value) : value.toLocaleString(),
+            name.charAt(0).toUpperCase() + name.slice(1)
+          ]}
+        />
+        <Legend />
+        <Line
+          yAxisId="left"
+          type="monotone"
+          dataKey="listings"
+          name="Listings"
+          stroke="hsl(var(--blue-500))"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          yAxisId="left"
+          type="monotone"
+          dataKey="bookings"
+          name="Bookings"
+          stroke="hsl(var(--green-500))"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="revenue"
+          name="Revenue"
+          stroke="hsl(var(--amber-500))"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          yAxisId="left"
+          type="monotone"
+          dataKey="users"
+          name="Users"
+          stroke="hsl(var(--purple-500))"
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ResponsiveContainer>
   )
 }
 

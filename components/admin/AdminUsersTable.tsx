@@ -25,23 +25,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Edit, Eye, MoreHorizontal, Lock, Mail } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-interface User {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  role: "admin" | "user" | "seller"
-  status: "active" | "pending" | "suspended"
-  createdAt: string
-  lastLogin?: string
-}
+import { type User } from "@/services/userService"
 
 interface AdminUsersTableProps {
   users: User[]
+  loading?: boolean
 }
 
-export function AdminUsersTable({ users }: AdminUsersTableProps) {
+export function AdminUsersTable({ users, loading = false }: AdminUsersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
@@ -52,14 +43,14 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={row.original.avatar} alt={row.original.name} />
-            <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={row.original.photoURL || undefined} alt={row.original.name || "User"} />
+            <AvatarFallback>{row.original.name ? row.original.name.charAt(0).toUpperCase() : "U"}</AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{row.original.name}</div>
+            <div className="font-medium">{row.original.name || "Unnamed User"}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Mail className="h-3 w-3 mr-1" />
-              <span>{row.original.email}</span>
+              <span>{row.original.email || "No email"}</span>
             </div>
           </div>
         </div>
@@ -86,7 +77,7 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
 
         return (
           <Badge variant="outline" className={badgeClass}>
-            {role.charAt(0).toUpperCase() + role.slice(1)}
+            {role ? role.charAt(0).toUpperCase() + role.slice(1) : "User"}
           </Badge>
         )
       },
@@ -108,11 +99,13 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
           case "suspended":
             badgeClass = "bg-red-100 text-red-800 hover:bg-red-100 border-red-200"
             break
+          default:
+            badgeClass = "bg-gray-100 text-gray-800 hover:bg-gray-100 border-gray-200"
         }
 
         return (
           <Badge variant="outline" className={badgeClass}>
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+            {status ? status.charAt(0).toUpperCase() + status.slice(1) : "Unknown"}
           </Badge>
         )
       },
@@ -124,7 +117,11 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
         <div className="flex flex-col">
           <div className="flex items-center text-xs">
             <span className="text-muted-foreground mr-1">Created:</span>
-            <span>{new Date(row.original.createdAt).toLocaleDateString()}</span>
+            <span>
+              {row.original.createdAt 
+                ? new Date(row.original.createdAt).toLocaleDateString() 
+                : "Unknown"}
+            </span>
           </div>
           {row.original.lastLogin && (
             <div className="flex items-center text-xs">
@@ -189,6 +186,15 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
     },
   })
 
+  if (loading) {
+    return (
+      <div className="py-8 text-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <p className="mt-2 text-sm text-muted-foreground">Loading users...</p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="rounded-md">
@@ -216,7 +222,7 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  No users found.
                 </TableCell>
               </TableRow>
             )}
@@ -226,7 +232,10 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
       <div className="flex items-center justify-between px-4 py-4 border-t border-gray-200 dark:border-gray-700">
         <div className="text-sm text-muted-foreground">
           Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
-          {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, users.length)}{" "}
+          {Math.min(
+            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+            users.length,
+          )}{" "}
           of {users.length} entries
         </div>
         <div className="flex items-center space-x-2">

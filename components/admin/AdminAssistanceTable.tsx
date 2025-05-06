@@ -12,7 +12,21 @@ import {
   type ColumnFiltersState,
   getFilteredRowModel,
 } from "@tanstack/react-table"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -25,8 +39,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Check, Eye, MoreHorizontal, MapPin, Phone, Truck, Calendar, Clock } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { AssistanceRequest, updateAssistanceRequest } from "@/services/assistanceService"
+import { format } from "date-fns"
 
-interface AssistanceRequest {
+interface LocalAssistanceRequest {
   id: string
   customerName: string
   customerPhone: string
@@ -41,14 +57,57 @@ interface AssistanceRequest {
 }
 
 interface AdminAssistanceTableProps {
-  assistanceRequests: AssistanceRequest[]
+  assistanceRequests: LocalAssistanceRequest[]
+  onStatusUpdate: () => void
 }
 
-export function AdminAssistanceTable({ assistanceRequests }: AdminAssistanceTableProps) {
+export default function AdminAssistanceTable({
+  assistanceRequests,
+  onStatusUpdate,
+}: AdminAssistanceTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  const columns: ColumnDef<AssistanceRequest>[] = [
+  const handleStatusChange = async (requestId: string, newStatus: string) => {
+    await updateAssistanceRequest(requestId, { status: newStatus as AssistanceRequest["status"] })
+    onStatusUpdate()
+  }
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "low":
+        return "bg-green-100 text-green-800"
+      case "medium":
+        return "bg-yellow-100 text-yellow-800"
+      case "high":
+        return "bg-orange-100 text-orange-800"
+      case "emergency":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800"
+      case "accepted":
+        return "bg-blue-100 text-blue-800"
+      case "en_route":
+        return "bg-purple-100 text-purple-800"
+      case "on_site":
+        return "bg-indigo-100 text-indigo-800"
+      case "completed":
+        return "bg-green-100 text-green-800"
+      case "cancelled":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const columns: ColumnDef<LocalAssistanceRequest>[] = [
     {
       accessorKey: "customer",
       header: "Customer",

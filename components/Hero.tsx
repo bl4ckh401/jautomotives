@@ -10,7 +10,7 @@ export default function Hero() {
           src="https://dragon2000-multisite.s3.eu-west-2.amazonaws.com/wp-content/uploads/sites/309/2022/06/15163512/Avanti-car-hero_result.jpg"
           alt="Mercedes G-Wagon"
           layout="fill"
-          objectFit="cover"
+          // objectFit="cover"
           priority
           className="opacity-50"
         />

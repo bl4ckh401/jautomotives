@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react"
 
-interface Listing {
+export interface Listing {
   id: string
   title: string
   price: number

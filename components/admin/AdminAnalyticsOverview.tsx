@@ -1,192 +1,269 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts"
-import { ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useAdmin } from "@/contexts/AdminContext"
+import type { AnalyticsMetrics } from "@/services/analyticsService"
+import { formatDistanceToNow } from "date-fns"
 
-const overviewData = [
-  { name: "Jan", pageViews: 4000, visitors: 2400, listings: 240 },
-  { name: "Feb", pageViews: 3000, visitors: 1398, listings: 210 },
-  { name: "Mar", pageViews: 2000, visitors: 9800, listings: 290 },
-  { name: "Apr", pageViews: 2780, visitors: 3908, listings: 200 },
-  { name: "May", pageViews: 1890, visitors: 4800, listings: 218 },
-  { name: "Jun", pageViews: 2390, visitors: 3800, listings: 250 },
-  { name: "Jul", pageViews: 3490, visitors: 4300, listings: 210 },
-  { name: "Aug", pageViews: 4000, visitors: 2400, listings: 240 },
-  { name: "Sep", pageViews: 3000, visitors: 1398, listings: 210 },
-  { name: "Oct", pageViews: 2000, visitors: 9800, listings: 290 },
-  { name: "Nov", pageViews: 2780, visitors: 3908, listings: 200 },
-  { name: "Dec", pageViews: 1890, visitors: 4800, listings: 218 },
-]
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(value)
+}
 
-const deviceData = [
-  { name: "Desktop", value: 45 },
-  { name: "Mobile", value: 40 },
-  { name: "Tablet", value: 15 },
-]
+const formatPercentage = (value: number) => {
+  return `${Math.round(value)}%`
+}
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
+const getPercentageChange = (current: number, previous: number) => {
+  if (!previous) return 0
+  return ((current - previous) / previous) * 100
+}
 
 export function AdminAnalyticsOverview() {
+  const { getAnalytics } = useAdmin()
+  const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const data = await getAnalytics(30) // Last 30 days
+        setMetrics(data)
+      } catch (error) {
+        console.error("Error fetching analytics:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAnalytics()
+  }, [getAnalytics])
+
+  const userTypeData = metrics ? [
+    { name: "Active Users", value: metrics.activeUsers },
+    { name: "New Users", value: metrics.newUsers },
+  ] : []
+
+  const listingStatusData = metrics ? [
+    { name: "Active", value: metrics.activeListings },
+    { name: "Sold", value: metrics.soldListings },
+  ] : []
+
+  const bookingStatusData = metrics ? [
+    { name: "Completed", value: metrics.completedBookings },
+    { name: "Cancelled", value: metrics.cancelledBookings },
+  ] : []
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
+
+  if (loading || !metrics) {
+    return (
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader>
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] bg-gray-100 dark:bg-gray-800 rounded" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
-          <CardHeader className="pb-2">
-            <CardDescription>Page Views</CardDescription>
-            <CardTitle className="text-2xl">124,563</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center text-xs">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">12%</span>
-              <span className="text-muted-foreground ml-1">from last month</span>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
-          <CardHeader className="pb-2">
-            <CardDescription>Unique Visitors</CardDescription>
-            <CardTitle className="text-2xl">45,211</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center text-xs">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">8%</span>
-              <span className="text-muted-foreground ml-1">from last month</span>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border-amber-200 dark:border-amber-800">
-          <CardHeader className="pb-2">
-            <CardDescription>Conversion Rate</CardDescription>
-            <CardTitle className="text-2xl">3.2%</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center text-xs">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">0.5%</span>
-              <span className="text-muted-foreground ml-1">from last month</span>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
-          <CardHeader className="pb-2">
-            <CardDescription>Bounce Rate</CardDescription>
-            <CardTitle className="text-2xl">42.3%</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center text-xs">
-              <ArrowDownRight className="h-3 w-3 mr-1 text-red-500" />
-              <span className="text-red-500 font-medium">2.1%</span>
-              <span className="text-muted-foreground ml-1">from last month</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Website Traffic</CardTitle>
-            <CardDescription>Page views and visitors over time</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={overviewData}
-                  margin={{
-                    top: 10,
-                    right: 30,
-                    left: 0,
-                    bottom: 0,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Area type="monotone" dataKey="pageViews" stackId="1" stroke="#8884d8" fill="#8884d8" />
-                  <Area type="monotone" dataKey="visitors" stackId="2" stroke="#82ca9d" fill="#82ca9d" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Device Breakdown</CardTitle>
-            <CardDescription>Traffic by device type</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={deviceData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {deviceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
+    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+      {/* Revenue Overview */}
       <Card>
         <CardHeader>
-          <CardTitle>Monthly Listings</CardTitle>
-          <CardDescription>New vehicle listings per month</CardDescription>
+          <CardTitle>Revenue Overview</CardTitle>
+          <CardDescription>Total revenue and average order value</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <p className="text-sm font-medium">Total Revenue</p>
+              <h3 className="text-2xl font-bold">{formatCurrency(metrics.totalRevenue)}</h3>
+              <p className="text-xs text-muted-foreground">
+                {formatPercentage(getPercentageChange(
+                  metrics.totalRevenue,
+                  metrics.previousPeriod.totalRevenue
+                ))} vs last period
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Avg. Order Value</p>
+              <h3 className="text-2xl font-bold">
+                {formatCurrency(metrics.totalRevenue / metrics.totalBookings || 0)}
+              </h3>
+            </div>
+          </div>
+          <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={overviewData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
+              <AreaChart data={[
+                { name: "Previous", value: metrics.previousPeriod.totalRevenue },
+                { name: "Current", value: metrics.totalRevenue }
+              ]}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#0088FE" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#0088FE" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-600/10" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
+                <Area type="monotone" dataKey="value" stroke="#0088FE" fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* User Distribution */}
+      <Card>
+        <CardHeader>
+          <CardTitle>User Distribution</CardTitle>
+          <CardDescription>Active vs new users in the last 30 days</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={userTypeData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label
+                >
+                  {userTypeData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
                 <Legend />
-                <Bar dataKey="listings" fill="#8884d8" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div>
+              <p className="text-sm font-medium">Total Users</p>
+              <h3 className="text-2xl font-bold">{metrics.totalUsers}</h3>
+              <p className="text-xs text-muted-foreground">
+                {formatPercentage(getPercentageChange(
+                  metrics.totalUsers,
+                  metrics.previousPeriod.totalUsers
+                ))} vs last period
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">New Users</p>
+              <h3 className="text-2xl font-bold">{metrics.newUsers}</h3>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Listing Performance */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Listing Performance</CardTitle>
+          <CardDescription>Distribution of listing statuses</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={listingStatusData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-600/10" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value">
+                  {listingStatusData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div>
+              <p className="text-sm font-medium">Total Listings</p>
+              <h3 className="text-2xl font-bold">{metrics.totalListings}</h3>
+              <p className="text-xs text-muted-foreground">
+                {formatPercentage(getPercentageChange(
+                  metrics.totalListings,
+                  metrics.previousPeriod.totalListings
+                ))} vs last period
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Avg. Price</p>
+              <h3 className="text-2xl font-bold">{formatCurrency(metrics.avgListingPrice)}</h3>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Booking Analysis */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Booking Analysis</CardTitle>
+          <CardDescription>Overview of booking performance</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={bookingStatusData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label
+                >
+                  {bookingStatusData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div>
+              <p className="text-sm font-medium">Total Bookings</p>
+              <h3 className="text-2xl font-bold">{metrics.totalBookings}</h3>
+              <p className="text-xs text-muted-foreground">
+                {formatPercentage(getPercentageChange(
+                  metrics.totalBookings,
+                  metrics.previousPeriod.totalBookings
+                ))} vs last period
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Completion Rate</p>
+              <h3 className="text-2xl font-bold">
+                {formatPercentage(
+                  (metrics.completedBookings / metrics.totalBookings) * 100 || 0
+                )}
+              </h3>
+            </div>
           </div>
         </CardContent>
       </Card>

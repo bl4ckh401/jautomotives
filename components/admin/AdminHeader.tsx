@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Search, Settings, User } from "lucide-react"
+import { Bell, Search, Settings, User, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -12,8 +12,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/contexts/AuthContext"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useRouter } from "next/navigation"
 
 export function AdminHeader() {
+  const { user, logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push("/")
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+  }
+
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6">
       <div className="flex-1 flex items-center">
@@ -52,10 +67,13 @@ export function AdminHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                <User className="h-4 w-4" />
-              </div>
-              <span className="hidden md:inline-block">Admin User</span>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.photoURL || undefined} alt={user?.name || "Admin"} />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden md:inline-block">{user?.name || "Admin User"}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -63,7 +81,11 @@ export function AdminHeader() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Security</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

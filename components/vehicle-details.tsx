@@ -3,23 +3,32 @@ import { Star } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 interface VehicleDetailsProps {
-  specs: {
-    condition_score: number
-    year_of_manufacture: number
-    current_location: string
-    availability: string
-    drive: string
-    mileage: string
-    engine_size: string
-    fuel_type: string
-    horse_power: string
-    transmission: string
-    torque: string
-    acceleration: string
-  }
+  specs: Record<string, any>
 }
 
 export function VehicleDetails({ specs }: VehicleDetailsProps) {
+  // Convert condition to a score (for stars)
+  let conditionScore = 3; // Default to 3 stars
+  
+  if (typeof specs.condition_score === 'number') {
+    conditionScore = specs.condition_score;
+  } else if (typeof specs.condition_score === 'string') {
+    // Map string condition to star rating
+    switch(specs.condition_score) {
+      case 'New':
+        conditionScore = 5;
+        break;
+      case 'Certified Pre-Owned':
+        conditionScore = 4;
+        break;
+      case 'Used':
+        conditionScore = 3;
+        break;
+      default:
+        conditionScore = 3;
+    }
+  }
+  
   return (
     <div className="space-y-6">
       <Accordion type="single" collapsible defaultValue="specifications">
@@ -28,13 +37,13 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
           <AccordionContent>
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <div className="text-sm font-medium">Condition Score</div>
+                <div className="text-sm font-medium">Condition</div>
                 <div className="flex">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
                       className={`h-4 w-4 ${
-                        i < specs.condition_score ? "text-yellow-400 fill-current" : "text-gray-300"
+                        i < conditionScore ? "text-yellow-400 fill-current" : "text-gray-300"
                       }`}
                     />
                   ))}
@@ -43,7 +52,9 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
 
               <div className="grid grid-cols-1 gap-4 text-sm">
                 {Object.entries(specs).map(([key, value]) => {
-                  if (key === "condition_score") return null
+                  if (key === 'condition_score') return null;
+                  if (value === undefined || value === null) return null;
+                  
                   return (
                     <div key={key} className="flex justify-between border-b border-gray-700 pb-2">
                       <div className="font-medium capitalize">{key.replace(/_/g, " ")}</div>
@@ -59,23 +70,8 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
         <AccordionItem value="running-costs">
           <AccordionTrigger>Running Costs</AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-4 text-sm">
-              <div className="flex justify-between border-b border-gray-700 pb-2">
-                <div className="font-medium">Fuel Consumption (City)</div>
-                <div className="text-gray-400">8.5L/100km</div>
-              </div>
-              <div className="flex justify-between border-b border-gray-700 pb-2">
-                <div className="font-medium">Fuel Consumption (Highway)</div>
-                <div className="text-gray-400">6.8L/100km</div>
-              </div>
-              <div className="flex justify-between border-b border-gray-700 pb-2">
-                <div className="font-medium">Annual Road Tax</div>
-                <div className="text-gray-400">KES 15,000</div>
-              </div>
-              <div className="flex justify-between border-b border-gray-700 pb-2">
-                <div className="font-medium">Insurance Estimate</div>
-                <div className="text-gray-400">KES 120,000/year</div>
-              </div>
+            <div className="text-sm text-center text-muted-foreground">
+              Running cost information will be available soon.
             </div>
           </AccordionContent>
         </AccordionItem>

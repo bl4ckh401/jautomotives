@@ -1,67 +1,147 @@
-import Link from "next/link"
+"use client"
+
+import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
-const featuredVehicles = [
-  {
-    id: 1,
-    name: "Tesla Model S Plaid",
-    price: "130,000 USD",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsoS_IYbjhrdD0Iz262tA709A9wsFjmgxWog&s",
-    cryptoPrice: "4.3 BTC",
-  },
-  {
-    id: 2,
-    name: "Porsche 911 GT3 RS",
-    price: "220,000 USD",
-    image:
-      "https://carsales.pxcrush.net/carsales/cars/dealer/14ahrwo9ssacqhc87rs2reguy.jpg?pxc_method=fitfill&pxc_bgtype=self&height=725&width=1087",
-    cryptoPrice: "7.3 BTC",
-  },
-  {
-    id: 3,
-    name: "Lamborghini Huracán EVO",
-    price: "260,000 USD",
-    image:
-      "https://www.gtrent.com/upload/images/modelli/lamborghini_/huracan_evo_spyder_blu/1200x800/lamborghini_huracan_evo_spyder_rental_8.jpg",
-    cryptoPrice: "8.7 BTC",
-  },
-]
+import { StarIcon } from "lucide-react"
+import { BadgeLabel } from "@/components/ui/badge-label"
+import { VehicleListing, useMarketplace } from "@/contexts/MarketplaceContext"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function FeaturedVehicles() {
+  const { getListings } = useMarketplace()
+  const [featuredVehicles, setFeaturedVehicles] = useState<VehicleListing[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchFeaturedVehicles = async () => {
+      try {
+        setLoading(true)
+        // Get featured vehicles (newest listings marked as featured)
+        const result = await getListings({
+          featured: true,
+          status: "active"
+        }, 4)
+        setFeaturedVehicles(result.listings)
+      } catch (error) {
+        console.error("Error fetching featured vehicles:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeaturedVehicles()
+  }, [getListings])
+
+  // Helper function to format price
+  const formatPrice = (price: string) => {
+    const numPrice = parseInt(price)
+    return numPrice.toLocaleString('en-US', { 
+      style: 'currency', 
+      currency: 'USD',
+      maximumFractionDigits: 0 
+    })
+  }
+
+  // Condition display
+  const getConditionStars = (condition: string) => {
+    switch (condition) {
+      case "New": return 5;
+      case "Certified Pre-Owned": return 4;
+      case "Used": return 3;
+      default: return 3;
+    }
+  }
+
   return (
-    <section className="w-screen bg-[#1a1f24]">
-    <div className="py-20 px-4 max-w-6xl bg-[#1a1f24] w-full mx-auto">
-      <h2 className="text-3xl font-bold mb-8 text-center">Featured Luxury Vehicles</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-        {featuredVehicles.map((vehicle) => (
-          <Card key={vehicle.id} className="bg-gray-800 border border-gray-700">
-            <CardContent className="p-6">
-              <Image
-                src={vehicle.image || "/placeholder.svg"}
-                alt={`${vehicle.name} - Luxury car available for purchase with cryptocurrency`}
-                width={400}
-                height={300}
-                className="rounded-lg mb-4"
-              />
-              <h3 className="text-xl font-bold mb-2 text-white">{vehicle.name}</h3>
-              <p className="text-gray-300 mb-2">{vehicle.price}</p>
-              <p className="text-emerald-400 font-semibold">{vehicle.cryptoPrice}</p>
-            </CardContent>
-            <CardFooter>
-              <Link href={`/vehicles/${vehicle.id}`} className="w-full">
-                <Button
-                  variant="outline"
-                  className="w-full text-white border-gray-600 hover:bg-white hover:text-gray-800"
-                >
-                  View Details
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+    <section className="py-20 px-4 bg-gradient-to-b from-black to-[#1a1f24]">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Featured Vehicles</h2>
+        <p className="text-center text-gray-400 mb-12">
+          Explore our handpicked selection of premium vehicles
+        </p>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, index) => (
+              <Card key={index} className="bg-[#1a1f24] overflow-hidden">
+                <Skeleton className="aspect-[4/3] w-full" />
+                <div className="p-4 space-y-2">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-full" />
+                  <div className="flex gap-1 py-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Skeleton key={i} className="h-4 w-4 rounded-full" />
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : featuredVehicles.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredVehicles.map((vehicle) => (
+              <Card key={vehicle.id} className="bg-[#1a1f24] overflow-hidden">
+                <div className="relative aspect-[4/3]">
+                  <BadgeLabel variant="featured">FEATURED</BadgeLabel>
+                  <Image 
+                    src={vehicle.images[0] || "/placeholder.svg"} 
+                    alt={`${vehicle.make} ${vehicle.model}`} 
+                    fill 
+                    className="object-cover" 
+                  />
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="text-xl font-bold mb-1">
+                    {vehicle.year} {vehicle.make} {vehicle.model}
+                  </h3>
+                  <div className="flex mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <StarIcon 
+                        key={i} 
+                        className={`w-4 h-4 ${
+                          i < getConditionStars(vehicle.condition) 
+                            ? "text-yellow-500 fill-yellow-500" 
+                            : "text-gray-400"
+                        }`} 
+                      />
+                    ))}
+                  </div>
+                  <p className="text-lg font-bold text-white mb-2">
+                    {formatPrice(vehicle.price)}
+                  </p>
+                  <p className="text-sm text-gray-400 line-clamp-2">
+                    {vehicle.description || `${vehicle.year} ${vehicle.make} ${vehicle.model} - 
+                    ${vehicle.mileage} miles, ${vehicle.transmission}, ${vehicle.fuelType}`}
+                  </p>
+                </CardContent>
+                <CardFooter className="p-4 pt-0">
+                  <Link href={`/marketplace/${vehicle.id}`} className="w-full">
+                    <Button className="w-full">View Details</Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-400">No featured vehicles available at the moment.</p>
+            <Link href="/marketplace">
+              <Button variant="link" className="mt-4">View All Vehicles</Button>
+            </Link>
+          </div>
+        )}
+
+        <div className="flex justify-center mt-10">
+          <Link href="/marketplace">
+            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black">
+              Browse All Vehicles
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   )

@@ -5,7 +5,7 @@ import type React from "react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, ChevronDown, User, LogOut, Car, Calendar, PhoneCall, Info, Mail, X, Shield, Banknote } from "lucide-react"
+import { Menu, ChevronDown, User, LogOut, Car, Calendar, PhoneCall, Info, Mail, X, Shield, Banknote, DollarSign } from "lucide-react"
 import { ThemeToggle } from "./ThemeToggle"
 import {
   DropdownMenu,
@@ -19,11 +19,13 @@ import {
 import { useAuth } from "@/contexts/AuthContext"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { useAdmin } from "@/contexts/AdminContext"
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { user, logout } = useAuth()
+  const { isAdmin } = useAdmin()
 
   // Add scroll effect
   useEffect(() => {
@@ -192,6 +194,29 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="flex items-center cursor-pointer">
+                          <Shield className="mr-2 h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin/listings" className="flex items-center cursor-pointer">
+                          <Car className="mr-2 h-4 w-4" />
+                          <span>Manage Listings</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin/bookings" className="flex items-center cursor-pointer">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          <span>Manage Bookings</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="flex items-center cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
@@ -274,7 +299,7 @@ export default function Header() {
                 Financing
               </MobileNavLink>
 
-              <MobileNavLink href="/insurance" icon={<Mail className="w-5 h-5" />}>
+              <MobileNavLink href="/insurance" icon={<Shield className="w-5 h-5" />}>
                 Insurance
               </MobileNavLink>
 
@@ -306,6 +331,16 @@ export default function Header() {
                       Dashboard
                     </Button>
                   </Link>
+                  {isAdmin && (
+                    <Link href="/admin">
+                      <Button
+                        variant="outline"
+                        className="w-full text-white border-white hover:bg-white hover:text-black"
+                      >
+                        Admin Dashboard
+                      </Button>
+                    </Link>
+                  )}
                   <Button variant="destructive" className="w-full" onClick={handleLogout}>
                     Log Out
                   </Button>

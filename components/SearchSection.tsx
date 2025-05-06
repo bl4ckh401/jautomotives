@@ -4,11 +4,48 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, ChevronDown } from "lucide-react"
+import { 
+  Select, 
+  SelectContent, 
+  SelectGroup, 
+  SelectItem, 
+  SelectLabel, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select"
 
-export default function SearchSection() {
+interface SearchSectionProps {
+  onSearch?: (searchParams: any) => void
+}
+
+export default function SearchSection({ onSearch }: SearchSectionProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [keyword, setKeyword] = useState("")
+  const [brand, setBrand] = useState("")
+  const [bodyType, setBodyType] = useState("")
+  const [priceRange, setPriceRange] = useState("")
 
   const priceRanges = ["0 - 500K", "500K - 1M", "1M - 2M", "2M - 3M", "3M - 5M", "5M - 10M", "Above 10M"]
+  const carBrands = [
+    "Audi", "BMW", "Chevrolet", "Dodge", "Ford", "Honda", "Hyundai", 
+    "Jeep", "Kia", "Lexus", "Mazda", "Mercedes-Benz", "Nissan", 
+    "Subaru", "Tesla", "Toyota", "Volkswagen", "Volvo"
+  ]
+  const bodyTypes = [
+    "Sedan", "SUV", "Truck", "Coupe", "Convertible", "Wagon", 
+    "Van/Minivan", "Hatchback", "Crossover", "Luxury"
+  ]
+
+  const handleSubmit = () => {
+    if (onSearch) {
+      onSearch({
+        keyword,
+        brand,
+        bodyType,
+        priceRange
+      })
+    }
+  }
 
   return (
     <section className="py-20 px-4 bg-[#1a1f24] text-white">
@@ -26,22 +63,42 @@ export default function SearchSection() {
               <Input
                 className="pl-10 bg-transparent border-gray-700 text-white placeholder:text-gray-500"
                 placeholder="Search vehicle name"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
               />
             </div>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
-            <Input
-              className="bg-transparent border-gray-700 text-white placeholder:text-gray-500"
-              placeholder="Select brand"
-            />
+            <Select value={brand} onValueChange={setBrand}>
+              <SelectTrigger className="bg-transparent border-gray-700 text-white placeholder:text-gray-500">
+                <SelectValue placeholder="Select brand" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Car Brands</SelectLabel>
+                  {carBrands.map(brand => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Filter by Body Type</h3>
-            <Input
-              className="bg-transparent border-gray-700 text-white placeholder:text-gray-500"
-              placeholder="Select body type"
-            />
+            <Select value={bodyType} onValueChange={setBodyType}>
+              <SelectTrigger className="bg-transparent border-gray-700 text-white placeholder:text-gray-500">
+                <SelectValue placeholder="Select body type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Body Types</SelectLabel>
+                  {bodyTypes.map(type => (
+                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -51,8 +108,11 @@ export default function SearchSection() {
             {priceRanges.map((range) => (
               <Button
                 key={range}
-                variant="outline"
-                className="border-gray-700 text-white hover:bg-white hover:text-black"
+                variant={priceRange === range ? "default" : "outline"}
+                className={priceRange === range 
+                  ? "bg-white text-black hover:bg-gray-200" 
+                  : "border-gray-700 text-white hover:bg-white hover:text-black"}
+                onClick={() => setPriceRange(range)}
               >
                 {range}
               </Button>
@@ -71,10 +131,20 @@ export default function SearchSection() {
           </Button>
 
           {showAdvanced && (
-            <div className="mt-8 w-full max-w-2xl">{/* Advanced search options can be added here */}</div>
+            <div className="mt-8 w-full max-w-2xl">
+              {/* Advanced search options can be added here */}
+              <p className="text-gray-400 text-sm text-center">
+                Advanced search options coming soon!
+              </p>
+            </div>
           )}
 
-          <Button className="mt-8 bg-white text-black hover:bg-gray-200 min-w-[200px]">Search</Button>
+          <Button 
+            onClick={handleSubmit}
+            className="mt-8 bg-white text-black hover:bg-gray-200 min-w-[200px]"
+          >
+            Search
+          </Button>
         </div>
       </div>
     </section>

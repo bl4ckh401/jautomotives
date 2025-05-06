@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase"
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where } from "firebase/firestore"
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, serverTimestamp, Timestamp } from "firebase/firestore"
 
 export interface CarListing {
   id?: string
@@ -10,13 +10,19 @@ export interface CarListing {
   description: string
   imageUrls: string[]
   sellerId: string
-  status: "available" | "sold" | "pending"
+  status: "available" | "sold" | "pending" | "archived"
+  title?: string
+  seller?: string
+  createdAt?: Timestamp
 }
 
 export const carListingsCollection = collection(db, "carListings")
 
-export const addCarListing = async (carListing: Omit<CarListing, "id">): Promise<string> => {
-  const docRef = await addDoc(carListingsCollection, carListing)
+export const addCarListing = async (carListing: Omit<CarListing, "id" | "createdAt">): Promise<string> => {
+  const docRef = await addDoc(carListingsCollection, {
+    ...carListing,
+    createdAt: serverTimestamp()
+  })
   return docRef.id
 }
 
@@ -40,6 +46,12 @@ export const getCarListings = async (filters?: Partial<CarListing>): Promise<Car
   }
 
   const querySnapshot = await getDocs(q)
-  return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as CarListing)
+  return querySnapshot.docs.map((doc) => ({ 
+    id: doc.id, 
+    ...doc.data(),
+    // Always include these fields with defaults if missing
+    title: doc.data().title || `${doc.data().year} ${doc.data().make} ${doc.data().model}`,
+    seller: doc.data().seller || doc.data().sellerId
+  }) as CarListing)
 }
 

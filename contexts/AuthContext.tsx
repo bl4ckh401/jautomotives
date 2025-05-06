@@ -11,8 +11,10 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  getIdToken,
 } from "firebase/auth"
 import { app } from "@/lib/firebase"
+import { createUserRecord } from "@/services/userService"
 
 interface User {
   id: string
@@ -38,14 +40,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const auth = getAuth(app)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        setUser({
-          id: firebaseUser.uid,
-          name: firebaseUser.displayName,
-          email: firebaseUser.email,
-          photoURL: firebaseUser.photoURL,
-        })
+        try {
+          // Get the ID token
+          const idToken = await getIdToken(firebaseUser);
+          
+          // Create a session with the backend
+          const response = await fetch("/api/auth/session", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ idToken }),
+          });
+
+          if (!response.ok) {
+            console.error("Failed to create session");
+            setUser(null);
+            setLoading(false);
+            return;
+          }
+          
+          // Create the user object
+          const userData = {
+            id: firebaseUser.uid,
+            name: firebaseUser.displayName,
+            email: firebaseUser.email,
+            photoURL: firebaseUser.photoURL,
+          };
+          
+          setUser(userData);
+          
+          // Save user data to Firestore
+          try {
+            await createUserRecord(firebaseUser.uid, {
+              name: firebaseUser.displayName,
+              email: firebaseUser.email,
+              photoURL: firebaseUser.photoURL,
+            });
+          } catch (error) {
+            console.error("Error syncing user to Firestore:", error);
+          }
+        } catch (error) {
+          console.error("Authentication error:", error);
+          setUser(null);
+        }
       } else {
         setUser(null)
       }
@@ -57,7 +97,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      // Sign in with Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Get the ID token
+      const idToken = await getIdToken(userCredential.user);
+      
+      // Create a session with the backend
+      const response = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create session");
+      }
+      
       router.push("/dashboard")
     } catch (error: any) {
       throw new Error(error.message || "Failed to sign in")
@@ -67,6 +125,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await signOut(auth)
+      
+      // Delete the session with the backend
+      await fetch("/api/auth/session", {
+        method: "DELETE",
+      });
+      
       router.push("/")
     } catch (error: any) {
       throw new Error(error.message || "Failed to sign out")
@@ -79,6 +143,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await updateProfile(userCredential.user, {
         displayName: name,
       })
+      
+      // Get the ID token
+      const idToken = await getIdToken(userCredential.user);
+      
+      // Create a session with the backend
+      const response = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create session");
+      }
+      
       router.push("/dashboard")
     } catch (error: any) {
       throw new Error(error.message || "Failed to register")

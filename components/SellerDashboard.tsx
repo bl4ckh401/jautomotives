@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
@@ -9,38 +9,158 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { ArrowUpRight, Car, DollarSign, Eye, MessageSquare, Plus, Users } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/contexts/AuthContext"
+import { useMarketplace } from "@/contexts/MarketplaceContext"
+import { VehicleListing } from "@/types"
+import { startOfMonth, subMonths, format } from "date-fns"
 
-const initialListings = [
-  { id: 1, name: "Rolls-Royce Phantom", price: "450,000", status: "Active", views: 1200, inquiries: 15 },
-  { id: 2, name: "Bentley Continental GT", price: "200,000", status: "Sold", views: 980, inquiries: 8 },
-  { id: 3, name: "Lamborghini Aventador", price: "400,000", status: "Active", views: 1500, inquiries: 20 },
-  { id: 4, name: "Ferrari 488 GTB", price: "350,000", status: "Pending", views: 750, inquiries: 12 },
-]
+// Define chart data interface
+interface ChartDataItem {
+  month: Date;
+  name: string;
+  views: number;
+  inquiries: number;
+  listings: number;
+}
 
-const initialSales = [
-  { id: 1, vehicle: "Bentley Continental GT", price: "200,000", date: "2023-06-15", buyer: "John Doe" },
-  { id: 2, vehicle: "Aston Martin DB11", price: "180,000", date: "2023-05-28", buyer: "Jane Smith" },
-  { id: 3, vehicle: "Porsche 911 Turbo S", price: "220,000", date: "2023-04-10", buyer: "Robert Johnson" },
-]
-
-const chartData = [
-  { name: "Jan", views: 400, inquiries: 24 },
-  { name: "Feb", views: 600, inquiries: 28 },
-  { name: "Mar", views: 500, inquiries: 26 },
-  { name: "Apr", views: 700, inquiries: 29 },
-  { name: "May", views: 900, inquiries: 32 },
-  { name: "Jun", views: 1100, inquiries: 40 },
-]
+// Define type chart data interface
+interface TypeChartItem {
+  type: string;
+  count: number;
+}
 
 export default function SellerDashboard() {
-  const [listings] = useState(initialListings)
-  const [sales] = useState(initialSales)
+  const { user } = useAuth()
+  const { getListings, loading: marketplaceLoading } = useMarketplace()
+  const [loading, setLoading] = useState(true)
+  const [listings, setListings] = useState<any[]>([])
+  const [sales, setSales] = useState<any[]>([])
+  const [chartData, setChartData] = useState<ChartDataItem[]>([])
+  const [vehicleTypeData, setVehicleTypeData] = useState<TypeChartItem[]>([])
+
+  // Fetch user's listings from Firestore
+  useEffect(() => {
+    const fetchUserListings = async () => {
+      if (!user) return
+
+      try {
+        setLoading(true)
+        // Use the getListings function from the MarketplaceContext with a filter for the current user
+        const result = await getListings({ userId: user.id })
+        
+        // Format listings for display
+        const formattedListings = result.listings.map(listing => ({
+          id: listing.id,
+          name: `${listing.year} ${listing.make} ${listing.model}`,
+          price: new Intl.NumberFormat('en-US').format(Number(listing.price)),
+          status: listing.status || "active",
+          views: listing.views || 0,
+          inquiries: listing.inquiries || 0,
+          createdAt: listing.createdAt,
+          vehicleType: listing.vehicleType
+        }))
+        
+        setListings(formattedListings)
+        
+        // Generate chart data from listings
+        generateChartData(result.listings)
+        
+        // Generate vehicle type data
+        setVehicleTypeData(generateVehicleTypeData(formattedListings))
+        
+        // Filter sold listings for sales data
+        const soldListings = result.listings.filter(listing => listing.status === "sold")
+        const formattedSales = soldListings.map(listing => ({
+          id: listing.id,
+          vehicle: `${listing.year} ${listing.make} ${listing.model}`,
+          price: new Intl.NumberFormat('en-US').format(Number(listing.price)),
+          date: listing.soldDate || new Date().toISOString(),
+          buyer: listing.buyerName || "Anonymous Buyer"
+        }))
+        
+        setSales(formattedSales)
+      } catch (error) {
+        console.error("Error fetching user listings:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUserListings()
+  }, [user, getListings])
+
+  // Generate chart data based on listings created in each month
+  const generateChartData = (listings: any[]) => {
+    // Initialize data for the last 6 months
+    const months: ChartDataItem[] = []
+    const today = new Date()
+    
+    for (let i = 5; i >= 0; i--) {
+      const month = subMonths(today, i)
+      months.push({
+        month: startOfMonth(month),
+        name: format(month, 'MMM'),
+        views: 0,
+        inquiries: 0,
+        listings: 0
+      })
+    }
+    
+    // Aggregate data from listings
+    listings.forEach(listing => {
+      const createdAt = listing.createdAt ? new Date(listing.createdAt) : null
+      
+      if (createdAt) {
+        // Find which month this listing belongs to
+        const monthIndex = months.findIndex(m => 
+          createdAt >= m.month && 
+          (months[months.indexOf(m) + 1] ? createdAt < months[months.indexOf(m) + 1].month : true)
+        )
+        
+        if (monthIndex >= 0) {
+          months[monthIndex].views += listing.views || 0
+          months[monthIndex].inquiries += listing.inquiries || 0
+          months[monthIndex].listings += 1
+        }
+      }
+    })
+    
+    setChartData(months)
+  }
+
+  // Generate data for vehicle type chart
+  const generateVehicleTypeData = (listings: any[]): TypeChartItem[] => {
+    // Count listings by vehicle type
+    const typeCounts: Record<string, number> = {}
+    
+    listings.forEach(listing => {
+      const type = listing.vehicleType || 'Other'
+      typeCounts[type] = (typeCounts[type] || 0) + 1
+    })
+    
+    // Convert to array format for the chart
+    return Object.entries(typeCounts)
+      .map(([type, count]) => ({ type, count }))
+      .sort((a, b) => b.count - a.count) // Sort by count descending
+      .slice(0, 6) // Show only top 6 types
+  }
 
   // Calculate statistics
-  const activeListings = listings.filter((listing) => listing.status === "Active").length
-  const totalSales = sales.reduce((sum, sale) => sum + Number.parseInt(sale.price.replace(/,/g, "")), 0)
+  const activeListings = listings.filter((listing) => listing.status === "active").length
+  const totalSales = sales.reduce((sum, sale) => {
+    const price = Number(sale.price.replace(/,/g, ""))
+    return Number.isNaN(price) ? sum : sum + price
+  }, 0)
   const totalViews = listings.reduce((sum, listing) => sum + listing.views, 0)
-  const totalInquiries = listings.reduce((sum, listing) => sum + listing.inquiries, 0)
+  const totalInquiries = listings.reduce((sum, listing) => sum + (listing.inquiries || 0), 0)
+
+  if (loading || marketplaceLoading) {
+    return (
+      <div className="flex justify-center items-center py-24">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -57,7 +177,7 @@ export default function SellerDashboard() {
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">12%</span> from last month
+              <span className="text-green-500 font-medium">Active</span> listings
             </p>
           </CardFooter>
         </Card>
@@ -73,7 +193,7 @@ export default function SellerDashboard() {
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">8%</span> from last month
+              <span className="text-green-500 font-medium">{sales.length}</span> completed sales
             </p>
           </CardFooter>
         </Card>
@@ -89,7 +209,7 @@ export default function SellerDashboard() {
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">24%</span> from last month
+              <span className="text-green-500 font-medium">All</span> listings combined
             </p>
           </CardFooter>
         </Card>
@@ -105,34 +225,72 @@ export default function SellerDashboard() {
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
               <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">18%</span> from last month
+              <span className="text-green-500 font-medium">All</span> inquiries received
             </p>
           </CardFooter>
         </Card>
       </div>
 
       {/* Performance Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Overview</CardTitle>
-          <CardDescription>Track your listing views and inquiries over time</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                <Tooltip />
-                <Bar yAxisId="left" dataKey="views" fill="#8884d8" name="Views" />
-                <Bar yAxisId="right" dataKey="inquiries" fill="#82ca9d" name="Inquiries" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Performance Overview</CardTitle>
+            <CardDescription>Track your listing views and inquiries over the last 6 months</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {chartData.length > 0 ? (
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                    <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                    <Tooltip />
+                    <Bar yAxisId="left" dataKey="views" fill="#8884d8" name="Views" />
+                    <Bar yAxisId="right" dataKey="inquiries" fill="#82ca9d" name="Inquiries" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center py-12">
+                <p className="text-muted-foreground">No data available for chart visualization</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      
+        <Card>
+          <CardHeader>
+            <CardTitle>Listings by Vehicle Type</CardTitle>
+            <CardDescription>Distribution of your vehicles by category</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {vehicleTypeData.length > 0 ? (
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    layout="vertical" 
+                    data={vehicleTypeData} 
+                    margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="type" type="category" />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center py-12">
+                <p className="text-muted-foreground">No vehicle type data available</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Listings and Sales Tabs */}
       <Tabs defaultValue="listings" className="w-full">
@@ -155,58 +313,75 @@ export default function SellerDashboard() {
               </Link>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Vehicle</TableHead>
-                      <TableHead>Price (USD)</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Views</TableHead>
-                      <TableHead>Inquiries</TableHead>
-                      <TableHead>Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {listings.map((listing) => (
-                      <TableRow key={listing.id}>
-                        <TableCell className="font-medium">{listing.name}</TableCell>
-                        <TableCell>${listing.price}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant="outline"
-                            className={
-                              listing.status === "Active"
-                                ? "bg-green-100 text-green-800 hover:bg-green-100 border-green-200"
-                                : listing.status === "Sold"
-                                  ? "bg-blue-100 text-blue-800 hover:bg-blue-100 border-blue-200"
-                                  : "bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200"
-                            }
-                          >
-                            {listing.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{listing.views.toLocaleString()}</TableCell>
-                        <TableCell>{listing.inquiries}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
-                              Edit
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                            >
-                              Promote
-                            </Button>
-                          </div>
-                        </TableCell>
+              {listings.length > 0 ? (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Vehicle</TableHead>
+                        <TableHead>Price (USD)</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Views</TableHead>
+                        <TableHead>Inquiries</TableHead>
+                        <TableHead>Action</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {listings.map((listing) => (
+                        <TableRow key={listing.id}>
+                          <TableCell className="font-medium">{listing.name}</TableCell>
+                          <TableCell>${listing.price}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant="outline"
+                              className={
+                                listing.status === "active"
+                                  ? "bg-green-100 text-green-800 hover:bg-green-100 border-green-200"
+                                  : listing.status === "sold"
+                                    ? "bg-blue-100 text-blue-800 hover:bg-blue-100 border-blue-200"
+                                    : "bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200"
+                              }
+                            >
+                              {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{listing.views.toLocaleString()}</TableCell>
+                          <TableCell>{listing.inquiries}</TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Link href={`/marketplace/edit/${listing.id}`}>
+                                <Button variant="outline" size="sm">
+                                  Edit
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                              >
+                                Promote
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Car className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No Listings Yet</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto mb-6">
+                    You haven't created any vehicle listings yet. Start selling by creating your first listing!
+                  </p>
+                  <Link href="/sell">
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" /> Create Your First Listing
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -218,39 +393,51 @@ export default function SellerDashboard() {
               <CardDescription>Track your completed transactions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Vehicle</TableHead>
-                      <TableHead>Price (USD)</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Buyer</TableHead>
-                      <TableHead>Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sales.map((sale) => (
-                      <TableRow key={sale.id}>
-                        <TableCell className="font-medium">{sale.vehicle}</TableCell>
-                        <TableCell>${sale.price}</TableCell>
-                        <TableCell>{new Date(sale.date).toLocaleDateString()}</TableCell>
-                        <TableCell className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700">
-                            <Users className="h-4 w-4" />
-                          </div>
-                          {sale.buyer}
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                        </TableCell>
+              {sales.length > 0 ? (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Vehicle</TableHead>
+                        <TableHead>Price (USD)</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Buyer</TableHead>
+                        <TableHead>Action</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {sales.map((sale) => (
+                        <TableRow key={sale.id}>
+                          <TableCell className="font-medium">{sale.vehicle}</TableCell>
+                          <TableCell>${sale.price}</TableCell>
+                          <TableCell>{new Date(sale.date).toLocaleDateString()}</TableCell>
+                          <TableCell className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700">
+                              <Users className="h-4 w-4" />
+                            </div>
+                            {sale.buyer}
+                          </TableCell>
+                          <TableCell>
+                            <Link href={`/marketplace/${sale.id}`}>
+                              <Button variant="outline" size="sm">
+                                View Details
+                              </Button>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <DollarSign className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No Sales Yet</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    You haven't completed any sales yet. Sales will appear here once you've sold a vehicle.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
