@@ -48,7 +48,7 @@ export default function SearchSection({ onSearch }: SearchSectionProps) {
   }
 
   return (
-    <section className="py-20 px-4 bg-[#1a1f24] text-white">
+    <section className="py-20 px-4 bg-background text-primary">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">Find what fits you</h2>
         <p className="text-center text-gray-400 mb-12">
@@ -61,7 +61,7 @@ export default function SearchSection({ onSearch }: SearchSectionProps) {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
-                className="pl-10 bg-transparent border-gray-700 text-white placeholder:text-gray-500"
+                className="pl-10 bg-transparent border-border text-foreground placeholder:text-muted-foreground focus:border-jaba-gold"
                 placeholder="Search vehicle name"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
@@ -71,7 +71,7 @@ export default function SearchSection({ onSearch }: SearchSectionProps) {
           <div>
             <h3 className="text-lg font-semibold mb-4">Filter by Brand</h3>
             <Select value={brand} onValueChange={setBrand}>
-              <SelectTrigger className="bg-transparent border-gray-700 text-white placeholder:text-gray-500">
+              <SelectTrigger className="bg-transparent border-border text-foreground">
                 <SelectValue placeholder="Select brand" />
               </SelectTrigger>
               <SelectContent>
@@ -87,7 +87,7 @@ export default function SearchSection({ onSearch }: SearchSectionProps) {
           <div>
             <h3 className="text-lg font-semibold mb-4">Filter by Body Type</h3>
             <Select value={bodyType} onValueChange={setBodyType}>
-              <SelectTrigger className="bg-transparent border-gray-700 text-white placeholder:text-gray-500">
+              <SelectTrigger className="bg-transparent border-border text-foreground">
                 <SelectValue placeholder="Select body type" />
               </SelectTrigger>
               <SelectContent>
@@ -110,8 +110,8 @@ export default function SearchSection({ onSearch }: SearchSectionProps) {
                 key={range}
                 variant={priceRange === range ? "default" : "outline"}
                 className={priceRange === range 
-                  ? "bg-white text-black hover:bg-gray-200" 
-                  : "border-gray-700 text-white hover:bg-white hover:text-black"}
+                  ? "bg-white text-yellow-400 dark:text-gray-800 hover:bg-gray-200" 
+                  : "border-gray-700 dark:text-primary text-gray-800 hover:bg-white hover:text-black"}
                 onClick={() => setPriceRange(range)}
               >
                 {range}
@@ -123,7 +123,7 @@ export default function SearchSection({ onSearch }: SearchSectionProps) {
         <div className="flex flex-col items-center">
           <Button
             variant="ghost"
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-primary"
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
             Click here for Advanced search

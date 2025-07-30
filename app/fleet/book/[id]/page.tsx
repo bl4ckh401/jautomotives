@@ -270,7 +270,7 @@ export default function BookFleetVehiclePage({ params }: { params: { id: string 
                   <CarFront className="h-4 w-4 mr-2 text-muted-foreground" />
                   <span>Daily Rate</span>
                 </div>
-                <span className="font-medium">${vehicle.dailyRate}/day</span>
+                <span className="font-medium">KES {vehicle.dailyRate}/day</span>
               </div>
               
               <div className="flex justify-between items-center mb-2">

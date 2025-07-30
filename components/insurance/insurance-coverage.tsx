@@ -105,7 +105,7 @@ interface CoverageCardProps {
 
 function CoverageCard({ icon, title, description, features }: CoverageCardProps) {
   return (
-    <Card className="bg-[#242b33] border-gray-700 hover:border-blue-500 transition-all duration-300 hover:shadow-blue-500/20 hover:shadow-lg overflow-hidden h-full">
+    <Card className="bg-card border-border hover:border-primary transition-all duration-300 hover:shadow-primary/20 hover:shadow-lg overflow-hidden h-full">
       <CardContent className="p-8">
         <div className="mb-4">{icon}</div>
         <h3 className="text-xl font-semibold mb-3">{title}</h3>

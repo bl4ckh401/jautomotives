@@ -38,7 +38,7 @@ export default function AssistanceServicePage({
   faqs,
 }: AssistanceServicePageProps) {
   return (
-    <div className="min-h-screen bg-[#1a1f24] text-white">
+    <div className="min-h-screen bg-background text-primary">
       {/* Hero Section */}
       <div className="relative h-[70vh] min-h-[600px] overflow-hidden">
         <Image
@@ -55,28 +55,28 @@ export default function AssistanceServicePage({
         <div className="absolute top-8 right-8 z-30 hidden md:block">
           <a
             href={`tel:${emergencyNumber}`}
-            className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 animate-pulse"
+            className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-primary px-6 py-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 animate-pulse"
           >
             <Phone className="h-6 w-6" />
             <span className="text-xl font-bold">{emergencyNumber}</span>
           </a>
         </div>
 
-        <div className="absolute inset-0 flex flex-col justify-center items-start text-white p-8 md:p-16 max-w-7xl mx-auto z-20">
-          <div className="bg-[#1a1f24]/80 backdrop-blur-sm p-8 rounded-xl max-w-3xl">
+        <div className="absolute inset-0 flex flex-col justify-center items-start text-primary p-8 md:p-16 max-w-7xl mx-auto z-20">
+          <div className="bg-background/80 backdrop-blur-sm p-8 rounded-xl max-w-3xl">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">{title}</h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200">{description}</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg px-8 py-6 rounded-full"
+                className="bg-blue-600 hover:bg-blue-700 text-primary font-bold text-lg px-8 py-6 rounded-full"
               >
                 <Phone className="mr-2 h-6 w-6" /> Call Now
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-[#1a1f24] font-bold text-lg px-8 py-6 rounded-full"
+                className="border-white text-primary hover:bg-white hover:text-[#1a1f24] font-bold text-lg px-8 py-6 rounded-full"
               >
                 Request Service Online
               </Button>
@@ -217,7 +217,7 @@ export default function AssistanceServicePage({
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-6 rounded-full"
+                  className="border-white text-primary hover:bg-white hover:text-blue-600 text-lg px-8 py-6 rounded-full"
                 >
                   Request Online <ArrowRight className="ml-2 h-6 w-6" />
                 </Button>
@@ -265,14 +265,14 @@ export default function AssistanceServicePage({
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg px-8 py-6 rounded-full"
+                className="bg-blue-600 hover:bg-blue-700 text-primary font-bold text-lg px-8 py-6 rounded-full"
               >
                 Request Assistance <ArrowRight className="ml-2 h-6 w-6" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-[#1a1f24] font-bold text-lg px-8 py-6 rounded-full"
+                className="border-white text-primary hover:bg-white hover:text-[#1a1f24] font-bold text-lg px-8 py-6 rounded-full"
               >
                 Learn More About Our Services
               </Button>

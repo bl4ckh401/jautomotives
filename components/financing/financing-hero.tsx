@@ -15,8 +15,8 @@ export default function FinancingHero() {
       />
       <div className="absolute inset-0 opacity-50" />
 
-      <div className="absolute inset-0 flex flex-col justify-center items-start text-white p-8 md:p-16 max-w-7xl mx-auto z-20">
-        <div className="bg-[#1a1f24]/80 backdrop-blur-sm p-8 rounded-xl max-w-3xl">
+      <div className="absolute inset-0 flex flex-col justify-center items-start text-primary p-8 md:p-16 max-w-7xl mx-auto z-20">
+        <div className="bg-background/80 backdrop-blur-sm p-8 rounded-xl max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Flexible Financing Solutions</h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200">
             Discover the perfect financing option to drive home your dream vehicle today. We offer competitive rates,
@@ -25,14 +25,14 @@ export default function FinancingHero() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg px-8 py-6 rounded-full"
+              className="bg-blue-600 hover:bg-blue-700 text-primary font-bold text-lg px-8 py-6 rounded-full"
             >
               Apply Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-[#1a1f24] font-bold text-lg px-8 py-6 rounded-full"
+              className="border-white text-primary hover:bg-white hover:text-[#1a1f24] font-bold text-lg px-8 py-6 rounded-full"
             >
               Calculate Payments
             </Button>

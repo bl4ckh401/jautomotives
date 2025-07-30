@@ -18,10 +18,10 @@ export default function CustomerReview({ name, avatar, rating, review, date }: C
           <AvatarFallback>{name[0]}</AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="font-semibold">{name}</h3>
+          <h3 className="font-semibold text-gray-800 dark:text-yellow-400">{name}</h3>
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className={`w-4 h-4 ${i < rating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
+              <Star key={i} className={`w-4 h-4 ${i < rating ? "text-gray-800 dark:text-yellow-400 fill-current" : "text-gray-300"}`} />
             ))}
           </div>
         </div>

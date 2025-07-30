@@ -59,10 +59,10 @@ export default function TradeInPage() {
           }}
         ></div>
         <div className="absolute inset-0 flex flex-col justify-center z-20 p-8 md:p-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 max-w-2xl">
             Trade In Your Vehicle for Something New
           </h1>
-          <p className="text-xl text-white/80 max-w-2xl mb-8">
+          <p className="text-xl text-primary/80 max-w-2xl mb-8">
             Get a fair valuation for your current vehicle and upgrade to one of our premium options with our hassle-free
             trade-in program.
           </p>

@@ -31,7 +31,7 @@ export function TradeInVehicles({ vehicles }: TradeInVehiclesProps) {
           const tradeInPrice = calculateTradeInPrice(vehicle.price);
           
           return (
-            <Card key={vehicle.id} className="bg-[#1a1f24] overflow-hidden">
+            <Card key={vehicle.id} className="bg-background overflow-hidden">
               <div className="relative aspect-[4/3]">
                 <BadgeLabel variant="available">TRADE-IN ONLY</BadgeLabel>
                 <Image 
@@ -46,9 +46,9 @@ export function TradeInVehicles({ vehicles }: TradeInVehiclesProps) {
                   {vehicle.year} {vehicle.title}
                 </h3>
                 <div className="flex items-center mb-2">
-                  <span className="text-lg font-bold text-green-500">KES {tradeInPrice.toLocaleString()}</span>
+                  <span className="text-lg font-bold text-pistachio">KES {tradeInPrice.toLocaleString()}</span>
                   <span className="text-sm text-gray-400 line-through ml-2">KES {price.toLocaleString()}</span>
-                  <span className="ml-2 text-xs bg-green-500/20 text-green-500 px-2 py-0.5 rounded-full">
+                  <span className="ml-2 text-xs bg-pistachio/20 text-pistachio px-2 py-0.5 rounded-full">
                     Save {Math.round(((price - tradeInPrice) / price) * 100)}%
                   </span>
                 </div>

@@ -4,48 +4,62 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    /* Light mode - Fixed contrast and readability */
+    --background: 0 0% 98%; /* #FAFAFA - Softer white */
+    --foreground: 0 0% 9%; /* #171717 - Much darker for better contrast */
+    --card: 0 0% 100%; /* #FFFFFF - Pure white cards */
+    --card-foreground: 0 0% 9%; /* #171717 - Dark text on cards */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 0 0% 9%; /* #171717 */
+    --primary: 51 100% 50%; /* #FFD700 - Jaba Gold */
+    --primary-foreground: 0 0% 9%; /* #171717 - Dark text on gold */
+    --secondary: 0 0% 96%; /* #F5F5F5 - Light gray backgrounds */
+    --secondary-foreground: 0 0% 9%; /* #171717 - Dark text */
+    --muted: 0 0% 96%; /* #F5F5F5 */
+    --muted-foreground: 0 0% 45%; /* #737373 - Medium gray for less important text */
+    --accent: 51 100% 50%; /* #FFD700 - Jaba Gold */
+    --accent-foreground: 0 0% 9%; /* #171717 */
+    --destructive: 348 83% 47%; /* #C8102E - Jaba Red */
+    --destructive-foreground: 0 0% 98%; /* #FAFAFA */
+    --border: 0 0% 90%; /* #E5E5E5 - Lighter borders */
+    --input: 0 0% 96%; /* #F5F5F5 */
+    --ring: 51 100% 50%; /* #FFD700 - Jaba Gold */
+    --radius: 0.75rem;
+    
+    /* Enhanced Jaba Motors variables with better contrast */
+    --jaba-gold: 51 100% 50%; /* #FFD700 */
+    --jaba-gold-hover: 45 100% 45%; /* #E6C200 */
+    --jaba-red: 348 83% 47%; /* #C8102E */
+    --jaba-silver: 0 0% 52%; /* #858585 - Darker for better contrast */
   }
 
   .dark {
-    --background: 210 16% 12%; 
-    --foreground: 210 40% 98%;
-    --card: 210 28% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 210 16% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    /* Dark mode - Enhanced Modern Jaba Motors theme */
+    --background: 0 0% 9%; /* #171717 - Slightly lighter than pure black */
+    --foreground: 0 0% 98%; /* #FAFAFA */
+    --card: 0 0% 14%; /* #242424 */
+    --card-foreground: 0 0% 98%; /* #FAFAFA */
+    --popover: 0 0% 14%; /* #242424 */
+    --popover-foreground: 0 0% 98%; /* #FAFAFA */
+    --primary: 51 100% 50%; /* #FFD700 - Jaba Gold */
+    --primary-foreground: 0 0% 9%; /* #171717 */
+    --secondary: 0 0% 21%; /* #363636 */
+    --secondary-foreground: 0 0% 98%; /* #FAFAFA */
+    --muted: 0 0% 21%; /* #363636 */
+    --muted-foreground: 0 0% 64%; /* #A3A3A3 */
+    --accent: 51 100% 50%; /* #FFD700 - Jaba Gold */
+    --accent-foreground: 0 0% 9%; /* #171717 */
+    --destructive: 348 83% 47%; /* #C8102E - Jaba Red */
+    --destructive-foreground: 0 0% 98%; /* #FAFAFA */
+    --border: 0 0% 21%; /* #363636 */
+    --input: 0 0% 14%; /* #242424 */
+    --ring: 51 100% 50%; /* #FFD700 - Jaba Gold */
+    
+    /* Custom Jaba Motors variables for dark mode */
+    --jaba-gold: 51 100% 50%; /* #FFD700 */
+    --jaba-gold-hover: 45 100% 45%; /* #E6C200 */
+    --jaba-red: 348 83% 47%; /* #C8102E */
+    --jaba-silver: 0 0% 64%; /* #A3A3A3 */
   }
 }
 
@@ -53,8 +67,91 @@
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Enhanced typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground font-semibold tracking-tight;
+  }
+  
+  /* Smooth transitions for theme switching */
+  * {
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  }
+}
+
+@layer components {
+  /* Enhanced button styles with better contrast */
+  .btn-primary {
+    @apply bg-jaba-gold text-black hover:bg-jaba-gold-dark font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105;
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent text-jaba-gold border-2 border-jaba-gold hover:bg-jaba-gold hover:text-black font-semibold px-6 py-3 rounded-xl transition-all duration-200;
+  }
+  
+  /* Card enhancements with proper contrast */
+  .card-modern {
+    @apply bg-card border border-border rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6;
+  }
+  
+  /* Featured badge */
+  .badge-featured {
+    @apply bg-jaba-red text-white px-3 py-1 rounded-full text-sm font-semibold shadow-sm;
+  }
+  
+  /* Modern glass effect for header */
+  .glass-effect {
+    @apply bg-background/95 backdrop-blur-lg border-b border-border/50;
+  }
+  
+  /* Hero section styles */
+  .hero-gradient {
+    @apply bg-gradient-to-br from-background via-secondary/30 to-background;
+  }
+  
+  /* Marketplace specific styles */
+  .marketplace-card {
+    @apply bg-card border border-border rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden;
+  }
+  
+  .marketplace-card:hover {
+    @apply transform scale-[1.02] border-jaba-gold/30;
+  }
+}
+
+@layer utilities {
+  /* Custom utility classes */
+  .text-jaba-gold {
+    color: hsl(var(--jaba-gold));
+  }
+  
+  .bg-jaba-gold {
+    background-color: hsl(var(--jaba-gold));
+  }
+  
+  .border-jaba-gold {
+    border-color: hsl(var(--jaba-gold));
+  }
+  
+  .hover\:bg-jaba-gold-dark:hover {
+    background-color: hsl(var(--jaba-gold-hover));
+  }
+  
+  .text-jaba-red {
+    color: hsl(var(--jaba-red));
+  }
+  
+  .bg-jaba-red {
+    background-color: hsl(var(--jaba-red));
+  }
+  
+  .text-jaba-silver {
+    color: hsl(var(--jaba-silver));
   }
 }
 

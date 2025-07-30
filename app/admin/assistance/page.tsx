@@ -1,18 +1,28 @@
 import { Button } from "@/components/ui/button"
 import { getAssistanceRequests } from "@/services/assistanceService"
-import { AdminAssistanceTable } from "@/components/admin/AdminAssistanceTable"
+import AdminAssistanceTable from "@/components/admin/AdminAssistanceTable"
 import { FileDown, Search, Filter } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic'
+
 export default async function AdminAssistancePage() {
-  const assistanceRequests = await getAssistanceRequests()
+  let assistanceRequests: any[] = []
+  
+  try {
+    assistanceRequests = await getAssistanceRequests() || []
+  } catch (error) {
+    console.error("Error fetching assistance requests:", error)
+    assistanceRequests = []
+  }
 
   // Calculate statistics
   const totalRequests = assistanceRequests.length
   const pendingRequests = assistanceRequests.filter((r) => r.status === "pending").length
-  const dispatchedRequests = assistanceRequests.filter((r) => r.status === "dispatched").length
+  const acceptedRequests = assistanceRequests.filter((r) => r.status === "accepted" || r.status === "en_route" || r.status === "on_site").length
   const completedRequests = assistanceRequests.filter((r) => r.status === "completed").length
 
   return (
@@ -44,8 +54,8 @@ export default async function AdminAssistancePage() {
         </Card>
         <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border-amber-200 dark:border-amber-800">
           <CardHeader className="pb-2">
-            <CardDescription>Dispatched</CardDescription>
-            <CardTitle className="text-2xl">{dispatchedRequests}</CardTitle>
+            <CardDescription>In Progress</CardDescription>
+            <CardTitle className="text-2xl">{acceptedRequests}</CardTitle>
           </CardHeader>
         </Card>
         <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
@@ -60,7 +70,7 @@ export default async function AdminAssistancePage() {
         <TabsList className="grid w-full grid-cols-4 max-w-md">
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="dispatched">Dispatched</TabsTrigger>
+          <TabsTrigger value="in-progress">In Progress</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
 
@@ -83,7 +93,6 @@ export default async function AdminAssistancePage() {
           </div>
         </TabsContent>
 
-        {/* Other tab contents would be similar but with filtered data */}
         <TabsContent value="pending" className="mt-6">
           <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -103,7 +112,24 @@ export default async function AdminAssistancePage() {
           </div>
         </TabsContent>
 
-        {/* Similar content for other tabs */}
+        <TabsContent value="completed" className="mt-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                <div className="relative w-full sm:w-64">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Search requests..." className="pl-8" />
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="flex items-center gap-1">
+                    <Filter className="h-4 w-4" /> Filter
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <AdminAssistanceTable assistanceRequests={assistanceRequests.filter((r) => r.status === "completed")} />
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   )

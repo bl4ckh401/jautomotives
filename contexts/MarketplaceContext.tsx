@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useCallback, useEffect } from "react"
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { 
@@ -96,6 +96,13 @@ export interface VehicleListing {
   expiresAt?: any // Firestore timestamp
   views?: number
   favorites?: number
+
+  dealer: {
+    name: string
+    image?: string
+    verified?: boolean
+  }
+
 }
 
 export interface ListingFilters {
@@ -114,6 +121,7 @@ export interface ListingFilters {
   sortBy?: "newest" | "price-low" | "price-high" | "year-new" | "year-old" | "mileage-low"
   userId?: string
   status?: string
+  featured?: boolean
 }
 
 interface MarketplaceContextType {
@@ -146,11 +154,13 @@ const MarketplaceContext = createContext<MarketplaceContextType | undefined>(und
 export function MarketplaceProvider({ children }: { children: React.ReactNode }) {
   const [listings, setListings] = useState<VehicleListing[]>([])
   const [myListings, setMyListings] = useState<VehicleListing[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false) // Start as false, not true
   const [error, setError] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
-  const refreshInterval = 5 * 60 * 1000 // 5 minutes
+  const [isInitialized, setIsInitialized] = useState(false) // Track initialization
+  const refreshInterval = 10 * 60 * 1000 // 10 minutes - less frequent
   const [favorites, setFavorites] = useState<string[]>([])
+  const isLoadingRef = useRef(false) // Use ref to prevent dependency cycles
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
@@ -176,12 +186,30 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     }
   }, [])
 
-  // Set up polling
+  // Simple initialization - run once on mount
   useEffect(() => {
-    refreshData()
-    const interval = setInterval(refreshData, refreshInterval)
+    if (!isInitialized) {
+      console.log("Initial data load - one time only")
+      setIsInitialized(true)
+      refreshData()
+    }
+  }, [isInitialized]) // Remove refreshData from dependencies
+  
+  // Separate effect for background refresh
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date().getTime()
+      const lastRefreshTime = lastRefresh.getTime()
+      
+      // Only refresh if data is older than refresh interval and we have initialized
+      if (isInitialized && now - lastRefreshTime > refreshInterval) {
+        console.log("Background refresh triggered - data is stale")
+        refreshData()
+      }
+    }, refreshInterval)
+    
     return () => clearInterval(interval)
-  }, [refreshData])
+  }, [isInitialized, lastRefresh, refreshInterval]) // Remove refreshData from dependencies
 
   // Create a new vehicle listing
   const createListing = async (
@@ -359,7 +387,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   }
   
   // Modified getListing function with cache validation
-  const getListing = async (listingId: string): Promise<VehicleListing> => {
+  const getListing = useCallback(async (listingId: string): Promise<VehicleListing> => {
     try {
       // Check if listing exists in cache and is fresh
       const cachedListing = listings.find(l => l.id === listingId)
@@ -385,29 +413,43 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     } catch (error: any) {
       throw error
     }
-  }
+  }, [listings, lastRefresh, refreshInterval])
   
-  // Modified getListings function with cache validation
-  const getListings = async (
+  // Modified getListings function with improved caching
+  const getListings = useCallback(async (
     filters?: ListingFilters, 
     itemsPerPage: number = 12, 
     lastVisible: any = null
   ): Promise<{ listings: VehicleListing[], lastVisible: any }> => {
-    setLoading(true)
     try {
-      // Check if cache is fresh and we have no filters
+      // For simple cases (no filters, no pagination), use cache if fresh
       const isCacheFresh = lastRefresh && (new Date().getTime() - lastRefresh.getTime() < refreshInterval)
-      const cachedListings = listings || []
       
-      if (isCacheFresh && !filters && !lastVisible && cachedListings.length > 0) {
+      if (isCacheFresh && !filters && !lastVisible && listings.length > 0) {
+        console.log("Using cached data, no Firebase call needed")
         return {
-          listings: cachedListings.slice(0, itemsPerPage),
-          lastVisible: cachedListings[itemsPerPage - 1]
+          listings: listings.slice(0, itemsPerPage),
+          lastVisible: listings[itemsPerPage - 1] || null
         }
       }
 
+      // Prevent multiple simultaneous calls
+      if (isLoadingRef.current) {
+        console.log("Already loading, skipping duplicate call")
+        return { listings: [], lastVisible: null }
+      }
+
+      console.log("Fetching from Firebase...")
+      isLoadingRef.current = true
+      setLoading(true)
+
       let listingsQuery = collection(db, "vehicleListings")
-      let queryConstraints: any[] = [where("status", "==", "active")]
+      let queryConstraints: any[] = []
+      
+      // Default filter - only active listings
+      if (!filters?.status) {
+        queryConstraints.push(where("status", "==", "active"))
+      }
       
       // Apply filters if provided
       if (filters) {
@@ -430,13 +472,13 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
         if (filters.status) {
           queryConstraints.push(where("status", "==", filters.status))
         }
-        
-        // Note: For advanced filtering (price ranges, year ranges, multiple field queries),
-        // we would need to use composite indexes or implement client-side filtering
-        // after fetching a wider result set
+
+        if (filters.featured !== undefined) {
+          queryConstraints.push(where("featured", "==", filters.featured))
+        }
       }
       
-      // Add sort order based on filters
+      // Add sort order
       let sortField = "createdAt"
       let sortDirection: "asc" | "desc" = "desc"
       
@@ -458,64 +500,65 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
             sortField = "year"
             sortDirection = "asc"
             break
-          case "mileage-low":
-            sortField = "mileage"
-            sortDirection = "asc"
-            break
           default:
-            // Default sort by newest
             sortField = "createdAt"
             sortDirection = "desc"
         }
       }
       
       queryConstraints.push(orderBy(sortField, sortDirection))
+      queryConstraints.push(limit(itemsPerPage))
       
-      // Create the query
-      const q = query(listingsQuery, ...queryConstraints)
-      
-      // If pagination is used (lastVisible is provided)
-      let paginatedQuery = q
       if (lastVisible) {
-        paginatedQuery = query(q, startAfter(lastVisible), limit(itemsPerPage))
-      } else {
-        paginatedQuery = query(q, limit(itemsPerPage))
+        queryConstraints.push(startAfter(lastVisible))
       }
       
-      // Execute the query
-      const querySnapshot = await getDocs(paginatedQuery)
+      // Create and execute the query
+      const q = query(listingsQuery, ...queryConstraints)
+      const querySnapshot = await getDocs(q)
       
       // Get the last visible document for pagination
       const lastVisibleDoc = querySnapshot.docs[querySnapshot.docs.length - 1]
       
       // Map the documents to listings
-      const listingQuery = querySnapshot.docs.map(doc => ({
+      const fetchedListings = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       } as VehicleListing))
 
-      setListings([...listings, ...listingQuery])
+      // Update cache only for unfiltered requests
+      if (!filters && !lastVisible) {
+        setListings(fetchedListings)
+        setLastRefresh(new Date())
+      }
       
-      return { listings, lastVisible: lastVisibleDoc }
+      console.log(`Fetched ${fetchedListings.length} listings from Firebase`)
+      
+      return { 
+        listings: fetchedListings, 
+        lastVisible: lastVisibleDoc || null 
+      }
     } catch (error: any) {
+      console.error("Error fetching listings:", error)
       setError(error.message)
       throw error
     } finally {
+      isLoadingRef.current = false
       setLoading(false)
     }
-  }
+  }, [listings, lastRefresh, refreshInterval]) // Remove loading from dependencies
   
   // Get listings created by the current user
-  const getMyListings = async (): Promise<VehicleListing[]> => {
+  const getMyListings = useCallback(async (): Promise<VehicleListing[]> => {
     if (!user) {
       return []
     }
     
     return fetchMyListings()
-  }
+  }, [user])
   
   // Helper to fetch user's listings and update state
-  const fetchMyListings = async (): Promise<VehicleListing[]> => {
+  const fetchMyListings = useCallback(async (): Promise<VehicleListing[]> => {
     if (!user) {
       return []
     }
@@ -542,10 +585,10 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
   
   // Mark a listing as sold
-  const markAsSold = async (listingId: string): Promise<void> => {
+  const markAsSold = useCallback(async (listingId: string): Promise<void> => {
     if (!user) {
       throw new Error("You must be logged in to update a listing")
     }
@@ -589,7 +632,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     } finally {
       setLoading(false)
     }
-  }
+  }, [user, fetchMyListings, toast])
   
   // Toggle favorite status for a listing
   const toggleFavorite = async (listingId: string): Promise<void> => {

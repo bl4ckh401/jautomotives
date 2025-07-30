@@ -10,14 +10,14 @@ import ContactForm from "@/components/ContactForm"
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#1a1f24] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
       <div
         className="relative h-80 bg-cover bg-center"
         style={{ backgroundImage: "url('/placeholder.svg?height=400&width=800')" }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white text-center">Get in Touch</h1>
+        <div className="absolute inset-0 bg-night/50 flex items-center justify-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-alice_blue text-center">Get in Touch</h1>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export default function ContactPage() {
 
         {/* Map Section */}
         <div className="mt-12">
-          <h2 className="text-2xl font-semibold mb-4 text-white">Find Us</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">Find Us</h2>
           <div className="aspect-w-16 aspect-h-9">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.818391087547!2d36.81963021475803!3d-1.2841924359736388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d22f28f0c7%3A0x5f7f3c0a6f2a0f0!2sNairobi%2C%20Kenya!5e0!3m2!1sen!2sus!4v1625581243076!5m2!1sen!2sus"

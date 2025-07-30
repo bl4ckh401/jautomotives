@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function InsurancePage() {
   return (
-    <div className="min-h-screen bg-[#1a1f24] text-white">
+    <div className="min-h-screen bg-background text-primary">
       <InsuranceHero />
       <div className="max-w-7xl mx-auto px-4 py-16">
         <InsuranceCoverage />

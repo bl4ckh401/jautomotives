@@ -171,13 +171,13 @@ export default function SellerDashboard() {
             <CardDescription>Active Listings</CardDescription>
             <CardTitle className="text-3xl flex items-center justify-between">
               {activeListings}
-              <Car className="h-6 w-6 text-blue-500" />
+              <Car className="h-6 w-6 text-primary" />
             </CardTitle>
           </CardHeader>
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">Active</span> listings
+              <ArrowUpRight className="h-3 w-3 mr-1 text-pistachio" />
+              <span className="text-pistachio font-medium">Active</span> listings
             </p>
           </CardFooter>
         </Card>
@@ -187,13 +187,13 @@ export default function SellerDashboard() {
             <CardDescription>Total Sales</CardDescription>
             <CardTitle className="text-3xl flex items-center justify-between">
               ${(totalSales / 1000).toFixed(0)}k
-              <DollarSign className="h-6 w-6 text-green-500" />
+              <DollarSign className="h-6 w-6 text-pistachio" />
             </CardTitle>
           </CardHeader>
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">{sales.length}</span> completed sales
+              <ArrowUpRight className="h-3 w-3 mr-1 text-pistachio" />
+              <span className="text-pistachio font-medium">{sales.length}</span> completed sales
             </p>
           </CardFooter>
         </Card>
@@ -208,8 +208,8 @@ export default function SellerDashboard() {
           </CardHeader>
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">All</span> listings combined
+              <ArrowUpRight className="h-3 w-3 mr-1 text-pistachio" />
+              <span className="text-pistachio font-medium">All</span> listings combined
             </p>
           </CardFooter>
         </Card>
@@ -224,8 +224,8 @@ export default function SellerDashboard() {
           </CardHeader>
           <CardFooter>
             <p className="text-xs text-muted-foreground flex items-center">
-              <ArrowUpRight className="h-3 w-3 mr-1 text-green-500" />
-              <span className="text-green-500 font-medium">All</span> inquiries received
+              <ArrowUpRight className="h-3 w-3 mr-1 text-pistachio" />
+              <span className="text-pistachio font-medium">All</span> inquiries received
             </p>
           </CardFooter>
         </Card>
@@ -336,9 +336,9 @@ export default function SellerDashboard() {
                               variant="outline"
                               className={
                                 listing.status === "active"
-                                  ? "bg-green-100 text-green-800 hover:bg-green-100 border-green-200"
+                                  ? "bg-pistachio/20 text-pistachio hover:bg-pistachio/30 border-pistachio/30"
                                   : listing.status === "sold"
-                                    ? "bg-blue-100 text-blue-800 hover:bg-blue-100 border-blue-200"
+                                    ? "bg-primary/20 text-primary hover:bg-primary/30 border-primary/30"
                                     : "bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200"
                               }
                             >

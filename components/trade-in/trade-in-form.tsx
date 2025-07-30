@@ -51,7 +51,7 @@ export function TradeInForm() {
   }
 
   return (
-    <Card className="bg-[#1a1f24]">
+    <Card className="bg-background">
       <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

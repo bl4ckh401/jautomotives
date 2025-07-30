@@ -156,7 +156,7 @@ export default function LoanCalculator() {
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-6">
-                <div className="bg-[#1a1f24] p-6 rounded-lg">
+                <div className="bg-background p-6 rounded-lg">
                   <div className="flex items-center mb-2">
                     <DollarSign className="h-5 w-5 text-blue-500 mr-2" />
                     <h3 className="text-lg font-semibold">Monthly Payment</h3>

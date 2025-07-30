@@ -29,25 +29,25 @@ const reviews = [
 
 export default function CustomerReviews() {
   return (
-    <section className="py-20 px-4 bg-[#1a1f24]">
+    <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">What Our Customers Say</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {reviews.map((review, index) => (
-            <div key={index} className="bg-[#1a1f24] p-6 rounded-lg">
+            <div key={index} className="bg-background p-6 rounded-lg">
               <div className="flex items-center mb-4">
                 <Avatar className="h-12 w-12 mr-4">
                   <AvatarImage src={review.avatar} alt={review.name} />
                   <AvatarFallback>{review.name[0]}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold text-white">{review.name}</h3>
+                  <h3 className="font-semibold dark:text-primary text-gray-800 dark:text-yellow-400">{review.name}</h3>
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-4 h-4 ${i < review.rating ? "text-yellow-400 fill-current" : "text-gray-400"}`}
+                        className={`w-4 h-4 ${i < review.rating ? "text-gray-800 dark:text-yellow-400 fill-current" : "text-gray-400"}`}
                       />
                     ))}
                   </div>

@@ -56,7 +56,7 @@ export default function InsuranceFAQ() {
         </p>
       </div>
 
-      <Card className="bg-[#242b33] border-gray-700">
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="text-2xl flex items-center">
             <HelpCircle className="mr-2 h-6 w-6 text-blue-500" />
@@ -77,7 +77,7 @@ export default function InsuranceFAQ() {
         </CardContent>
       </Card>
 
-      <div className="mt-12 bg-[#1a1f24] p-6 rounded-lg border border-gray-700">
+      <div className="mt-12 bg-background p-6 rounded-lg border border-gray-700">
         <h3 className="text-xl font-semibold mb-4">Insurance Glossary</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

@@ -6,6 +6,7 @@ import { Car, Calendar, Truck, Mail, PhoneCall, DollarSign } from "lucide-react"
 import { AdminMetricCard } from "@/components/admin/AdminMetricCard"
 import { AdminRecentActivity } from "@/components/admin/AdminRecentActivity"
 import { AdminChart } from "@/components/admin/AdminChart"
+import { AdminDataMigration } from "@/components/admin/AdminDataMigration"
 import { useAdmin } from "@/contexts/AdminContext"
 import type { AnalyticsMetrics, ChartDataPoint } from "@/services/analyticsService"
 import { Button } from "@/components/ui/button"
@@ -63,28 +64,33 @@ export function AdminDashboardContent() {
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <p className="text-muted-foreground">Welcome to your dashboard</p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchData}
-          disabled={refreshing}
-          className="flex items-center gap-2"
-        >
-          {refreshing ? (
-            <>
-              <span className="animate-spin">⟳</span> Refreshing...
-            </>
-          ) : (
-            <>
-              ⟳ Refresh Data
-            </>
-          )}
-        </Button>
-        <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-md text-sm flex items-center">
-          <Calendar className="h-4 w-4 mr-2" />
-          {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchData}
+            disabled={refreshing}
+            className="flex items-center gap-2"
+          >
+            {refreshing ? (
+              <>
+                <span className="animate-spin">⟳</span> Refreshing...
+              </>
+            ) : (
+              <>
+                ⟳ Refresh Data
+              </>
+            )}
+          </Button>
+          <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-md text-sm flex items-center">
+            <Calendar className="h-4 w-4 mr-2" />
+            {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+          </div>
         </div>
       </div>
+
+      {/* Data Migration Utility - Remove after migration is complete */}
+      <AdminDataMigration />
       
       {/* Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

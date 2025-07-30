@@ -56,17 +56,17 @@ export default function FeaturedVehicles() {
   }
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-black to-[#1a1f24]">
+    <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Featured Vehicles</h2>
-        <p className="text-center text-gray-400 mb-12">
+        <p className="text-center text-muted-foreground mb-12">
           Explore our handpicked selection of premium vehicles
         </p>
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, index) => (
-              <Card key={index} className="bg-[#1a1f24] overflow-hidden">
+              <Card key={index} className="bg-background overflow-hidden">
                 <Skeleton className="aspect-[4/3] w-full" />
                 <div className="p-4 space-y-2">
                   <Skeleton className="h-6 w-3/4" />
@@ -84,7 +84,7 @@ export default function FeaturedVehicles() {
         ) : featuredVehicles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredVehicles.map((vehicle) => (
-              <Card key={vehicle.id} className="bg-[#1a1f24] overflow-hidden">
+              <Card key={vehicle.id} className="bg-background overflow-hidden">
                 <div className="relative aspect-[4/3]">
                   <BadgeLabel variant="featured">FEATURED</BadgeLabel>
                   <Image 
@@ -104,13 +104,13 @@ export default function FeaturedVehicles() {
                         key={i} 
                         className={`w-4 h-4 ${
                           i < getConditionStars(vehicle.condition) 
-                            ? "text-yellow-500 fill-yellow-500" 
+                            ? "text-gray-800 dark:text-yellow-500 fill-gray-800 dark:fill-yellow-500" 
                             : "text-gray-400"
                         }`} 
                       />
                     ))}
                   </div>
-                  <p className="text-lg font-bold text-white mb-2">
+                  <p className="text-lg font-bold dark:text-primary mb-2 text-gray-800 dark:text-yellow-400">
                     {formatPrice(vehicle.price)}
                   </p>
                   <p className="text-sm text-gray-400 line-clamp-2">
@@ -119,7 +119,7 @@ export default function FeaturedVehicles() {
                   </p>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
-                  <Link href={`/marketplace/${vehicle.id}`} className="w-full">
+                  <Link href={`/vehicles/${vehicle.id}`} className="w-full">
                     <Button className="w-full">View Details</Button>
                   </Link>
                 </CardFooter>
@@ -130,14 +130,14 @@ export default function FeaturedVehicles() {
           <div className="text-center py-12">
             <p className="text-gray-400">No featured vehicles available at the moment.</p>
             <Link href="/marketplace">
-              <Button variant="link" className="mt-4">View All Vehicles</Button>
+              <Button variant="link" className="mt-4 text-gray-800 dark:text-yellow-400">View All Vehicles</Button>
             </Link>
           </div>
         )}
 
         <div className="flex justify-center mt-10">
           <Link href="/marketplace">
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black">
+            <Button variant="outline" className="border-white dark:text-primary dark:hover:text-gray-800 hover:bg-white hover:text-yellow-400">
               Browse All Vehicles
             </Button>
           </Link>

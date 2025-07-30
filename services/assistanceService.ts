@@ -28,11 +28,15 @@ export interface AssistanceRequest {
   estimatedArrivalTime?: Date
 }
 
-export const assistanceCollection = collection(db, "assistanceRequests")
+export const assistanceCollection = db ? collection(db, "assistanceRequests") : null
 
 export const createAssistanceRequest = async (
   request: Omit<AssistanceRequest, "id" | "status" | "createdAt" | "priority">,
 ): Promise<string> => {
+  if (!assistanceCollection) {
+    throw new Error("Firebase not initialized")
+  }
+  
   // Calculate priority based on issue type and time of day
   const priority = calculatePriority(request.issueType)
   
@@ -53,6 +57,10 @@ export const updateAssistanceRequest = async (
   id: string,
   updates: Partial<AssistanceRequest>
 ): Promise<void> => {
+  if (!assistanceCollection) {
+    throw new Error("Firebase not initialized")
+  }
+  
   const docRef = doc(assistanceCollection, id)
   await updateDoc(docRef, {
     ...updates,
@@ -64,25 +72,43 @@ export const updateAssistanceRequest = async (
 export const getAssistanceRequests = async (
   filters?: Partial<AssistanceRequest>
 ): Promise<AssistanceRequest[]> => {
-  let q = query(assistanceCollection, orderBy("createdAt", "desc"))
+  try {
+    // During build time or when Firebase is not available, return empty array
+    if (!assistanceCollection || !db) {
+      console.warn("Firebase not initialized, returning empty array")
+      return []
+    }
+    
+    let q = query(assistanceCollection, orderBy("createdAt", "desc"))
 
-  if (filters) {
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined) {
-        q = query(q, where(key, "==", value))
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined) {
+          q = query(q, where(key, "==", value))
+        }
+      })
+    }
+
+    const querySnapshot = await getDocs(q)
+    const results = querySnapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        ...data,
+        // Safely convert Firestore timestamps to dates
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
+        acceptedAt: data.acceptedAt?.toDate ? data.acceptedAt.toDate() : undefined,
+        completedAt: data.completedAt?.toDate ? data.completedAt.toDate() : undefined,
+        estimatedArrivalTime: data.estimatedArrivalTime?.toDate ? data.estimatedArrivalTime.toDate() : undefined
       }
-    })
+    }) as AssistanceRequest[]
+    
+    return results
+  } catch (error) {
+    console.error("Error fetching assistance requests:", error)
+    // Return empty array during build time or when Firebase is not available
+    return []
   }
-
-  const querySnapshot = await getDocs(q)
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-    createdAt: doc.data().createdAt?.toDate(),
-    acceptedAt: doc.data().acceptedAt?.toDate(),
-    completedAt: doc.data().completedAt?.toDate(),
-    estimatedArrivalTime: doc.data().estimatedArrivalTime?.toDate()
-  })) as AssistanceRequest[]
 }
 
 function calculatePriority(

@@ -41,7 +41,7 @@ export default function WalletIntegration() {
         {isConnected ? (
           <div>
             <p className="mb-2">
-              Status: <span className="text-green-500 font-semibold">Connected</span>
+              Status: <span className="text-pistachio font-semibold">Connected</span>
             </p>
             <p>
               Balance: <span className="font-semibold">{balance} BTC</span>
@@ -49,7 +49,7 @@ export default function WalletIntegration() {
           </div>
         ) : (
           <p>
-            Status: <span className="text-red-500 font-semibold">Not Connected</span>
+            Status: <span className="text-cherry_blossom_pink font-semibold">Not Connected</span>
           </p>
         )}
       </CardContent>

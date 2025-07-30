@@ -11,7 +11,7 @@ export default function InsuranceOptions() {
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">Choose the plan that best fits your needs and budget.</p>
       </div>
 
-      <Card className="bg-[#242b33] border-gray-700 overflow-hidden">
+      <Card className="bg-card border-border overflow-hidden">
         <CardHeader>
           <CardTitle className="text-2xl">Insurance Plans Comparison</CardTitle>
         </CardHeader>
@@ -19,7 +19,7 @@ export default function InsuranceOptions() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-[#1a1f24]">
+                <TableRow className="bg-background">
                   <TableHead className="w-[250px]">Coverage</TableHead>
                   <TableHead>Basic Plan</TableHead>
                   <TableHead>Standard Plan</TableHead>

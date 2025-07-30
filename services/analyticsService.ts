@@ -105,14 +105,14 @@ export const getAnalyticsMetrics = async (days = 30): Promise<AnalyticsMetrics> 
     metrics.totalUsers = usersSnapshot.size
 
     // Fetch listings data
-    const listingsRef = collection(db, "listings")
+    const listingsRef = collection(db, "vehicleListings")
     const listingsQuery = query(listingsRef, where("createdAt", ">=", startDate))
     const listingsSnapshot = await getDocs(listingsQuery)
     
     let totalPrice = 0
     listingsSnapshot.docs.forEach(doc => {
       const data = doc.data()
-      totalPrice += data.price || 0
+      totalPrice += Number(data.price) || 0
       if (data.status === "active") metrics.activeListings++
       if (data.status === "sold") metrics.soldListings++
     })
@@ -185,7 +185,7 @@ export const getChartData = async (months = 6): Promise<ChartDataPoint[]> => {
   const startDate = subMonths(endDate, months)
   
   try {
-    const listingsRef = collection(db, "listings")
+    const listingsRef = collection(db, "vehicleListings")
     const bookingsRef = collection(db, "bookings")
     const usersRef = collection(db, "users")
 

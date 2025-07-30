@@ -42,35 +42,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { AssistanceRequest, updateAssistanceRequest } from "@/services/assistanceService"
 import { format } from "date-fns"
 
-interface LocalAssistanceRequest {
-  id: string
-  customerName: string
-  customerPhone: string
-  customerAvatar?: string
-  serviceType: string
-  location: string
-  status: "pending" | "dispatched" | "completed"
-  createdAt: string
-  dispatchedAt?: string
-  completedAt?: string
-  assignedTo?: string
-}
-
 interface AdminAssistanceTableProps {
-  assistanceRequests: LocalAssistanceRequest[]
-  onStatusUpdate: () => void
+  assistanceRequests: AssistanceRequest[]
 }
 
-export default function AdminAssistanceTable({
+export function AdminAssistanceTable({
   assistanceRequests,
-  onStatusUpdate,
 }: AdminAssistanceTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const handleStatusChange = async (requestId: string, newStatus: string) => {
     await updateAssistanceRequest(requestId, { status: newStatus as AssistanceRequest["status"] })
-    onStatusUpdate()
+    // Note: onStatusUpdate callback removed since this is now a client component
   }
 
   const getPriorityColor = (priority: string) => {
@@ -107,29 +91,31 @@ export default function AdminAssistanceTable({
     }
   }
 
-  const columns: ColumnDef<LocalAssistanceRequest>[] = [
+  const columns: ColumnDef<AssistanceRequest>[] = [
     {
       accessorKey: "customer",
       header: "Customer",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={row.original.customerAvatar} alt={row.original.customerName} />
-            <AvatarFallback>{row.original.customerName.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{row.original.customerName}</div>
+            <div className="font-medium">{row.original.name}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Phone className="h-3 w-3 mr-1" />
-              <span>{row.original.customerPhone}</span>
+              <span>{row.original.phone}</span>
             </div>
           </div>
         </div>
       ),
     },
     {
-      accessorKey: "serviceType",
+      accessorKey: "issueType",
       header: "Service Type",
+      cell: ({ row }) => (
+        <span className="capitalize">{row.original.issueType.replace('_', ' ')}</span>
+      ),
     },
     {
       accessorKey: "location",
@@ -137,7 +123,7 @@ export default function AdminAssistanceTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <MapPin className="h-3 w-3 text-muted-foreground" />
-          <span>{row.original.location}</span>
+          <span>{row.original.location.address}</span>
         </div>
       ),
     },
@@ -152,17 +138,23 @@ export default function AdminAssistanceTable({
           case "pending":
             badgeClass = "bg-red-100 text-red-800 hover:bg-red-100 border-red-200"
             break
-          case "dispatched":
+          case "accepted":
+          case "en_route":
             badgeClass = "bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200"
             break
           case "completed":
             badgeClass = "bg-green-100 text-green-800 hover:bg-green-100 border-green-200"
             break
+          case "cancelled":
+            badgeClass = "bg-gray-100 text-gray-800 hover:bg-gray-100 border-gray-200"
+            break
+          default:
+            badgeClass = "bg-blue-100 text-blue-800 hover:bg-blue-100 border-blue-200"
         }
 
         return (
           <Badge variant="outline" className={badgeClass}>
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+            {status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
           </Badge>
         )
       },
@@ -174,11 +166,11 @@ export default function AdminAssistanceTable({
         <div className="flex flex-col">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1 text-muted-foreground" />
-            <span>{new Date(row.original.createdAt).toLocaleDateString()}</span>
+            <span>{row.original.createdAt ? new Date(row.original.createdAt).toLocaleDateString() : 'N/A'}</span>
           </div>
           <div className="flex items-center text-xs text-muted-foreground">
             <Clock className="h-3 w-3 mr-1" />
-            <span>{new Date(row.original.createdAt).toLocaleTimeString()}</span>
+            <span>{row.original.createdAt ? new Date(row.original.createdAt).toLocaleTimeString() : 'N/A'}</span>
           </div>
         </div>
       ),
@@ -215,12 +207,18 @@ export default function AdminAssistanceTable({
               <Eye className="h-4 w-4" /> View Details
             </DropdownMenuItem>
             {row.original.status === "pending" && (
-              <DropdownMenuItem className="flex items-center gap-2">
-                <Truck className="h-4 w-4" /> Dispatch
+              <DropdownMenuItem 
+                className="flex items-center gap-2"
+                onClick={() => handleStatusChange(row.original.id!, "accepted")}
+              >
+                <Truck className="h-4 w-4" /> Accept Request
               </DropdownMenuItem>
             )}
-            {row.original.status === "dispatched" && (
-              <DropdownMenuItem className="flex items-center gap-2">
+            {(row.original.status === "accepted" || row.original.status === "en_route") && (
+              <DropdownMenuItem 
+                className="flex items-center gap-2"
+                onClick={() => handleStatusChange(row.original.id!, "completed")}
+              >
                 <Check className="h-4 w-4" /> Mark as Completed
               </DropdownMenuItem>
             )}
@@ -305,4 +303,7 @@ export default function AdminAssistanceTable({
     </div>
   )
 }
+
+// Default export for better compatibility
+export default AdminAssistanceTable
 
