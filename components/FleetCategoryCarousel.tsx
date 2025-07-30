@@ -106,7 +106,7 @@ export default function FleetCategoryCarousel({
       </div>
       
       {/* Image counter */}
-      <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs py-1 px-2 rounded-full z-10">
+      <div className="absolute bottom-2 right-2 bg-black/50 text-primary text-xs py-1 px-2 rounded-full z-10">
         {currentIndex + 1}/{images.length}
       </div>
     </div>

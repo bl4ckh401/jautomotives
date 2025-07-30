@@ -73,7 +73,7 @@ export default function InsuranceCalculator() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <Card className="bg-[#242b33] border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center">
                 <Calculator className="mr-2 h-6 w-6 text-blue-500" />
@@ -115,7 +115,7 @@ export default function InsuranceCalculator() {
                 <div>
                   <label className="text-sm font-medium block mb-2">Coverage Type</label>
                   <Select value={coverageType} onValueChange={setCoverageType}>
-                    <SelectTrigger className="bg-[#1a1f24] border-gray-700">
+                    <SelectTrigger className="bg-background border-gray-700">
                       <SelectValue placeholder="Select coverage type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -146,7 +146,7 @@ export default function InsuranceCalculator() {
                 <div>
                   <label className="text-sm font-medium block mb-2">Driving Record</label>
                   <Select value={drivingRecord} onValueChange={setDrivingRecord}>
-                    <SelectTrigger className="bg-[#1a1f24] border-gray-700">
+                    <SelectTrigger className="bg-background border-gray-700">
                       <SelectValue placeholder="Select driving record" />
                     </SelectTrigger>
                     <SelectContent>
@@ -166,13 +166,13 @@ export default function InsuranceCalculator() {
         </div>
 
         <div>
-          <Card className="bg-[#242b33] border-gray-700 h-full">
+          <Card className="bg-card border-border h-full">
             <CardHeader>
               <CardTitle className="text-2xl">Estimated Premium</CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-6">
-                <div className="bg-[#1a1f24] p-6 rounded-lg">
+                <div className="bg-background p-6 rounded-lg">
                   <div className="flex items-center mb-2">
                     <Shield className="h-5 w-5 text-blue-500 mr-2" />
                     <h3 className="text-lg font-semibold">Monthly Premium</h3>

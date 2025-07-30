@@ -43,7 +43,7 @@ export default function InsuranceProcess() {
         />
       </div>
 
-      <div className="mt-12 bg-[#1a1f24] p-8 rounded-lg border border-gray-700">
+      <div className="mt-12 bg-background p-8 rounded-lg border border-gray-700">
         <h3 className="text-2xl font-bold mb-4 text-center">Required Documents</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-[#242b33] p-6 rounded-lg">
@@ -120,7 +120,7 @@ interface ProcessCardProps {
 
 function ProcessCard({ step, icon, title, description }: ProcessCardProps) {
   return (
-    <Card className="bg-[#242b33] border-gray-700 hover:border-blue-500 transition-all duration-300 hover:shadow-blue-500/20 hover:shadow-lg overflow-hidden h-full">
+    <Card className="bg-card border-border hover:border-primary transition-all duration-300 hover:shadow-primary/20 hover:shadow-lg overflow-hidden h-full">
       <CardContent className="p-8 flex flex-col items-center text-center">
         <div className="w-12 h-12 rounded-full bg-blue-600/20 flex items-center justify-center mb-4">{icon}</div>
         <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-lg font-bold mb-4">

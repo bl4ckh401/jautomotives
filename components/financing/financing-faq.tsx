@@ -77,7 +77,7 @@ export default function FinancingFAQ() {
         </CardContent>
       </Card>
 
-      <div className="mt-12 bg-[#1a1f24] p-6 rounded-lg border border-gray-700">
+      <div className="mt-12 bg-background p-6 rounded-lg border border-gray-700">
         <h3 className="text-xl font-semibold mb-4">Financing Glossary</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

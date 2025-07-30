@@ -21,7 +21,7 @@ export default function FinancingComparison() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-[#1a1f24]">
+                <TableRow className="bg-background">
                   <TableHead className="w-[250px]">Feature</TableHead>
                   <TableHead>Traditional Auto Loan</TableHead>
                   <TableHead>Cryptocurrency Financing</TableHead>

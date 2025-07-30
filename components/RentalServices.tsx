@@ -39,7 +39,7 @@ export default function RentalServices() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">Rent A Car At An Affordable Price</h2>
+          <h2 className="text-4xl font-bold text-primary mb-4">Rent A Car At An Affordable Price</h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
             From wedding cars to corporate rentals, we offer a wide range of vehicles to suit your needs
           </p>
@@ -49,9 +49,9 @@ export default function RentalServices() {
           {services.map((service, index) => (
             <div key={index} className="bg-white/10 backdrop-blur-sm p-6 rounded-lg hover:bg-white/20 transition-all">
               <div className="text-red-500 mb-4">{service.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-2">{service.title}</h3>
+              <h3 className="text-xl font-semibold text-primary mb-2">{service.title}</h3>
               <p className="text-gray-300 mb-4">{service.description}</p>
-              <Button variant="outline" className="w-full text-white border-red-500 hover:bg-red-500">
+              <Button variant="outline" className="w-full text-primary border-red-500 hover:bg-red-500">
                 Learn More
               </Button>
             </div>
@@ -59,7 +59,7 @@ export default function RentalServices() {
         </div>
 
         <div className="text-center">
-          <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white">
+          <Button size="lg" className="bg-red-600 hover:bg-red-700 text-primary">
             Book Now
           </Button>
         </div>

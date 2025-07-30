@@ -148,13 +148,13 @@ export default function VehiclePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white w-full"
+              className="bg-emerald-600 hover:bg-emerald-700 text-primary w-full"
               onClick={() => window.open(`https://wa.me/${vehicle?.contactPhone?.replace(/\D/g, '')}`, "_blank")}
             >
               Enquire via whatsapp
             </Button>
             <Button
-              className="bg-black hover:bg-gray-900 text-white w-full"
+              className="bg-black hover:bg-gray-900 text-primary w-full"
               onClick={() => window.open(`tel:${vehicle?.contactPhone}`, "_blank")}
             >
               <Phone className="mr-2 h-4 w-4" />

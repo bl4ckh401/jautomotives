@@ -42,13 +42,13 @@ export function VehicleGallery({ images }: VehicleGalleryProps) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-night/20 to-transparent" />
 
         <div className="absolute inset-0 flex items-center justify-between p-4">
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full bg-black/50 hover:bg-black/70"
+            className="rounded-full bg-night/50 hover:bg-night/70"
             onClick={previousImage}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -56,7 +56,7 @@ export function VehicleGallery({ images }: VehicleGalleryProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full bg-black/50 hover:bg-black/70"
+            className="rounded-full bg-night/50 hover:bg-night/70"
             onClick={nextImage}
           >
             <ChevronRight className="h-6 w-6" />
@@ -66,7 +66,7 @@ export function VehicleGallery({ images }: VehicleGalleryProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-4 right-4 rounded-full bg-black/50 hover:bg-black/70"
+          className="absolute top-4 right-4 rounded-full bg-night/50 hover:bg-night/70"
           onClick={toggleFullscreen}
         >
           <Expand className="h-4 w-4" />

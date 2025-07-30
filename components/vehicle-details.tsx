@@ -43,7 +43,7 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
                     <Star
                       key={i}
                       className={`h-4 w-4 ${
-                        i < conditionScore ? "text-yellow-400 fill-current" : "text-gray-300"
+                        i < conditionScore ? "text-flax fill-current" : "text-muted-foreground"
                       }`}
                     />
                   ))}
@@ -58,7 +58,7 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
                   return (
                     <div key={key} className="flex justify-between border-b border-gray-700 pb-2">
                       <div className="font-medium capitalize">{key.replace(/_/g, " ")}</div>
-                      <div className="text-gray-400">{value}</div>
+                      <div className="text-muted-foreground">{value}</div>
                     </div>
                   )
                 })}

@@ -25,16 +25,19 @@ export default function WhyChooseUs() {
   ]
 
   return (
-    <section className="py-20 px-4 bg-[#1a1f24]">
+    <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Why Choose JABA Automobiles?</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">Why Choose JABA Automobiles?</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="text-center p-6 rounded-lg bg-[#242b33] hover:bg-[#2a3138] transition-colors">
-              <div className="flex justify-center text-white">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
+            <div 
+              key={index} 
+              className="text-center p-6 rounded-lg bg-card hover:bg-accent/20 transition-colors"
+            >
+              <div className="flex justify-center text-primary">{feature.icon}</div>
+              <h3 className="text-xl font-semibold mb-2 text-card-foreground">{feature.title}</h3>
+              <p className="text-muted-foreground">{feature.description}</p>
             </div>
           ))}
         </div>
