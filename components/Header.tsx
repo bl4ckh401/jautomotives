@@ -53,17 +53,21 @@ export default function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? "bg-[#1a1f24]/95 backdrop-blur-md shadow-md py-2" : "bg-[#1a1f24]/80 backdrop-blur-sm py-4",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-effect",
+        scrolled 
+          ? "bg-background/98 backdrop-blur-lg shadow-lg border-b border-border/60 py-2" 
+          : "bg-background/85 backdrop-blur-md border-b border-border/30 py-4"
       )}
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white flex items-center">
-            <Car className="mr-2 h-6 w-6" />
-            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              JABA Automobiles
+          <Link href="/" className="text-2xl font-bold flex items-center group">
+            <div className="mr-3 p-2 rounded-xl bg-gradient-to-br from-jaba-gold/20 to-jaba-gold/10 group-hover:from-jaba-gold/30 group-hover:to-jaba-gold/20 transition-all duration-200">
+              <Car className="h-6 w-6 text-jaba-gold transition-colors group-hover:text-jaba-gold-dark" />
+            </div>
+            <span className="bg-gradient-to-r from-jaba-gold via-jaba-gold-light to-jaba-gold bg-clip-text text-transparent font-extrabold tracking-tight text-3xl group-hover:scale-105 transition-transform duration-200">
+              JABA Motors
             </span>
           </Link>
 
@@ -71,7 +75,7 @@ export default function Header() {
           <nav className="hidden lg:flex items-center space-x-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center px-3 py-2 text-sm text-white/90 hover:text-white rounded-md hover:bg-white/10 transition-colors">
+                <button className="flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium">
                   <Car className="w-4 h-4 mr-1" />
                   <span>Marketplace</span>
                   <ChevronDown className="ml-1 h-4 w-4 opacity-70" />
@@ -88,9 +92,9 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center px-3 py-2 text-sm text-white/90 hover:text-white rounded-md hover:bg-white/10 transition-colors">
+                <button className="flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium">
                   <Calendar className="w-4 h-4 mr-1" />
                   <span>Rentals</span>
                   <ChevronDown className="ml-1 h-4 w-4 opacity-70" />
@@ -115,7 +119,7 @@ export default function Header() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center px-3 py-2 text-sm text-white/90 hover:text-white rounded-md hover:bg-white/10 transition-colors">
+                <button className="flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium">
                   <PhoneCall className="w-4 h-4 mr-1" />
                   <span>Assistance</span>
                   <ChevronDown className="ml-1 h-4 w-4 opacity-70" />
@@ -151,7 +155,7 @@ export default function Header() {
             <NavLink href="/fleet">
               <Car className="w-4 h-4 mr-1" />
               <span>Fleet</span>
-            </NavLink>
+            </NavLink> */}
 
             {/* <NavLink href="/about">
               <Info className="w-4 h-4 mr-1" />
@@ -171,21 +175,23 @@ export default function Header() {
             {!user ? (
               <div className="hidden md:flex items-center space-x-2">
                 <Link href="/sign-in">
-                  <Button variant="ghost" className="text-white hover:bg-white/10">
+                  <Button variant="ghost" className="text-foreground hover:text-jaba-gold hover:bg-jaba-gold/10 font-medium">
                     Sign In
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button className="bg-white text-black hover:bg-gray-200">Sign Up</Button>
+                  <Button className="bg-jaba-gold text-background hover:bg-jaba-gold/90 font-medium shadow-lg">
+                    Sign Up
+                  </Button>
                 </Link>
               </div>
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8 border border-white/20">
+                    <Avatar className="h-8 w-8 border border-jaba-silver/20">
                       <AvatarImage src={user.photoURL || undefined} alt={user.name || "User"} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
+                      <AvatarFallback className="bg-jaba-gold text-background font-semibold">
                         {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                       </AvatarFallback>
                     </Avatar>
@@ -230,7 +236,7 @@ export default function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500">
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -240,7 +246,7 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <Button className="lg:hidden" variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
+              {isMenuOpen ? <X className="h-6 w-6 text-jaba-gold" /> : <Menu className="h-6 w-6 text-jaba-gold" />}
             </Button>
           </div>
         </div>
@@ -248,7 +254,7 @@ export default function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-[#1a1f24] border-t border-gray-800 absolute w-full">
+        <div className="lg:hidden bg-background border-t border-border absolute w-full">
           <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col space-y-4">
               <MobileNavAccordion
@@ -261,7 +267,7 @@ export default function Header() {
                 ]}
               />
 
-              <MobileNavAccordion
+              {/* <MobileNavAccordion
                 title="Car Rental Services"
                 icon={<Calendar className="w-5 h-5" />}
                 items={[
@@ -305,20 +311,20 @@ export default function Header() {
 
               <MobileNavLink href="/fleet" icon={<Car className="w-5 h-5" />}>
                 Our Fleet
-              </MobileNavLink>
+              </MobileNavLink> */}
 
               {!user ? (
                 <div className="flex flex-col space-y-2 pt-2">
                   <Link href="/sign-in">
                     <Button
                       variant="outline"
-                      className="w-full text-white border-white hover:bg-white hover:text-black"
+                      className="w-full text-primary border-foreground hover:bg-foreground hover:text-background"
                     >
                       Sign In
                     </Button>
                   </Link>
                   <Link href="/sign-up">
-                    <Button className="w-full bg-white text-black hover:bg-gray-200">Sign Up</Button>
+                    <Button className="w-full bg-alice_blue text-night hover:bg-alice_blue/80">Sign Up</Button>
                   </Link>
                 </div>
               ) : (
@@ -326,7 +332,7 @@ export default function Header() {
                   <Link href="/dashboard">
                     <Button
                       variant="outline"
-                      className="w-full text-white border-white hover:bg-white hover:text-black"
+                      className="w-full text-primary border-foreground hover:bg-foreground hover:text-background"
                     >
                       Dashboard
                     </Button>
@@ -335,7 +341,7 @@ export default function Header() {
                     <Link href="/admin">
                       <Button
                         variant="outline"
-                        className="w-full text-white border-white hover:bg-white hover:text-black"
+                        className="w-full text-primary border-foreground hover:bg-foreground hover:text-background"
                       >
                         Admin Dashboard
                       </Button>
@@ -360,7 +366,7 @@ function NavLink({ href, children, className }: { href: string; children: React.
     <Link
       href={href}
       className={cn(
-        "flex items-center px-3 py-2 text-sm text-white/90 hover:text-white rounded-md hover:bg-white/10 transition-colors",
+        "flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium",
         className,
       )}
     >
@@ -381,8 +387,8 @@ function NavDropdownItem({ href, children }: { href: string; children: React.Rea
 
 function MobileNavLink({ href, children, icon }: { href: string; children: React.ReactNode; icon?: React.ReactNode }) {
   return (
-    <Link href={href} className="flex items-center space-x-3 text-white hover:text-gray-300 py-2">
-      {icon && <span className="text-white/70">{icon}</span>}
+    <Link href={href} className="flex items-center space-x-3 text-foreground hover:text-jaba-gold py-2 transition-colors">
+      {icon && <span className="text-jaba-gold/70">{icon}</span>}
       <span>{children}</span>
     </Link>
   )
@@ -402,20 +408,20 @@ function MobileNavAccordion({
   return (
     <div>
       <button
-        className="flex items-center justify-between w-full text-white hover:text-gray-300 py-2"
+        className="flex items-center justify-between w-full text-foreground hover:text-jaba-gold py-2 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center space-x-3">
-          {icon && <span className="text-white/70">{icon}</span>}
+          {icon && <span className="text-jaba-gold/70">{icon}</span>}
           <span>{title}</span>
         </div>
         <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
-        <div className="pl-8 mt-2 space-y-2 border-l border-gray-700">
+        <div className="pl-8 mt-2 space-y-2 border-l border-border">
           {items.map((item, index) => (
-            <Link key={index} href={item.href} className="block text-white/80 hover:text-white py-1">
+            <Link key={index} href={item.href} className="block text-foreground/80 hover:text-jaba-gold py-1 transition-colors">
               {item.label}
             </Link>
           ))}

@@ -26,7 +26,7 @@ interface VehicleCardProps {
 
 export function VehicleCard({ id, title, year, image, price, specs, description, dealer }: VehicleCardProps) {
   return (
-    <Card className="group bg-[#1a1f24] overflow-hidden">
+    <Card className="group bg-background overflow-hidden">
       <div className="relative aspect-[4/3]">
         <BadgeLabel>AVAILABLE</BadgeLabel>
         <Image

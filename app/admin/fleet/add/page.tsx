@@ -144,7 +144,7 @@ export default function AddFleetVehiclePage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dailyRate">Daily Rate ($)</Label>
+              <Label htmlFor="dailyRate">Daily Rate (KES)</Label>
               <Input
                 id="dailyRate"
                 type="number"

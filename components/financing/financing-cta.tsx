@@ -8,7 +8,7 @@ export default function FinancingCTA() {
     <section className="mb-10">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">Ready to Get Started?</h2>
-        <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
+        <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">
           Take the next step toward financing your dream vehicle.
         </p>

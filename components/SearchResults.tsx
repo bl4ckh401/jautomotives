@@ -55,7 +55,7 @@ export default function SearchResults({
             />
             <h3 className="text-xl font-bold mb-2">{vehicle.name}</h3>
             <p className="text-gray-600 mb-2">{vehicle.price}</p>
-            <p className="text-blue-600 font-semibold">{vehicle.cryptoPrice}</p>
+            <p className="text-primary font-semibold">{vehicle.cryptoPrice}</p>
           </CardContent>
           <CardFooter>
             <Link href={`/vehicles/${vehicle.id}`} className="w-full">

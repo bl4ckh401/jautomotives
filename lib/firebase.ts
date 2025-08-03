@@ -12,17 +12,22 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-// Initialize Firebase
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
+// Initialize Firebase only if config is available
+let app: any = null
+let db: any = null
+let storage: any = null
+let auth: any = null
 
-// Initialize Firestore
-const db = getFirestore(app)
-
-// Initialize Storage
-const storage = getStorage(app)
-
-// Initialize Auth
-const auth = getAuth(app)
+try {
+  if (firebaseConfig.apiKey) {
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
+    db = getFirestore(app)
+    storage = getStorage(app)
+    auth = getAuth(app)
+  }
+} catch (error) {
+  console.error("Firebase initialization error:", error)
+}
 
 export { app, db, storage, auth }
 

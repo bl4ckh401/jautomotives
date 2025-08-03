@@ -21,16 +21,16 @@ const TeamCard = ({ member }: { member: TeamMember }) => (
     {/* Text Content */}
     <div className="flex flex-col items-center gap-3 px-4 pb-4">
       <div className="text-center">
-        <h3 className="text-lg font-bold text-white mb-1">{member.name}</h3>
+        <h3 className="text-lg font-bold text-primary mb-1">{member.name}</h3>
         <p className="text-[#93F1AD] mb-3">{member.title}</p>
         <p className="text-zinc-400 text-sm">{member.bio}</p>
       </div>
 
       <div className="flex justify-center gap-4">
-        <Link href="#" aria-label={`${member.name}'s LinkedIn`} className="text-[#93F1AD] hover:text-white">
+        <Link href="#" aria-label={`${member.name}'s LinkedIn`} className="text-[#93F1AD] hover:text-primary">
           <Linkedin className="h-5 w-5" />
         </Link>
-        <Link href="#" aria-label={`${member.name}'s Twitter`} className="text-[#93F1AD] hover:text-white">
+        <Link href="#" aria-label={`${member.name}'s Twitter`} className="text-[#93F1AD] hover:text-primary">
           <Twitter className="h-5 w-5" />
         </Link>
       </div>
@@ -58,7 +58,7 @@ export default function AboutPage() {
       <div className="relative h-[400px] mb-16 rounded-lg overflow-hidden">
         <Image src="/images/about-hero.jpg" alt="JABA Automobiles Showroom" layout="fill" objectFit="cover" />
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <p className="text-white text-2xl font-semibold max-w-2xl text-center px-4">
+          <p className="text-primary text-2xl font-semibold max-w-2xl text-center px-4">
             Driving Excellence in Automotive Solutions Since 2010
           </p>
         </div>
@@ -144,9 +144,9 @@ export default function AboutPage() {
       <h2 className="text-3xl font-semibold mb-8 text-center">Meet Our Team</h2>
       <div className="w-full mb-16">
         <div className="text-center mb-8">
-          <p className="text-white mb-2">Meet</p>
+          <p className="text-primary mb-2">Meet</p>
           <h2 className="text-3xl md:text-5xl font-bold text-[#93F1AD] mb-6">Our Team</h2>
-          <p className="text-white text-lg max-w-2xl mx-auto">Meet the Team Behind Jaba Automotives</p>
+          <p className="text-primary text-lg max-w-2xl mx-auto">Meet the Team Behind Jaba Automotives</p>
         </div>
 
         {/* Team members grid */}
@@ -158,7 +158,7 @@ export default function AboutPage() {
       </div>
 
       {/* Call to Action Section */}
-      <div className="text-center p-8 rounded-lg bg-[#1a1f24]">
+      <div className="text-center p-8 rounded-lg bg-background">
         <h2 className="text-3xl font-semibold mb-4">Join Our Journey</h2>
         <p className="max-w-2xl mx-auto mb-8">
           Whether you're looking for your dream car, need a reliable rental, or require assistance on the road, JABA

@@ -163,7 +163,7 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
           
           <div className="flex items-center text-2xl font-semibold text-primary mb-6">
             <DollarSign className="h-6 w-6 mr-1" />
-            <span>${vehicle.dailyRate}</span>
+            <span>KES {vehicle.dailyRate}</span>
             <span className="text-base font-normal text-muted-foreground ml-1">/ day</span>
           </div>
           

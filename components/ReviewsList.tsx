@@ -61,7 +61,7 @@ export default function ReviewsList({ maxReviews = 6 }: { maxReviews?: number })
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[...Array(3)].map((_, index) => (
-          <Card key={index} className="bg-[#242b33] p-6 rounded-lg">
+          <Card key={index} className="bg-card p-6 rounded-lg">
             <CardContent className="p-0">
               <div className="flex items-center mb-4">
                 <Skeleton className="h-12 w-12 rounded-full mr-4" />
@@ -91,19 +91,19 @@ export default function ReviewsList({ maxReviews = 6 }: { maxReviews?: number })
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {reviews.map((review) => (
-        <Card key={review.id} className="bg-[#242b33] p-6 rounded-lg">
+        <Card key={review.id} className="bg-card p-6 rounded-lg">
           <CardContent className="p-0">
             <div className="flex items-center mb-4">
               <Avatar className="h-12 w-12 mr-4">
                 <AvatarFallback>{review.name[0]}</AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="font-semibold text-white">{review.name}</h3>
+                <h3 className="font-semibold text-primary">{review.name}</h3>
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${i < review.rating ? "text-yellow-400 fill-current" : "text-gray-400"}`}
+                      className={`w-4 h-4 ${i < review.rating ? "text-gray-800 dark:text-yellow-400 fill-current" : "text-gray-400"}`}
                     />
                   ))}
                 </div>

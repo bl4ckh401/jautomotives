@@ -130,7 +130,7 @@ export default function FleetCategoryPage({ params }: { params: { category: stri
                 </p>
                 <div className="flex items-center mb-2">
                   <DollarSign className="h-4 w-4 mr-2 text-primary" />
-                  <span className="font-medium">${vehicle.dailyRate} / day</span>
+                  <span className="font-medium">KES {vehicle.dailyRate} / day</span>
                 </div>
               </CardContent>
               <CardFooter className="px-6 pb-6 pt-0">

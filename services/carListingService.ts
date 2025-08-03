@@ -16,7 +16,7 @@ export interface CarListing {
   createdAt?: Timestamp
 }
 
-export const carListingsCollection = collection(db, "carListings")
+export const carListingsCollection = collection(db, "vehicleListings")
 
 export const addCarListing = async (carListing: Omit<CarListing, "id" | "createdAt">): Promise<string> => {
   const docRef = await addDoc(carListingsCollection, {

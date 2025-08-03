@@ -109,7 +109,7 @@ export default function ReviewForm() {
                 <Star
                   key={star}
                   className={`w-8 h-8 cursor-pointer ${
-                    star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                    star <= rating ? "text-gray-800 dark:text-yellow-400 fill-gray-800 dark:fill-yellow-400" : "text-gray-300"
                   }`}
                   onClick={() => handleRating(star)}
                 />
