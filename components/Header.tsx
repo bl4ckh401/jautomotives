@@ -92,7 +92,7 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium">
                   <Calendar className="w-4 h-4 mr-1" />
@@ -155,7 +155,7 @@ export default function Header() {
             <NavLink href="/fleet">
               <Car className="w-4 h-4 mr-1" />
               <span>Fleet</span>
-            </NavLink>
+            </NavLink> */}
 
             {/* <NavLink href="/about">
               <Info className="w-4 h-4 mr-1" />
@@ -267,7 +267,7 @@ export default function Header() {
                 ]}
               />
 
-              <MobileNavAccordion
+              {/* <MobileNavAccordion
                 title="Car Rental Services"
                 icon={<Calendar className="w-5 h-5" />}
                 items={[
@@ -311,7 +311,7 @@ export default function Header() {
 
               <MobileNavLink href="/fleet" icon={<Car className="w-5 h-5" />}>
                 Our Fleet
-              </MobileNavLink>
+              </MobileNavLink> */}
 
               {!user ? (
                 <div className="flex flex-col space-y-2 pt-2">
