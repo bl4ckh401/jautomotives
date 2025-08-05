@@ -9,6 +9,7 @@ import { StarIcon } from "lucide-react"
 import { BadgeLabel } from "@/components/ui/badge-label"
 import { VehicleListing, useMarketplace } from "@/contexts/MarketplaceContext"
 import { Skeleton } from "@/components/ui/skeleton"
+import { formatVehicleTitle, formatVehicleAlt } from "@/utils/vehicleDisplay"
 
 export default function FeaturedVehicles() {
   const { getListings } = useMarketplace()
@@ -89,14 +90,14 @@ export default function FeaturedVehicles() {
                   <BadgeLabel variant="featured">FEATURED</BadgeLabel>
                   <Image 
                     src={vehicle.images[0] || "/placeholder.svg"} 
-                    alt={`${vehicle.make} ${vehicle.model}`} 
+                    alt={formatVehicleAlt(vehicle.year, vehicle.make, vehicle.model)} 
                     fill 
                     className="object-cover" 
                   />
                 </div>
                 <CardContent className="p-4">
                   <h3 className="text-xl font-bold mb-1">
-                    {vehicle.year} {vehicle.make} {vehicle.model}
+                    {formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model)}
                   </h3>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
@@ -114,7 +115,7 @@ export default function FeaturedVehicles() {
                     {formatPrice(vehicle.price)}
                   </p>
                   <p className="text-sm text-gray-400 line-clamp-2">
-                    {vehicle.description || `${vehicle.year} ${vehicle.make} ${vehicle.model} - 
+                    {vehicle.description || `${formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model)} - 
                     ${vehicle.mileage} miles, ${vehicle.transmission}, ${vehicle.fuelType}`}
                   </p>
                 </CardContent>

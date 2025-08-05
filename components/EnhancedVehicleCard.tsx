@@ -19,6 +19,8 @@ import {
   Calendar
 } from 'lucide-react'
 import Image from 'next/image'
+import { formatVehicleTitle, formatVehicleAlt } from '@/utils/vehicleDisplay'
+import { TestDriveModal } from '@/components/TestDriveModal'
 
 interface EnhancedVehicleCardProps {
   vehicle: {
@@ -59,6 +61,7 @@ export default function EnhancedVehicleCard({
 }: EnhancedVehicleCardProps) {
   const [isFavorite, setIsFavorite] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false)
 
   const handleFavorite = () => {
     setIsFavorite(!isFavorite)
@@ -84,7 +87,7 @@ export default function EnhancedVehicleCard({
               <div className="aspect-video lg:aspect-[4/3] relative overflow-hidden">
                 <Image
                   src={vehicle.images[currentImageIndex]}
-                  alt={`${vehicle.make} ${vehicle.model}`}
+                  alt={formatVehicleAlt(vehicle.year, vehicle.make, vehicle.model)}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -138,7 +141,7 @@ export default function EnhancedVehicleCard({
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-foreground group-hover:text-green-400 dark:group-hover:text-yellow-400 transition-colors duration-200">
-                      {vehicle.year} {vehicle.make} {vehicle.model}
+                      {formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model)}
                     </h3>
                     <p className="text-muted-foreground mt-1 leading-relaxed">
                       {vehicle.description}
@@ -267,7 +270,7 @@ export default function EnhancedVehicleCard({
       <div className="aspect-video relative overflow-hidden">
         <Image
           src={vehicle.images[currentImageIndex]}
-          alt={`${vehicle.make} ${vehicle.model}`}
+          alt={formatVehicleAlt(vehicle.year, vehicle.make, vehicle.model)}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-700"
         />
@@ -341,13 +344,9 @@ export default function EnhancedVehicleCard({
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <h3 className="text-lg font-bold text-foreground group-hover:text-green-400 dark:group-hover:text-yellow-400 transition-colors duration-200 leading-tight">
-              {vehicle.year} {vehicle.make} {vehicle.model}
+              {formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model)}
             </h3>
             <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium text-foreground">{vehicle.rating}</span>
-              </div>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin className="w-3 h-3" />
                 {vehicle.location}
@@ -400,9 +399,9 @@ export default function EnhancedVehicleCard({
             <div className="text-2xl font-bold text-green-400 dark:text-yellow-400">
               {formatPrice(vehicle.price)}
             </div>
-            <div className="text-xs text-muted-foreground">
+            {/* <div className="text-xs text-muted-foreground">
               KES {Math.round(vehicle.price / 60).toLocaleString()}/mo*
-            </div>
+            </div> */}
           </div>
           <Button 
             className="btn-primary group-hover:shadow-lg"
@@ -427,12 +426,27 @@ export default function EnhancedVehicleCard({
             variant="outline" 
             size="sm" 
             className="flex-1 text-xs hover:bg-secondary"
+            onClick={() => setIsTestDriveModalOpen(true)}
           >
             <Calendar className="w-3 h-3 mr-1" />
             Test Drive
           </Button>
         </div>
       </CardContent>
+      
+      {/* Test Drive Modal */}
+      <TestDriveModal 
+        isOpen={isTestDriveModalOpen}
+        onClose={() => setIsTestDriveModalOpen(false)}
+        vehicle={{
+          id: vehicle.id,
+          make: vehicle.make,
+          model: vehicle.model,
+          year: vehicle.year,
+          image: vehicle.images[0] || '/placeholder.svg',
+          price: vehicle.price
+        }}
+      />
     </Card>
   )
 }

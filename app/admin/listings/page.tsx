@@ -10,38 +10,15 @@ import { useEffect, useState } from "react"
 import type { CarListing } from "@/services/carListingService"
 import type { Listing } from "@/components/admin/AdminListingsTable"
 import { useMarketplace } from "@/contexts/MarketplaceContext"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AdminListingsPage() {
   const { getListings, exportListings } = useMarketplace()
+  const { toast } = useToast()
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const carListings = await getCarListings()
-        
-        // Map CarListing to Listing type
-        const formattedListings: Listing[] = carListings.map(car => ({
-          id: car.id || "",
-          title: car.title || `${car.year} ${car.make} ${car.model}`,
-          price: car.price,
-          year: car.year,
-          make: car.make,
-          model: car.model,
-          status: car.status === "available" ? "active" : car.status,
-          seller: car.seller || car.sellerId,
-          createdAt: car.createdAt ? new Date(car.createdAt.seconds * 1000).toISOString() : new Date().toISOString()
-        }))
-
-        setListings(formattedListings)
-      } catch (error) {
-        console.error("Error fetching listings:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchListings()
   }, [])
 
@@ -50,6 +27,45 @@ export default function AdminListingsPage() {
       await exportListings(format)
     } catch (error) {
       console.error("Error exporting listings:", error)
+    }
+  }
+
+  const handleRefresh = () => {
+    fetchListings()
+  }
+
+  const fetchListings = async () => {
+    try {
+      setLoading(true)
+      
+      // Use marketplace context to get all listings
+      const result = await getListings(undefined, 100) // Get more listings for admin view
+      
+      // Map VehicleListing to Listing type for the table
+      const formattedListings: Listing[] = result.listings.map(vehicle => ({
+        id: vehicle.id || "",
+        title: vehicle.title || `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+        price: typeof vehicle.price === 'string' ? parseFloat(vehicle.price) : vehicle.price,
+        year: typeof vehicle.year === 'string' ? parseInt(vehicle.year) : vehicle.year,
+        make: vehicle.make || "",
+        model: vehicle.model || "",
+        status: vehicle.status === "inactive" ? "archived" : vehicle.status,
+        seller: vehicle.contactName || vehicle.userEmail || "Unknown",
+        createdAt: vehicle.createdAt ? 
+          (typeof vehicle.createdAt === 'string' ? vehicle.createdAt : new Date(vehicle.createdAt.seconds * 1000).toISOString()) 
+          : new Date().toISOString()
+      }))
+
+      setListings(formattedListings)
+    } catch (error) {
+      console.error("Error fetching listings:", error)
+      toast({
+        title: "Error fetching listings",
+        description: "Failed to load vehicle listings. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -105,7 +121,7 @@ export default function AdminListingsPage() {
         {loading ? (
           <div className="p-8 text-center text-muted-foreground">Loading listings...</div>
         ) : (
-          <AdminListingsTable listings={listings} />
+          <AdminListingsTable listings={listings} onRefresh={handleRefresh} />
         )}
       </div>
     </div>

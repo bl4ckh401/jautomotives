@@ -10,6 +10,7 @@ import { useState } from "react"
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/listings", label: "Car Listings", icon: Car },
+  {href:"/admin/test-drives", label: "Test Drives", icon: Calendar },
   { href: "/admin/bookings", label: "Bookings", icon: Calendar },
   { href: "/admin/fleet", label: "Fleet Management", icon: Truck },
   { href: "/admin/contact", label: "Contact Requests", icon: Mail },

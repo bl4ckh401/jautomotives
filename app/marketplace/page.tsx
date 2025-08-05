@@ -38,6 +38,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { SearchFilters } from "@/components/search-filters"
 import EnhancedVehicleCard from "@/components/EnhancedVehicleCard"
+import { formatVehicleTitle } from "@/utils/vehicleDisplay"
 
 // Enhanced vehicle interface for marketplace
 interface EnhancedVehicle {
@@ -134,7 +135,6 @@ export default function MarketplacePage() {
           status: "active"
         }, 50)
         
-        // Convert VehicleListing to enhanced format
         const enhancedVehicles: EnhancedVehicle[] = result.listings.map(vehicle => ({
           id: vehicle.id || 'unknown',
           make: vehicle.make,
@@ -178,7 +178,7 @@ export default function MarketplacePage() {
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(vehicle =>
-        `${vehicle.make} ${vehicle.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model).toLowerCase().includes(searchQuery.toLowerCase()) ||
         vehicle.description?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }

@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Car, Calendar, Truck, Mail, PhoneCall, DollarSign } from "lucide-react"
+import { Car, Calendar, Truck, Mail, PhoneCall, DollarSign, TestTube } from "lucide-react"
 import { AdminMetricCard } from "@/components/admin/AdminMetricCard"
 import { AdminRecentActivity } from "@/components/admin/AdminRecentActivity"
 import { AdminChart } from "@/components/admin/AdminChart"
 import { AdminDataMigration } from "@/components/admin/AdminDataMigration"
 import { useAdmin } from "@/contexts/AdminContext"
+import { getAllTestDriveBookings } from "@/services/testDriveService"
 import type { AnalyticsMetrics, ChartDataPoint } from "@/services/analyticsService"
 import { Button } from "@/components/ui/button"
 
@@ -15,18 +16,26 @@ export function AdminDashboardContent() {
   const { getAnalytics, getChartMetrics } = useAdmin()
   const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null)
   const [chartData, setChartData] = useState<ChartDataPoint[]>([])
+  const [testDriveMetrics, setTestDriveMetrics] = useState({ total: 0, pending: 0 })
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
       setRefreshing(true)
-      const [analyticsData, chartMetrics] = await Promise.all([
+      const [analyticsData, chartMetrics, testDriveBookings] = await Promise.all([
         getAnalytics(30),
-        getChartMetrics(6)
+        getChartMetrics(6),
+        getAllTestDriveBookings()
       ])
       setMetrics(analyticsData)
       setChartData(chartMetrics)
+      
+      // Calculate test drive metrics
+      setTestDriveMetrics({
+        total: testDriveBookings.length,
+        pending: testDriveBookings.filter(booking => booking.status === 'pending').length
+      })
     } catch (error) {
       console.error("Error fetching dashboard data:", error)
     } finally {
@@ -93,7 +102,7 @@ export function AdminDashboardContent() {
       <AdminDataMigration />
       
       {/* Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <AdminMetricCard 
           title="Car Listings" 
           value={metrics?.totalListings || 0} 
@@ -135,6 +144,22 @@ export function AdminDashboardContent() {
             metrics?.totalBookings || 0,
             metrics?.previousPeriod.totalBookings || 0
           )}
+          color="amber"
+          loading={loading}
+        />
+        <AdminMetricCard
+          title="Test Drives"
+          value={testDriveMetrics.total}
+          icon={TestTube}
+          change={0}
+          color="blue"
+          loading={loading}
+        />
+        <AdminMetricCard
+          title="Pending Test Drives"
+          value={testDriveMetrics.pending}
+          icon={Calendar}
+          change={0}
           color="amber"
           loading={loading}
         />

@@ -3,7 +3,7 @@
 // import { Metadata } from "next"
 import AdvancedSellForm from "@/components/AdvancedSellForm"
 import { Breadcrumbs } from "@/components/Breadcrumbs"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { useAdmin } from "@/contexts/AdminContext"
@@ -17,8 +17,16 @@ export default function SellVehiclePage() {
   const router = useRouter()
   const { user } = useAuth()
   const { isAdmin } = useAdmin()
+  const [isEditMode, setIsEditMode] = useState(false)
   
   useEffect(() => {
+    // Check if we're in edit mode
+    const urlParams = new URLSearchParams(window.location.search)
+    const editId = urlParams.get('edit') || sessionStorage.getItem('editListingId')
+    if (editId) {
+      setIsEditMode(true)
+    }
+    
     // Redirect if not logged in or not an admin
     if (!user || !isAdmin) {
       router.push("/")
@@ -35,16 +43,21 @@ export default function SellVehiclePage() {
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
-          { label: "Marketplace", href: "/marketplace" },
-          { label: "Sell Vehicle", href: "/sell-vehicle" },
+          { label: "Admin", href: "/admin" },
+          { label: "Listings", href: "/admin/listings" },
+          { label: isEditMode ? "Edit Vehicle" : "Sell Vehicle", href: "/sell-vehicle" },
         ]}
       />
       
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">Sell Your Vehicle</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          {isEditMode ? "Edit Vehicle Listing" : "Sell Your Vehicle"}
+        </h1>
         <p className="text-muted-foreground mb-8">
-          Complete the form below to list your vehicle on our marketplace. More detailed information
-          will help attract potential buyers.
+          {isEditMode 
+            ? "Update your vehicle listing with any changes to information, features, or contact details."
+            : "Complete the form below to list your vehicle on our marketplace. More detailed information will help attract potential buyers."
+          }
         </p>
         
         <AdvancedSellForm />

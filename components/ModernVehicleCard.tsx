@@ -1,11 +1,12 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Star, Heart, Eye, Calendar, Fuel, Users, Settings } from 'lucide-react'
 import Image from 'next/image'
+import { TestDriveModal } from '@/components/TestDriveModal'
 
 interface VehicleCardProps {
   title: string
@@ -38,6 +39,7 @@ export default function ModernVehicleCard({
   onViewDetails,
   onFavorite
 }: VehicleCardProps) {
+  const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false)
   return (
     <Card className="group card-modern hover:shadow-xl hover:scale-[1.02] transition-all duration-300 overflow-hidden">
       {/* Image Container */}
@@ -89,10 +91,10 @@ export default function ModernVehicleCard({
             </h3>
             <p className="text-sm text-jaba-silver">{year}</p>
           </div>
-          <div className="flex items-center gap-1">
+          {/* <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-jaba-gold text-jaba-gold" />
-            <span className="text-sm font-medium text-foreground">{rating}</span>
-          </div>
+            <span className="text-sm font-medium text-foreground">5</span>
+          </div> */}
         </div>
 
         {/* Specifications */}
@@ -131,7 +133,7 @@ export default function ModernVehicleCard({
 
         {/* Quick Actions */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1 btn-secondary text-xs">
+          <Button variant="outline" size="sm" className="flex-1 btn-secondary text-xs" onClick={() => setIsTestDriveModalOpen(true)}>
             <Calendar className="w-3 h-3 mr-1" />
             Book Test Drive
           </Button>
@@ -140,6 +142,20 @@ export default function ModernVehicleCard({
           </Button>
         </div>
       </CardContent>
+      
+      {/* Test Drive Modal */}
+      <TestDriveModal 
+        isOpen={isTestDriveModalOpen}
+        onClose={() => setIsTestDriveModalOpen(false)}
+        vehicle={{
+          id: Math.random().toString(), // In real app, this should come from props
+          make: title.split(' ')[0] || 'Unknown',
+          model: title.split(' ').slice(1).join(' ') || 'Unknown',
+          year: year,
+          image: image,
+          price: price
+        }}
+      />
     </Card>
   )
 }

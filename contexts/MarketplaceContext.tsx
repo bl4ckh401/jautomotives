@@ -128,7 +128,7 @@ interface MarketplaceContextType {
   // Listings
   createListing: (listingData: Omit<VehicleListing, "id" | "createdAt" | "updatedAt" | "status" | "views" | "favorites">, images: File[]) => Promise<string>
   updateListing: (listingId: string, listingData: Partial<VehicleListing>, newImages?: File[]) => Promise<void>
-  deleteListing: (listingId: string) => Promise<void>
+  deleteListing: (listingId: string, isAdminOverride?: boolean) => Promise<void>
   getListing: (listingId: string) => Promise<VehicleListing>
   getListings: (filters?: ListingFilters, itemsPerPage?: number, lastVisible?: any) => Promise<{ listings: VehicleListing[], lastVisible: any }>
   getMyListings: () => Promise<VehicleListing[]>
@@ -337,7 +337,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   }
   
   // Delete a vehicle listing
-  const deleteListing = async (listingId: string): Promise<void> => {
+  const deleteListing = async (listingId: string, isAdminOverride: boolean = false): Promise<void> => {
     if (!user) {
       throw new Error("You must be logged in to delete a listing")
     }
@@ -354,8 +354,8 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
       
       const listing = listingSnap.data() as VehicleListing
       
-      // Check if user owns this listing
-      if (listing.userId !== user.id) {
+      // Check if user owns this listing or is admin
+      if (!isAdminOverride && listing.userId !== user.id) {
         throw new Error("You don't have permission to delete this listing")
       }
       

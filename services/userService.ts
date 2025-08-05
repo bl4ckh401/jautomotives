@@ -225,6 +225,55 @@ export async function updateUser(userId: string, userData: Partial<User>) {
   }
 }
 
+// Update a user's role
+export async function updateUserRole(userId: string, newRole: "admin" | "user" | "seller") {
+  try {
+    const userRef = doc(db, "users", userId)
+    await updateDoc(userRef, { role: newRole })
+    
+    // If updating role to admin, also update the admin collection
+    if (newRole === "admin") {
+      const adminRef = doc(db, "admins", userId)
+      const adminDoc = await getDoc(adminRef)
+      
+      if (!adminDoc.exists()) {
+        await setDoc(adminRef, {
+          userId,
+          isAdmin: true,
+          permissions: ["all"],
+          createdAt: serverTimestamp()
+        })
+      }
+    } else {
+      // If removing admin role, remove from admin collection
+      const adminRef = doc(db, "admins", userId)
+      const adminDoc = await getDoc(adminRef)
+      
+      if (adminDoc.exists()) {
+        await deleteDoc(adminRef)
+      }
+    }
+    
+    return true
+  } catch (error) {
+    console.error("Error updating user role:", error)
+    throw error
+  }
+}
+
+// Update a user's status
+export async function updateUserStatus(userId: string, newStatus: "active" | "pending" | "suspended") {
+  try {
+    const userRef = doc(db, "users", userId)
+    await updateDoc(userRef, { status: newStatus })
+    
+    return true
+  } catch (error) {
+    console.error("Error updating user status:", error)
+    throw error
+  }
+}
+
 // Delete a user
 export async function deleteUser(userId: string) {
   try {

@@ -68,9 +68,12 @@ export default function AdvancedSellForm() {
   const { toast } = useToast()
   const router = useRouter()
   const { user } = useAuth()
-  const { createListing, loading: isSubmitting } = useMarketplace()
+  const { createListing, getListing, updateListing, loading: isSubmitting } = useMarketplace()
   const [activeTab, setActiveTab] = useState("basic")
   const [isLoading, setIsLoading] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [editingListingId, setEditingListingId] = useState<string | null>(null)
+  const [existingImages, setExistingImages] = useState<string[]>([])
   
   // Form state
   const [formData, setFormData] = useState({
@@ -121,6 +124,81 @@ export default function AdvancedSellForm() {
     
     // Timestamps and IDs will be added on submission
   })
+  
+  // Check for edit mode when component mounts
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const editId = urlParams.get('edit') || sessionStorage.getItem('editListingId')
+    
+    if (editId) {
+      setIsEditMode(true)
+      setEditingListingId(editId)
+      loadExistingListing(editId)
+      // Clear from sessionStorage after loading
+      sessionStorage.removeItem('editListingId')
+    }
+  }, [])
+
+  // Load existing listing data for editing
+  const loadExistingListing = async (listingId: string) => {
+    setIsLoading(true)
+    try {
+      const listing = await getListing(listingId)
+      
+      // Pre-fill the form with existing data
+      setFormData({
+        make: listing.make || "",
+        model: listing.model || "",
+        year: listing.year?.toString() || "",
+        price: listing.price?.toString() || "",
+        vehicleType: listing.vehicleType || "Sedan",
+        mileage: listing.mileage?.toString() || "",
+        vin: listing.vin || "",
+        exteriorColor: listing.exteriorColor || "",
+        interiorColor: listing.interiorColor || "",
+        transmission: listing.transmission || "Automatic",
+        engineSize: listing.engineSize || "",
+        fuelType: listing.fuelType || "Gasoline",
+        doors: listing.doors?.toString() || "4",
+        condition: listing.condition || "Used",
+        ownerHistory: listing.ownerHistory || "1",
+        accidentHistory: listing.accidentHistory || "No",
+        serviceHistory: listing.serviceHistory || "",
+        title: listing.title || "",
+        description: listing.description || "",
+        sellingReason: listing.sellingReason || "",
+        features: listing.features || {},
+        images: [], // Can't pre-fill File objects, user needs to re-upload
+        contactName: listing.contactName || "",
+        contactEmail: listing.contactEmail || "",
+        contactPhone: listing.contactPhone || "",
+        location: listing.location || "",
+        listingDuration: listing.listingDuration || "30",
+        featured: listing.featured || false,
+        negotiable: listing.negotiable !== undefined ? listing.negotiable : true,
+      })
+      
+      // Store existing images separately
+      setExistingImages(listing.images || [])
+      
+      toast({
+        title: "Listing loaded",
+        description: "You can now edit the vehicle listing.",
+      })
+      
+    } catch (error: any) {
+      console.error("Error loading listing:", error)
+      toast({
+        title: "Error loading listing",
+        description: error.message || "Failed to load the listing for editing.",
+        variant: "destructive",
+      })
+      // Redirect back to admin on error
+      router.push('/admin/listings')
+    } finally {
+      setIsLoading(false)
+    }
+  }
   
   // Populate user data if available
   useEffect(() => {
@@ -259,17 +337,36 @@ export default function AdvancedSellForm() {
         listingType: "sale" as const
       }
       
-      // Use the marketplace context to create the listing
-      const listingId = await createListing(listingData, formData.images)
-      
-      // Redirect to the listing page
-      router.push(`/marketplace/${listingId}`)
+      // Use the marketplace context to create or update the listing
+      if (isEditMode && editingListingId) {
+        // Update existing listing
+        await updateListing(editingListingId, listingData, formData.images)
+        
+        toast({
+          title: "Listing updated successfully",
+          description: "Your vehicle listing has been updated.",
+        })
+        
+        // Redirect back to admin listings page
+        router.push('/admin/listings')
+      } else {
+        // Create new listing
+        const listingId = await createListing(listingData, formData.images)
+        
+        toast({
+          title: "Listing created successfully",
+          description: "Your vehicle has been listed on the marketplace.",
+        })
+        
+        // Redirect to the listing page
+        router.push(`/marketplace/${listingId}`)
+      }
       
     } catch (error: any) {
-      console.error("Error creating listing:", error)
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} listing:`, error)
       toast({
-        title: "Error creating listing",
-        description: "There was a problem creating your listing. Please try again.",
+        title: `Error ${isEditMode ? 'updating' : 'creating'} listing`,
+        description: `There was a problem ${isEditMode ? 'updating' : 'creating'} your listing. Please try again.`,
         variant: "destructive"
       })
     } finally {
@@ -706,6 +803,30 @@ export default function AdvancedSellForm() {
                 interior, engine, and any notable features or damage.
               </p>
               
+              {/* Show existing images in edit mode */}
+              {isEditMode && existingImages.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-base font-medium mb-3">Current Images ({existingImages.length})</h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {existingImages.map((imageUrl, index) => (
+                      <div key={index} className="relative group">
+                        <img 
+                          src={imageUrl} 
+                          alt={`Current vehicle image ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-md border"
+                        />
+                        <div className="absolute top-1 right-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                          Current
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Note: To change existing images, upload new ones below. Current images will be kept unless you delete the listing and recreate it.
+                  </p>
+                </div>
+              )}
+              
               <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 p-6 rounded-lg text-center">
                 <Input 
                   id="images" 
@@ -724,17 +845,21 @@ export default function AdvancedSellForm() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                   </div>
-                  <span className="text-primary font-medium">Click to browse files</span>
+                  <span className="text-primary font-medium">
+                    {isEditMode ? "Add New Images" : "Click to browse files"}
+                  </span>
                   <span className="text-sm text-muted-foreground mt-1">
-                    or drag and drop images here
+                    {isEditMode ? "Upload additional images" : "or drag and drop images here"}
                   </span>
                 </Label>
               </div>
               
-              {/* Image preview */}
+              {/* New images preview */}
               {formData.images.length > 0 && (
                 <div>
-                  <h4 className="text-base font-medium mb-3">Selected Images ({formData.images.length}/10)</h4>
+                  <h4 className="text-base font-medium mb-3">
+                    {isEditMode ? "New Images to Add" : "Selected Images"} ({formData.images.length}/10)
+                  </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {formData.images.map((file, index) => (
                       <div key={index} className="relative group">
@@ -754,7 +879,7 @@ export default function AdvancedSellForm() {
                         </button>
                         {index === 0 && (
                           <div className="absolute bottom-0 left-0 right-0 bg-primary text-primary-foreground text-xs py-1 text-center">
-                            Main Image
+                            {isEditMode ? "New Main" : "Main Image"}
                           </div>
                         )}
                       </div>
@@ -763,9 +888,15 @@ export default function AdvancedSellForm() {
                 </div>
               )}
               
-              {formData.images.length === 0 && (
+              {formData.images.length === 0 && !isEditMode && (
                 <p className="text-sm text-muted-foreground italic">
                   No images selected yet. Listings with images get 10x more views!
+                </p>
+              )}
+              
+              {formData.images.length === 0 && isEditMode && (
+                <p className="text-sm text-muted-foreground italic">
+                  No new images selected. Current images will be maintained.
                 </p>
               )}
             </div>
@@ -901,7 +1032,10 @@ export default function AdvancedSellForm() {
                 Back: Images
               </Button>
               <Button type="submit" disabled={isLoading} className="min-w-32">
-                {isLoading ? "Submitting..." : "List Vehicle"}
+                {isLoading ? 
+                  (isEditMode ? "Updating..." : "Submitting...") : 
+                  (isEditMode ? "Update Vehicle" : "List Vehicle")
+                }
               </Button>
             </div>
           </TabsContent>
