@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Phone, CheckCircle, ArrowRight, Clock, Shield, Truck, MapPin } from "lucide-react"
+import { formatPhoneNumber } from "@/utils/vehicleDisplay"
 
 interface ServiceStep {
   title: string
@@ -54,7 +55,7 @@ export default function AssistanceServicePage({
         {/* Emergency Contact Button - Floating */}
         <div className="absolute top-8 right-8 z-30 hidden md:block">
           <a
-            href={`tel:${emergencyNumber}`}
+            href={`tel:${formatPhoneNumber(emergencyNumber)}`}
             className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-primary px-6 py-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 animate-pulse"
           >
             <Phone className="h-6 w-6" />
@@ -209,7 +210,7 @@ export default function AssistanceServicePage({
                 <Button
                   size="lg"
                   className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6 rounded-full"
-                  onClick={() => (window.location.href = `tel:${emergencyNumber}`)}
+                  onClick={() => (window.location.href = `tel:${formatPhoneNumber(emergencyNumber)}`)}
                 >
                   <Phone className="mr-2 h-6 w-6" />
                   {emergencyNumber}

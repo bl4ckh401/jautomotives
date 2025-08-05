@@ -33,3 +33,32 @@ export function getDisplayMake(make: string): string {
 export function formatVehicleAlt(year: string | number, make: string, model: string): string {
   return formatVehicleTitle(year, make, model) || 'Vehicle image';
 }
+
+/**
+ * Formats phone number to include Kenyan country code (+254)
+ * Converts numbers starting with 0 to +254 format
+ */
+export function formatPhoneNumber(phone: string): string {
+  if (!phone) return '';
+  
+  // Remove all non-digit characters
+  const cleanPhone = phone.replace(/\D/g, '');
+  
+  // If number starts with 254, add + prefix
+  if (cleanPhone.startsWith('254')) {
+    return `+${cleanPhone}`;
+  }
+  
+  // If number starts with 0, replace with +254
+  if (cleanPhone.startsWith('0')) {
+    return `+254${cleanPhone.slice(1)}`;
+  }
+  
+  // If number doesn't start with 254 or 0, assume it's a local number and add +254
+  if (cleanPhone.length >= 9) {
+    return `+254${cleanPhone}`;
+  }
+  
+  // Return original if too short or doesn't match expected patterns
+  return phone;
+}

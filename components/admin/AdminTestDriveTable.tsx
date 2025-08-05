@@ -49,6 +49,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { format } from "date-fns"
 import { TestDriveBooking } from "@/types/testDrive"
+import { formatPhoneNumber } from "@/utils/vehicleDisplay"
 import { updateTestDriveBooking } from "@/services/testDriveService"
 
 interface AdminTestDriveTableProps {
@@ -227,7 +228,7 @@ export function AdminTestDriveTable({ bookings, onRefresh }: AdminTestDriveTable
             )}
             
             <DropdownMenuItem
-              onClick={() => window.open(`tel:${row.original.userPhone}`, '_blank')}
+              onClick={() => window.open(`tel:${formatPhoneNumber(row.original.userPhone)}`, '_blank')}
             >
               <Phone className="mr-2 h-4 w-4" />
               Call Customer
