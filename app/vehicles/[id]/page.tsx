@@ -12,6 +12,8 @@ import { Share, Phone, ArrowLeft, Calendar } from "lucide-react"
 import { useMarketplace, VehicleListing } from "@/contexts/MarketplaceContext"
 import { Skeleton } from "@/components/ui/skeleton"
 import { TestDriveModal } from "@/components/TestDriveModal"
+import VehicleShareModal from "@/components/VehicleShareModal"
+import { formatPhoneNumber } from "@/utils/vehicleDisplay"
 import Link from "next/link"
 
 // We can't use generateMetadata with client components
@@ -25,6 +27,7 @@ export default function VehiclePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false)
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
 
   // Fetch vehicle data
   useEffect(() => {
@@ -151,13 +154,13 @@ export default function VehiclePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Button
               className="bg-emerald-600 hover:bg-emerald-700 text-primary w-full"
-              onClick={() => window.open(`https://wa.me/${vehicle?.contactPhone?.replace(/\D/g, '')}`, "_blank")}
+              onClick={() => window.open(`https://wa.me/${formatPhoneNumber(vehicle?.contactPhone || '').replace(/\D/g, '')}`, "_blank")}
             >
               Enquire via whatsapp
             </Button>
             <Button
               className="bg-black hover:bg-gray-900 text-primary w-full"
-              onClick={() => window.open(`tel:${vehicle?.contactPhone}`, "_blank")}
+              onClick={() => window.open(`tel:${formatPhoneNumber(vehicle?.contactPhone || '')}`, "_blank")}
             >
               <Phone className="mr-2 h-4 w-4" />
               Call now
@@ -173,7 +176,12 @@ export default function VehiclePage() {
               <Calendar className="mr-2 h-4 w-4" />
               Book Test Drive
             </Button>
-            <Button variant="ghost" size="sm" className="px-6">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="px-6"
+              onClick={() => setIsShareModalOpen(true)}
+            >
               <Share className="mr-2 h-4 w-4" />
               Share
             </Button>
@@ -213,6 +221,23 @@ export default function VehiclePage() {
           onClose={() => setIsTestDriveModalOpen(false)}
           vehicle={{
             id: vehicle.id || "",
+            make: vehicle.make || "",
+            model: vehicle.model || "",
+            year: vehicle.year || "",
+            image: vehicle.images?.[0] || "/placeholder-car.jpg",
+            price: vehicle.price || ""
+          }}
+        />
+      )}
+
+      {/* Share Modal */}
+      {vehicle && (
+        <VehicleShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          vehicle={{
+            id: vehicle.id || "",
+            title: vehicle.title || "",
             make: vehicle.make || "",
             model: vehicle.model || "",
             year: vehicle.year || "",

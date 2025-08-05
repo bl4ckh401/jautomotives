@@ -2,14 +2,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import { Phone } from "lucide-react"
+import { formatPhoneNumber } from "@/utils/vehicleDisplay"
 
 interface AssistanceServiceProps {
   title: string
   description: string
   image: string
   services: string[]
-  emerg
-  encyNumber: string
+  emergencyNumber: string
 }
 
 export default function AssistanceService({
@@ -46,7 +46,7 @@ export default function AssistanceService({
             </CardContent>
           </Card>
           <Button className="mt-6 w-full">
-            <a href={`tel:${emergencyNumber}`} className="w-full">
+            <a href={`tel:${formatPhoneNumber(emergencyNumber)}`} className="w-full">
               Call Now
             </a>
           </Button>

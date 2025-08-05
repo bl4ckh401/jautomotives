@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/contexts/AuthContext"
 import { MarketplaceProvider } from "@/contexts/MarketplaceContext"
 import { AdminProvider } from "@/contexts/AdminContext"
@@ -33,6 +34,7 @@ export default function RootLayout({
                   <main className="flex-1 md:mt-16">{children}</main>
                   <Footer />
                 </div>
+                <Toaster />
               </MarketplaceProvider>
             </AdminProvider>
           </AuthProvider>
