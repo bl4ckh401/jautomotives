@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Edit, Eye, MoreHorizontal, Wrench, Calendar } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
+import { updateFleetVehicle, deleteFleetVehicle } from "@/services/fleetService"
 
 interface Vehicle {
   id: string
@@ -42,11 +45,79 @@ interface Vehicle {
 
 interface AdminFleetTableProps {
   vehicles: Vehicle[]
+  onRefresh?: () => void
 }
 
-export function AdminFleetTable({ vehicles }: AdminFleetTableProps) {
+export function AdminFleetTable({ vehicles, onRefresh }: AdminFleetTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const { toast } = useToast()
+
+  // Handle view vehicle details
+  const handleView = (vehicleId: string) => {
+    router.push(`/fleet/vehicle/${vehicleId}`)
+  }
+
+  // Handle edit vehicle
+  const handleEdit = (vehicleId: string) => {
+    router.push(`/admin/fleet/edit/${vehicleId}`)
+  }
+
+  // Handle view bookings
+  const handleViewBookings = (vehicleId: string) => {
+    router.push(`/admin/bookings?vehicle=${vehicleId}`)
+  }
+
+  // Handle status change
+  const handleStatusChange = async (vehicleId: string, newStatus: string) => {
+    setLoading(true)
+    try {
+      await updateFleetVehicle(vehicleId, { status: newStatus as any })
+      toast({
+        title: "Status updated",
+        description: `Vehicle status has been changed to ${newStatus}.`,
+      })
+      onRefresh?.()
+    } catch (error: any) {
+      console.error("Error updating status:", error)
+      toast({
+        title: "Error updating status",
+        description: error.message || "Failed to update the vehicle status.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Handle schedule maintenance
+  const handleScheduleMaintenance = async (vehicleId: string) => {
+    const nextMaintenanceDate = prompt("Enter next maintenance date (YYYY-MM-DD):")
+    if (!nextMaintenanceDate) return
+
+    setLoading(true)
+    try {
+      await updateFleetVehicle(vehicleId, { 
+        status: "maintenance"
+      })
+      toast({
+        title: "Maintenance scheduled",
+        description: "Maintenance has been scheduled for this vehicle.",
+      })
+      onRefresh?.()
+    } catch (error: any) {
+      console.error("Error scheduling maintenance:", error)
+      toast({
+        title: "Error scheduling maintenance",
+        description: error.message || "Failed to schedule maintenance.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const columns: ColumnDef<Vehicle>[] = [
     {
@@ -133,7 +204,7 @@ export function AdminFleetTable({ vehicles }: AdminFleetTableProps) {
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" disabled={loading}>
               <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
@@ -141,17 +212,36 @@ export function AdminFleetTable({ vehicles }: AdminFleetTableProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleView(row.original.id)}
+            >
               <Eye className="h-4 w-4" /> View Details
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleEdit(row.original.id)}
+            >
               <Edit className="h-4 w-4" /> Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleViewBookings(row.original.id)}
+            >
               <Calendar className="h-4 w-4" /> View Bookings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleStatusChange(row.original.id, "available")}
+              disabled={row.original.status === "available"}
+            >
+              Mark Available
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleScheduleMaintenance(row.original.id)}
+            >
               <Wrench className="h-4 w-4" /> Schedule Maintenance
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -8,9 +8,10 @@ import { VehicleDetails } from "@/components/vehicle-details"
 import { SimilarVehicles } from "@/components/similar-vehicles"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Share, Phone, ArrowLeft } from "lucide-react"
+import { Share, Phone, ArrowLeft, Calendar } from "lucide-react"
 import { useMarketplace, VehicleListing } from "@/contexts/MarketplaceContext"
 import { Skeleton } from "@/components/ui/skeleton"
+import { TestDriveModal } from "@/components/TestDriveModal"
 import Link from "next/link"
 
 // We can't use generateMetadata with client components
@@ -23,6 +24,7 @@ export default function VehiclePage() {
   const [vehicle, setVehicle] = useState<VehicleListing | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false)
 
   // Fetch vehicle data
   useEffect(() => {
@@ -162,6 +164,21 @@ export default function VehiclePage() {
             </Button>
           </div>
 
+          <div className="flex gap-4">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setIsTestDriveModalOpen(true)}
+            >
+              <Calendar className="mr-2 h-4 w-4" />
+              Book Test Drive
+            </Button>
+            <Button variant="ghost" size="sm" className="px-6">
+              <Share className="mr-2 h-4 w-4" />
+              Share
+            </Button>
+          </div>
+
           <div className="bg-muted/30 p-3 rounded-md">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
@@ -177,11 +194,6 @@ export default function VehiclePage() {
             </p>
           </div>
 
-          <Button variant="ghost" size="sm" className="mt-2">
-            <Share className="mr-2 h-4 w-4" />
-            Share
-          </Button>
-
           <VehicleDetails specs={vehicleSpecs} />
         </div>
       </div>
@@ -193,6 +205,22 @@ export default function VehiclePage() {
           vehicleType={vehicle?.vehicleType || ""}
         />
       </div>
+
+      {/* Test Drive Modal */}
+      {vehicle && (
+        <TestDriveModal
+          isOpen={isTestDriveModalOpen}
+          onClose={() => setIsTestDriveModalOpen(false)}
+          vehicle={{
+            id: vehicle.id || "",
+            make: vehicle.make || "",
+            model: vehicle.model || "",
+            year: vehicle.year || "",
+            image: vehicle.images?.[0] || "/placeholder-car.jpg",
+            price: vehicle.price || ""
+          }}
+        />
+      )}
     </div>
   )
 }

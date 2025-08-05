@@ -24,6 +24,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useMarketplace } from "@/contexts/MarketplaceContext"
+import { useToast } from "@/hooks/use-toast"
+
+import { useAdmin } from "@/contexts/AdminContext"
 
 export interface Listing {
   id: string
@@ -39,11 +44,103 @@ export interface Listing {
 
 interface AdminListingsTableProps {
   listings: Listing[]
+  onRefresh?: () => void
 }
 
-export function AdminListingsTable({ listings }: AdminListingsTableProps) {
+export function AdminListingsTable({ listings, onRefresh }: AdminListingsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const { deleteListing, updateListing } = useMarketplace()
+  const { toast } = useToast()
+  const { isAdmin } = useAdmin()
+
+  // Handle view listing
+  const handleView = (listingId: string) => {
+    router.push(`/admin/listings/view/${listingId}`)
+  }
+
+  // Handle edit listing - redirect to sell-vehicle page with pre-filled data
+  const handleEdit = (listingId: string) => {
+    // Store the listing ID in sessionStorage so the sell-vehicle page can load it
+    sessionStorage.setItem('editListingId', listingId)
+    router.push(`/sell-vehicle?edit=${listingId}`)
+  }
+
+  // Handle delete listing
+  const handleDelete = async (listingId: string, title: string) => {
+    // Enhanced confirmation dialog
+    const confirmed = window.confirm(
+      `⚠️ DELETE CONFIRMATION ⚠️\n\n` +
+      `Are you sure you want to permanently delete this listing?\n\n` +
+      `Vehicle: "${title}"\n` +
+      `ID: ${listingId}\n\n` +
+      `This action cannot be undone and will:\n` +
+      `• Remove the listing from the marketplace\n` +
+      `• Delete all associated images\n` +
+      `• Remove it from search results\n\n` +
+      `Type 'DELETE' in the next prompt to confirm.`
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    // Secondary confirmation requiring typing "DELETE"
+    const confirmText = window.prompt(
+      `To confirm deletion of "${title}", please type "DELETE" (case sensitive):`
+    )
+
+    if (confirmText !== "DELETE") {
+      toast({
+        title: "Deletion cancelled",
+        description: "The listing was not deleted.",
+      })
+      return
+    }
+
+    setLoading(true)
+    try {
+      await deleteListing(listingId, isAdmin) // Pass admin override
+      toast({
+        title: "Listing deleted successfully",
+        description: `"${title}" has been permanently removed from the marketplace.`,
+      })
+      onRefresh?.()
+    } catch (error: any) {
+      console.error("Error deleting listing:", error)
+      toast({
+        title: "Error deleting listing",
+        description: error.message || "Failed to delete the listing. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Handle status change
+  const handleStatusChange = async (listingId: string, newStatus: string) => {
+    setLoading(true)
+    try {
+      await updateListing(listingId, { status: newStatus as any })
+      toast({
+        title: "Status updated",
+        description: `Listing status has been changed to ${newStatus}.`,
+      })
+      onRefresh?.()
+    } catch (error: any) {
+      console.error("Error updating status:", error)
+      toast({
+        title: "Error updating status",
+        description: error.message || "Failed to update the listing status.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const columns: ColumnDef<Listing>[] = [
     {
@@ -95,6 +192,14 @@ export function AdminListingsTable({ listings }: AdminListingsTableProps) {
     {
       accessorKey: "seller",
       header: "Seller",
+      cell: ({ row }) => {
+        const seller = row.original.seller
+        return (
+          <div className="text-sm text-muted-foreground">
+            {seller ? seller : "Jaba Motors"}
+          </div>
+        )
+      },
     },
     {
       accessorKey: "createdAt",
@@ -106,7 +211,7 @@ export function AdminListingsTable({ listings }: AdminListingsTableProps) {
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" disabled={loading}>
               <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
@@ -114,14 +219,38 @@ export function AdminListingsTable({ listings }: AdminListingsTableProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleView(row.original.id)}
+            >
               <Eye className="h-4 w-4" /> View
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleEdit(row.original.id)}
+            >
               <Edit className="h-4 w-4" /> Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2 text-red-600">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleStatusChange(row.original.id, "active")}
+              disabled={row.original.status === "active"}
+            >
+              Activate
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleStatusChange(row.original.id, "archived")}
+              disabled={row.original.status === "archived"}
+            >
+              Archive
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              className="flex items-center gap-2 text-red-600"
+              onClick={() => handleDelete(row.original.id, row.original.title)}
+            >
               <Trash2 className="h-4 w-4" /> Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -77,6 +77,39 @@ export function AdminUsersContent() {
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const loadUsers = async () => {
+    setLoading(true)
+    try {
+      let fetchedUsers: User[] = []
+      
+      if (currentTab === "all") {
+        const result = await getUsers()
+        fetchedUsers = result.users
+        setLastVisibleDoc(result.lastVisible)
+      } else if (currentTab === "admin") {
+        fetchedUsers = await getUsersByRole("admin")
+      } else {
+        fetchedUsers = await getUsersByStatus(currentTab)
+      }
+      
+      setUsers(fetchedUsers)
+      
+      // Calculate statistics
+      const stats = {
+        total: fetchedUsers.length,
+        active: fetchedUsers.filter(u => u.status === "active").length,
+        pending: fetchedUsers.filter(u => u.status === "pending").length,
+        suspended: fetchedUsers.filter(u => u.status === "suspended").length
+      }
+      
+      setTotalStats(stats)
+    } catch (error) {
+      console.error("Error fetching users:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -168,6 +201,8 @@ export function AdminUsersContent() {
             </div>
             <AdminUsersTable 
               users={filteredUsers} 
+              loading={loading}
+              onRefresh={loadUsers}
             />
           </div>
         </TabsContent>

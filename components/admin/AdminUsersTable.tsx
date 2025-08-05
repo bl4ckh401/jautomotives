@@ -26,15 +26,98 @@ import {
 import { Edit, Eye, MoreHorizontal, Lock, Mail } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { type User } from "@/services/userService"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
+import { updateUserRole, updateUserStatus } from "@/services/userService"
 
 interface AdminUsersTableProps {
   users: User[]
   loading?: boolean
+  onRefresh?: () => void
 }
 
-export function AdminUsersTable({ users, loading = false }: AdminUsersTableProps) {
+export function AdminUsersTable({ users, loading = false, onRefresh }: AdminUsersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [actionLoading, setActionLoading] = useState(false)
+  const router = useRouter()
+  const { toast } = useToast()
+
+  // Handle view user profile
+  const handleView = (userId: string) => {
+    router.push(`/admin/users/${userId}`)
+  }
+
+  // Handle edit user
+  const handleEdit = (userId: string) => {
+    router.push(`/admin/users/edit/${userId}`)
+  }
+
+  // Handle role change
+  const handleRoleChange = async (userId: string, currentRole: string) => {
+    const newRole = prompt(`Change role for user (current: ${currentRole})\nEnter new role (admin, seller, user):`, currentRole)
+    if (!newRole || newRole === currentRole) return
+
+    if (!['admin', 'seller', 'user'].includes(newRole)) {
+      toast({
+        title: "Invalid role",
+        description: "Role must be one of: admin, seller, user",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setActionLoading(true)
+    try {
+      await updateUserRole(userId, newRole as "admin" | "user" | "seller")
+      toast({
+        title: "Role updated",
+        description: `User role has been changed to ${newRole}.`,
+      })
+      onRefresh?.()
+    } catch (error: any) {
+      console.error("Error updating role:", error)
+      toast({
+        title: "Error updating role",
+        description: error.message || "Failed to update user role.",
+        variant: "destructive",
+      })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  // Handle status change
+  const handleStatusChange = async (userId: string, newStatus: string, userName: string) => {
+    const action = newStatus === "suspended" ? "suspend" : "activate"
+    if (!confirm(`Are you sure you want to ${action} user "${userName}"?`)) {
+      return
+    }
+
+    setActionLoading(true)
+    try {
+      await updateUserStatus(userId, newStatus as any)
+      toast({
+        title: `User ${action}d`,
+        description: `User has been successfully ${action}d.`,
+      })
+      onRefresh?.()
+    } catch (error: any) {
+      console.error("Error updating status:", error)
+      toast({
+        title: "Error updating status",
+        description: error.message || "Failed to update user status.",
+        variant: "destructive",
+      })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  // Handle send email
+  const handleSendEmail = (email: string) => {
+    window.open(`mailto:${email}`, '_blank')
+  }
 
   const columns: ColumnDef<User>[] = [
     {
@@ -137,7 +220,7 @@ export function AdminUsersTable({ users, loading = false }: AdminUsersTableProps
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" disabled={actionLoading}>
               <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
@@ -145,23 +228,44 @@ export function AdminUsersTable({ users, loading = false }: AdminUsersTableProps
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleView(row.original.id)}
+            >
               <Eye className="h-4 w-4" /> View Profile
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleEdit(row.original.id)}
+            >
               <Edit className="h-4 w-4" /> Edit User
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2">
-              <Lock className="h-4 w-4" /> Reset Password
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleRoleChange(row.original.id, row.original.role || 'user')}
+            >
+              <Edit className="h-4 w-4" /> Change Role
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="flex items-center gap-2"
+              onClick={() => handleSendEmail(row.original.email!)}
+            >
+              <Mail className="h-4 w-4" /> Send Email
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {row.original.status === "active" && (
-              <DropdownMenuItem className="flex items-center gap-2 text-red-600">
+              <DropdownMenuItem 
+                className="flex items-center gap-2 text-red-600"
+                onClick={() => handleStatusChange(row.original.id, "suspended", row.original.name || "Unknown")}
+              >
                 <Lock className="h-4 w-4" /> Suspend User
               </DropdownMenuItem>
             )}
             {row.original.status === "suspended" && (
-              <DropdownMenuItem className="flex items-center gap-2 text-green-600">
+              <DropdownMenuItem 
+                className="flex items-center gap-2 text-green-600"
+                onClick={() => handleStatusChange(row.original.id, "active", row.original.name || "Unknown")}
+              >
                 <Lock className="h-4 w-4" /> Activate User
               </DropdownMenuItem>
             )}

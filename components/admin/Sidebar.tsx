@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Car, Calendar, Truck, Mail, PhoneCall, Home } from "lucide-react"
+import { Car, Calendar, Truck, Mail, PhoneCall, Home, TestTube } from "lucide-react"
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/listings", label: "Car Listings", icon: Car },
   { href: "/admin/bookings", label: "Bookings", icon: Calendar },
+  { href: "/admin/test-drives", label: "Test Drive Bookings", icon: TestTube },
   { href: "/admin/fleet", label: "Fleet Management", icon: Truck },
   { href: "/admin/contact", label: "Contact Requests", icon: Mail },
   { href: "/admin/assistance", label: "Assistance Requests", icon: PhoneCall },

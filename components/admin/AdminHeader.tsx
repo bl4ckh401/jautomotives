@@ -1,9 +1,10 @@
 "use client"
 
-import { Bell, Search, Settings, User, LogOut } from "lucide-react"
+import { Search, Settings, User, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { AdminNotificationDropdown } from "@/components/admin/AdminNotificationDropdown"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,10 +45,7 @@ export function AdminHeader() {
       <div className="flex items-center space-x-4">
         <ThemeToggle />
 
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </Button>
+        <AdminNotificationDropdown />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

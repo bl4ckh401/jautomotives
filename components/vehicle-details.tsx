@@ -36,7 +36,7 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
           <AccordionTrigger>Specifications</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4">
-              <div className="flex items-center space-x-2">
+              {/* <div className="flex items-center space-x-2">
                 <div className="text-sm font-medium">Condition</div>
                 <div className="flex">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -48,7 +48,7 @@ export function VehicleDetails({ specs }: VehicleDetailsProps) {
                     />
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               <div className="grid grid-cols-1 gap-4 text-sm">
                 {Object.entries(specs).map(([key, value]) => {
