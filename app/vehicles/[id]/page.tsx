@@ -248,6 +248,7 @@ export default function VehiclePage() {
           currentVehicleId={vehicle?.id || ""} 
           make={vehicle?.make || ""}
           vehicleType={vehicle?.vehicleType || ""}
+          alwaysShow
         />
       </div>
 
