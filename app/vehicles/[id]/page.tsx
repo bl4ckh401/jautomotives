@@ -8,7 +8,7 @@ import { VehicleDetails } from "@/components/vehicle-details"
 import { SimilarVehicles } from "@/components/similar-vehicles"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Share, Phone, ArrowLeft, Calendar } from "lucide-react"
+import { Share, Phone, ArrowLeft, Calendar, Banknote } from "lucide-react"
 import { useMarketplace, VehicleListing } from "@/contexts/MarketplaceContext"
 import { Skeleton } from "@/components/ui/skeleton"
 import { TestDriveModal } from "@/components/TestDriveModal"
@@ -28,6 +28,7 @@ export default function VehiclePage() {
   const [error, setError] = useState<string | null>(null)
   const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false) // state for bank details
 
   // Fetch vehicle data
   useEffect(() => {
@@ -185,6 +186,42 @@ export default function VehiclePage() {
               <Share className="mr-2 h-4 w-4" />
               Share
             </Button>
+          </div>
+
+          {/* Buy / Payment toggle */}
+          <div>
+            <Button
+              onClick={() => setShowPaymentDetails(prev => !prev)}
+              variant={showPaymentDetails ? "secondary" : "outline"}
+              className="w-full flex items-center justify-center gap-2 border-emerald-600 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600/10"
+            >
+              <Banknote className="h-4 w-4" />
+              {showPaymentDetails ? "Hide Bank Payment Details" : "Buy Vehicle (Show Bank Details)"}
+            </Button>
+            {showPaymentDetails && (
+              <div className="mt-4 border border-emerald-600/40 rounded-lg p-4 bg-emerald-50 dark:bg-emerald-900/10">
+                <h3 className="font-semibold text-emerald-700 dark:text-emerald-300 mb-2">Bank Payment Details</h3>
+                <p className="text-sm mb-4 text-muted-foreground">
+                  Use the details below to make payment for this vehicle. After completing the transfer, share the transaction confirmation with our sales team via WhatsApp or email for faster processing.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <span className="font-medium">KES Account:</span>{' '}
+                    <span className="font-mono">1340284300736</span> - JABA Automobiles Limited - Equity Bank - Ridgeways Mall Branch
+                  </li>
+                  <li>
+                    <span className="font-medium">USD Account:</span>{' '}
+                    <span className="font-mono">1340184300857</span> - JABA Automobiles Limited - Equity Bank - Ridgeways Mall Branch
+                  </li>
+                </ul>
+                <p className="text-[11px] text-muted-foreground mt-4 leading-relaxed">
+                  Reference: <span className="font-mono">VEH-{vehicle.id}</span> ({vehicle.make} {vehicle.model} {vehicle.year}). Ensure you include this reference in your bank transfer narration so we can allocate your payment quickly.
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-2">
+                  IMPORTANT: Always confirm availability with our team before sending funds. Vehicles are sold on a first payment received basis.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="bg-muted/30 p-3 rounded-md">

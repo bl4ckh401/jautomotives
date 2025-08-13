@@ -25,7 +25,7 @@ const vehicleMakes = [
 // Vehicle types for dropdown
 const vehicleTypes = [
   "Sedan", "SUV", "Truck", "Coupe", "Convertible", "Wagon", 
-  "Van/Minivan", "Hatchback", "Crossover", "Luxury"
+  "Van/Minivan", "Hatchback", "Crossover", "Luxury", "Motorbike" // Added Motorbike
 ]
 
 // Vehicle transmission options
@@ -235,7 +235,11 @@ export default function AdvancedSellForm() {
   
   // Handle select inputs
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: value,
+      ...(name === "vehicleType" && value === "Motorbike" ? { doors: "0" } : {}) // force 0 doors for motorbikes
+    }))
   }
   
   // Handle checkbox changes for features
@@ -334,7 +338,8 @@ export default function AdvancedSellForm() {
         images: [] as string[],
         userId: user?.id || "",
         userEmail: user?.email || "",
-        listingType: "sale" as const
+        listingType: "sale" as const,
+        dealer: { name: formData.contactName || "Dealer", verified: true } // added dealer info
       }
       
       // Use the marketplace context to create or update the listing
@@ -618,12 +623,16 @@ export default function AdvancedSellForm() {
                     <SelectValue placeholder="Select number of doors" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="0">0 (Motorbike)</SelectItem>
                     <SelectItem value="2">2</SelectItem>
                     <SelectItem value="3">3</SelectItem>
                     <SelectItem value="4">4</SelectItem>
                     <SelectItem value="5">5</SelectItem>
                   </SelectContent>
                 </Select>
+                {formData.vehicleType === 'Motorbike' && (
+                  <p className="text-xs text-muted-foreground mt-1">Doors set to 0 for motorbike.</p>
+                )}
               </div>
             </div>
             
@@ -1043,4 +1052,4 @@ export default function AdvancedSellForm() {
       </Tabs>
     </div>
   )
-} 
+}
