@@ -13,6 +13,7 @@ const navItems = [
   {href:"/admin/test-drives", label: "Test Drives", icon: Calendar },
   { href: "/admin/bookings", label: "Bookings", icon: Calendar },
   { href: "/admin/fleet", label: "Fleet Management", icon: Truck },
+  { href: "/admin/rentals", label: "Rentals", icon: Car },
   { href: "/admin/contact", label: "Contact Requests", icon: Mail },
   { href: "/admin/assistance", label: "Assistance Requests", icon: PhoneCall },
   { href: "/admin/users", label: "User Management", icon: Users },
@@ -73,18 +74,6 @@ export function AdminSidebar() {
             )
           })}
         </nav>
-
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
-            <h3 className="font-medium text-blue-800 dark:text-blue-300 mb-2">Need Help?</h3>
-            <p className="text-sm text-blue-600 dark:text-blue-400 mb-3">
-              Check our documentation for tips and guides.
-            </p>
-            <Button size="sm" className="w-full">
-              View Docs
-            </Button>
-          </div>
-        </div>
       </aside>
 
       {/* Backdrop for mobile */}

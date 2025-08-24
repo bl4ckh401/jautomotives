@@ -99,7 +99,7 @@ export function AdminDashboardContent() {
       </div>
 
       {/* Data Migration Utility - Remove after migration is complete */}
-      <AdminDataMigration />
+      {/* <AdminDataMigration /> */}
       
       {/* Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

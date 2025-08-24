@@ -1,12 +1,26 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Menu, ChevronDown, User, LogOut, Car, Calendar, PhoneCall, Info, Mail, X, Shield, Banknote, DollarSign } from "lucide-react"
-import { ThemeToggle } from "./ThemeToggle"
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Menu,
+  ChevronDown,
+  User,
+  LogOut,
+  Car,
+  Calendar,
+  PhoneCall,
+  Info,
+  Mail,
+  X,
+  Shield,
+  Banknote,
+  DollarSign,
+} from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,47 +29,48 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/contexts/AuthContext"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
-import { useAdmin } from "@/contexts/AdminContext"
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { useAdmin } from "@/contexts/AdminContext";
+import Image from "next/image";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const { user, logout } = useAuth()
-  const { isAdmin } = useAdmin()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { user, logout } = useAuth();
+  const { isAdmin } = useAdmin();
 
   // Add scroll effect
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
-        setScrolled(true)
+        setScrolled(true);
       } else {
-        setScrolled(false)
+        setScrolled(false);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
-      await logout()
-      setIsMenuOpen(false)
+      await logout();
+      setIsMenuOpen(false);
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-  }
+  };
 
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-effect",
-        scrolled 
-          ? "bg-background/98 backdrop-blur-lg shadow-lg border-b border-border/60 py-2" 
+        scrolled
+          ? "bg-background/98 backdrop-blur-lg shadow-lg border-b border-border/60 py-2"
           : "bg-background/85 backdrop-blur-md border-b border-border/30 py-4"
       )}
     >
@@ -64,7 +79,13 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold flex items-center group">
             <div className="mr-3 p-2 rounded-xl bg-gradient-to-br from-jaba-gold/20 to-jaba-gold/10 group-hover:from-jaba-gold/30 group-hover:to-jaba-gold/20 transition-all duration-200">
-              <Car className="h-6 w-6 text-jaba-gold transition-colors group-hover:text-jaba-gold-dark" />
+              <Image
+                src="/logo.png"
+                alt="JABA Motors Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              />
             </div>
             <span className="bg-gradient-to-r from-jaba-gold via-jaba-gold-light to-jaba-gold bg-clip-text text-transparent font-extrabold tracking-tight text-3xl group-hover:scale-105 transition-transform duration-200">
               JABA Motors
@@ -85,14 +106,20 @@ export default function Header() {
                 <DropdownMenuLabel>Browse By Category</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <NavDropdownItem href="/marketplace">All Vehicles</NavDropdownItem>
-                  <NavDropdownItem href="/motorbikes">Motorbikes</NavDropdownItem>
-                  <NavDropdownItem href="/trade-in">Trade-In Vehicles</NavDropdownItem>
+                  <NavDropdownItem href="/marketplace">
+                    All Vehicles
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/motorbikes">
+                    Motorbikes
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/trade-in">
+                    Trade-In Vehicles
+                  </NavDropdownItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* <DropdownMenu>
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium">
                   <Calendar className="w-4 h-4 mr-1" />
@@ -104,18 +131,38 @@ export default function Header() {
                 <DropdownMenuLabel>Car Rental Services</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <NavDropdownItem href="/rental/wedding">Wedding Car Rental</NavDropdownItem>
-                  <NavDropdownItem href="/rental/office">Office Pick-Up and Drop-Off</NavDropdownItem>
-                  <NavDropdownItem href="/rental/chauffeur">Chauffeur-Driven Rentals</NavDropdownItem>
-                  <NavDropdownItem href="/rental/vip">VIP Rental</NavDropdownItem>
-                  <NavDropdownItem href="/rental/corporate">Corporate Car Rental</NavDropdownItem>
-                  <NavDropdownItem href="/rental/long-term">Long-Term Car Hire</NavDropdownItem>
-                  <NavDropdownItem href="/rental/airport">Airport Transfer</NavDropdownItem>
-                  <NavDropdownItem href="/rental/self-drive">Self-Drive Car Hire</NavDropdownItem>
-                  <NavDropdownItem href="/rental/event">Event Car Hire</NavDropdownItem>
+                  <NavDropdownItem href="/rental/wedding">
+                    Wedding Car Rental
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/office">
+                    Office Pick-Up and Drop-Off
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/chauffeur">
+                    Chauffeur-Driven Rentals
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/vip">
+                    VIP Rental
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/corporate">
+                    Corporate Car Rental
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/long-term">
+                    Long-Term Car Hire
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/airport">
+                    Airport Transfer
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/self-drive">
+                    Self-Drive Car Hire
+                  </NavDropdownItem>
+                  <NavDropdownItem href="/rental/event">
+                    Event Car Hire
+                  </NavDropdownItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/*
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -175,7 +222,10 @@ export default function Header() {
             {!user ? (
               <div className="hidden md:flex items-center space-x-2">
                 <Link href="/sign-in">
-                  <Button variant="ghost" className="text-foreground hover:text-jaba-gold hover:bg-jaba-gold/10 font-medium">
+                  <Button
+                    variant="ghost"
+                    className="text-foreground hover:text-jaba-gold hover:bg-jaba-gold/10 font-medium"
+                  >
                     Sign In
                   </Button>
                 </Link>
@@ -188,9 +238,15 @@ export default function Header() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8 border border-jaba-silver/20">
-                      <AvatarImage src={user.photoURL || undefined} alt={user.name || "User"} />
+                      <AvatarImage
+                        src={user.photoURL || undefined}
+                        alt={user.name || "User"}
+                      />
                       <AvatarFallback className="bg-jaba-gold text-background font-semibold">
                         {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                       </AvatarFallback>
@@ -203,19 +259,28 @@ export default function Header() {
                   {isAdmin && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/admin" className="flex items-center cursor-pointer">
+                        <Link
+                          href="/admin"
+                          className="flex items-center cursor-pointer"
+                        >
                           <Shield className="mr-2 h-4 w-4" />
                           <span>Admin Dashboard</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/admin/listings" className="flex items-center cursor-pointer">
+                        <Link
+                          href="/admin/listings"
+                          className="flex items-center cursor-pointer"
+                        >
                           <Car className="mr-2 h-4 w-4" />
                           <span>Manage Listings</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/admin/bookings" className="flex items-center cursor-pointer">
+                        <Link
+                          href="/admin/bookings"
+                          className="flex items-center cursor-pointer"
+                        >
                           <Calendar className="mr-2 h-4 w-4" />
                           <span>Manage Bookings</span>
                         </Link>
@@ -224,19 +289,28 @@ export default function Header() {
                     </>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center cursor-pointer">
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center cursor-pointer"
+                    >
                       <User className="mr-2 h-4 w-4" />
                       <span>Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/profile" className="flex items-center cursor-pointer">
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center cursor-pointer"
+                    >
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="text-destructive focus:text-destructive"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -245,8 +319,17 @@ export default function Header() {
             )}
 
             {/* Mobile menu button */}
-            <Button className="lg:hidden" variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-6 w-6 text-jaba-gold" /> : <Menu className="h-6 w-6 text-jaba-gold" />}
+            <Button
+              className="lg:hidden"
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6 text-jaba-gold" />
+              ) : (
+                <Menu className="h-6 w-6 text-jaba-gold" />
+              )}
             </Button>
           </div>
         </div>
@@ -267,7 +350,7 @@ export default function Header() {
                 ]}
               />
 
-              {/* <MobileNavAccordion
+              <MobileNavAccordion
                 title="Car Rental Services"
                 icon={<Calendar className="w-5 h-5" />}
                 items={[
@@ -282,6 +365,8 @@ export default function Header() {
                   { href: "/rental/event", label: "Event Car Hire" },
                 ]}
               />
+
+              {/* 
 
               <MobileNavAccordion
                 title="24/7 Assistance"
@@ -324,7 +409,9 @@ export default function Header() {
                     </Button>
                   </Link>
                   <Link href="/sign-up">
-                    <Button className="w-full bg-alice_blue text-night hover:bg-alice_blue/80">Sign Up</Button>
+                    <Button className="w-full bg-alice_blue text-night hover:bg-alice_blue/80">
+                      Sign Up
+                    </Button>
                   </Link>
                 </div>
               ) : (
@@ -347,7 +434,11 @@ export default function Header() {
                       </Button>
                     </Link>
                   )}
-                  <Button variant="destructive" className="w-full" onClick={handleLogout}>
+                  <Button
+                    variant="destructive"
+                    className="w-full"
+                    onClick={handleLogout}
+                  >
                     Log Out
                   </Button>
                 </div>
@@ -357,41 +448,66 @@ export default function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
 
 // Helper components for the navigation
-function NavLink({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
+function NavLink({
+  href,
+  children,
+  className,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <Link
       href={href}
       className={cn(
         "flex items-center px-3 py-2 text-sm text-foreground/80 hover:text-jaba-gold rounded-md hover:bg-jaba-gold/10 transition-colors font-medium",
-        className,
+        className
       )}
     >
       {children}
     </Link>
-  )
+  );
 }
 
-function NavDropdownItem({ href, children }: { href: string; children: React.ReactNode }) {
+function NavDropdownItem({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
     <DropdownMenuItem asChild>
       <Link href={href} className="cursor-pointer">
         {children}
       </Link>
     </DropdownMenuItem>
-  )
+  );
 }
 
-function MobileNavLink({ href, children, icon }: { href: string; children: React.ReactNode; icon?: React.ReactNode }) {
+function MobileNavLink({
+  href,
+  children,
+  icon,
+}: {
+  href: string;
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+}) {
   return (
-    <Link href={href} className="flex items-center space-x-3 text-foreground hover:text-jaba-gold py-2 transition-colors">
+    <Link
+      href={href}
+      className="flex items-center space-x-3 text-foreground hover:text-jaba-gold py-2 transition-colors"
+    >
       {icon && <span className="text-jaba-gold/70">{icon}</span>}
       <span>{children}</span>
     </Link>
-  )
+  );
 }
 
 function MobileNavAccordion({
@@ -399,11 +515,11 @@ function MobileNavAccordion({
   items,
   icon,
 }: {
-  title: string
-  items: { href: string; label: string }[]
-  icon?: React.ReactNode
+  title: string;
+  items: { href: string; label: string }[];
+  icon?: React.ReactNode;
 }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>
@@ -415,19 +531,26 @@ function MobileNavAccordion({
           {icon && <span className="text-jaba-gold/70">{icon}</span>}
           <span>{title}</span>
         </div>
-        <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`h-5 w-5 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
       </button>
 
       {isOpen && (
         <div className="pl-8 mt-2 space-y-2 border-l border-border">
           {items.map((item, index) => (
-            <Link key={index} href={item.href} className="block text-foreground/80 hover:text-jaba-gold py-1 transition-colors">
+            <Link
+              key={index}
+              href={item.href}
+              className="block text-foreground/80 hover:text-jaba-gold py-1 transition-colors"
+            >
               {item.label}
             </Link>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
-
