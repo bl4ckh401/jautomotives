@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image"
 import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 interface RentalCarProp {
   car: {
@@ -9,37 +10,56 @@ interface RentalCarProp {
     image?: string
     benefits: string[]
     pricing: {
-      hourly?: string
       daily?: string
-      weekly?: string
     }
+    href?: string
   }
 }
 
 export default function RentalFleetCard({ car }: RentalCarProp) {
   return (
-    <Card className="bg-gray-800">
-      <CardHeader>
-        <CardTitle>{car.title}</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <Image
-          src={car.image || `/images/${car.title.toLowerCase().replaceAll(" ", "-")}.jpg`}
-          alt={car.title}
-          width={300}
-          height={200}
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-4">
-          <p className="text-lg font-semibold mb-2">From KES {car.pricing.daily} per day</p>
-          <ul className="text-sm text-gray-600 mb-4">
-            {car.benefits.map((benefit, index) => (
-              <li key={index} className="text-gray-300">• {benefit}</li>
-            ))}
-          </ul>
-          <Button className="w-full" variant="outline">
-            View Details
-          </Button>
+    <Card className="group card-modern hover:shadow-lg hover:scale-[1.01] transition-all duration-200 overflow-hidden">
+      <div className="relative overflow-hidden">
+        <div className="aspect-[16/10] relative bg-gradient-to-br from-jaba-silver/10 to-transparent">
+          <Image
+            src={car.image || `/images/${car.title.toLowerCase().replaceAll(" ", "-")}.jpg`}
+            alt={car.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-400"
+          />
+          <div className="absolute top-3 left-3">
+            <Badge variant="secondary">Rental</Badge>
+          </div>
+        </div>
+      </div>
+
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-foreground">{car.title}</h3>
+            <p className="text-sm text-muted-foreground">From KES {car.pricing.daily} / day</p>
+          </div>
+        </div>
+
+        <ul className="text-sm text-muted-foreground space-y-1">
+          {car.benefits.map((b, i) => (
+            <li key={i} className="flex items-center gap-2">
+              <span className="text-jaba-gold">•</span>
+              <span className="truncate">{b}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="pt-2">
+          {car.href ? (
+            <Link href={car.href} className="w-full block">
+              <Button className="w-full" onClick={() => {}}>
+                View Details
+              </Button>
+            </Link>
+          ) : (
+            <Button className="w-full" variant="outline">View Details</Button>
+          )}
         </div>
       </CardContent>
     </Card>

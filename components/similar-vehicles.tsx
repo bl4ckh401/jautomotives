@@ -12,75 +12,94 @@ interface SimilarVehiclesProps {
   currentVehicleId: string
   make?: string
   vehicleType?: string
+  alwaysShow?: boolean // new: force render section even if none found
 }
 
-export function SimilarVehicles({ currentVehicleId, make, vehicleType }: SimilarVehiclesProps) {
+export function SimilarVehicles({ currentVehicleId, make, vehicleType, alwaysShow = false }: SimilarVehiclesProps) {
   const { getListings } = useMarketplace()
   const [similarVehicles, setSimilarVehicles] = useState<VehicleListing[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let cancelled = false
     const fetchSimilarVehicles = async () => {
       try {
         setLoading(true)
-        
-        // Create filters based on the current vehicle to find similar ones
-        const filters: any = {
-          status: "active",
+        setError(null)
+        // Base filters
+        const baseFilters: any = { status: "active" }
+        if (make) baseFilters.make = [make]
+        if (vehicleType) baseFilters.vehicleType = [vehicleType]
+
+        if (process.env.NEXT_PUBLIC_DEBUG_SIMILAR === "true") {
+          // eslint-disable-next-line no-console
+          console.log("[SimilarVehicles] Fetch 1 filters", baseFilters)
         }
-        
-        // If we have make, add it to filters
-        if (make) {
-          filters.make = [make]
+
+        const result = await getListings(baseFilters, 6)
+        let candidates = result.listings.filter(v => v.id !== currentVehicleId)
+
+        // If not enough, relax make constraint
+        if (candidates.length < 3 && make) {
+          const relaxedFilters: any = { status: "active" }
+          if (vehicleType) relaxedFilters.vehicleType = [vehicleType]
+          if (process.env.NEXT_PUBLIC_DEBUG_SIMILAR === "true") {
+            // eslint-disable-next-line no-console
+            console.log("[SimilarVehicles] Fetch 2 relaxed filters", relaxedFilters)
+          }
+          const more = await getListings(relaxedFilters, 9)
+          const additional = more.listings.filter(v => v.id !== currentVehicleId && !candidates.find(c => c.id === v.id))
+          candidates = [...candidates, ...additional]
         }
-        
-        // If we have vehicleType, add it to filters
-        if (vehicleType) {
-          filters.vehicleType = [vehicleType]
+
+        // Final global fallback if still less than 3
+        if (candidates.length < 3) {
+          const globalFallbackFilters: any = { status: "active" }
+          if (process.env.NEXT_PUBLIC_DEBUG_SIMILAR === "true") {
+            // eslint-disable-next-line no-console
+            console.log("[SimilarVehicles] Fetch 3 global fallback", globalFallbackFilters)
+          }
+          const global = await getListings(globalFallbackFilters, 12)
+          const globalExtra = global.listings.filter(v => v.id !== currentVehicleId && !candidates.find(c => c.id === v.id))
+          candidates = [...candidates, ...globalExtra]
         }
-        
-        const result = await getListings(filters, 3)
-        
-        // Filter out the current vehicle
-        const filteredVehicles = result.listings.filter(
-          vehicle => vehicle.id !== currentVehicleId
-        )
-        
-        // If we don't have enough similar vehicles, get more without the make filter
-        if (filteredVehicles.length < 3 && make) {
-          const moreResults = await getListings({
-            status: "active",
-            vehicleType: vehicleType ? [vehicleType] : undefined
-          }, 6)
-          
-          const additionalVehicles = moreResults.listings.filter(
-            vehicle => vehicle.id !== currentVehicleId && !filteredVehicles.find(v => v.id === vehicle.id)
-          )
-          
-          // Combine results but limit to 3
-          setSimilarVehicles([...filteredVehicles, ...additionalVehicles].slice(0, 3))
-        } else {
-          setSimilarVehicles(filteredVehicles.slice(0, 3))
+
+        // Slice to 3 only
+        if (!cancelled) setSimilarVehicles(candidates.slice(0, 3))
+      } catch (e: any) {
+        if (process.env.NEXT_PUBLIC_DEBUG_SIMILAR === "true") {
+          // eslint-disable-next-line no-console
+          console.error("[SimilarVehicles] Error", e)
         }
-      } catch (error) {
-        console.error("Error fetching similar vehicles:", error)
-        setSimilarVehicles([])
+        if (!cancelled) {
+          setError(e?.message || "Failed to load similar vehicles")
+          setSimilarVehicles([])
+        }
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
-    
-    fetchSimilarVehicles()
+
+    if (currentVehicleId) {
+      fetchSimilarVehicles()
+    }
+
+    return () => { cancelled = true }
   }, [currentVehicleId, getListings, make, vehicleType])
 
-  // If we're still loading, show skeletons
+  const Header = (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold">Similar vehicles</h2>
+      <p className="text-gray-400">People who viewed this vehicle also consider</p>
+    </div>
+  )
+
+  // Loading state
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold">Similar vehicles</h2>
-          <p className="text-gray-400">People who viewed this vehicle also consider</p>
-        </div>
+        {Header}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-background rounded-lg overflow-hidden">
@@ -97,18 +116,22 @@ export function SimilarVehicles({ currentVehicleId, make, vehicleType }: Similar
     )
   }
 
-  // Don't show the section if there are no similar vehicles
-  if (similarVehicles.length === 0) {
-    return null
+  // Error or empty state
+  if (error || similarVehicles.length === 0) {
+    if (!alwaysShow) return null
+    return (
+      <div className="space-y-6">
+        {Header}
+        <div className="text-center text-sm text-muted-foreground border border-dashed border-border rounded-lg p-6">
+          {error ? `Unable to load similar vehicles: ${error}` : "No similar vehicles available yet. Check back soon."}
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">Similar vehicles</h2>
-        <p className="text-gray-400">People who viewed this vehicle also consider</p>
-      </div>
-
+      {Header}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {similarVehicles.map((vehicle) => (
           <Link key={vehicle.id} href={`/vehicles/${vehicle.id}`}>

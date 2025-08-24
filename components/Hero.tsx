@@ -17,7 +17,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background/60" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4">
+      <div className="relative z-10 max-w-6xl mt-24 md:mt-0 lg:mt-0  mx-auto px-4">
         <div className="mb-6 flex items-center justify-center space-x-2">
           <div className="flex items-center space-x-1">
             {[...Array(5)].map((_, i) => (
