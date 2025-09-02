@@ -1,80 +1,159 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
-import { Checkbox } from "@/components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
-import { useAuth } from "@/contexts/AuthContext"
-import { useMarketplace } from "@/contexts/MarketplaceContext"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
+import { useMarketplace } from "@/contexts/MarketplaceContext";
+import { useAdmin } from "@/contexts/AdminContext";
 
 // Vehicle makes for dropdown
 const vehicleMakes = [
-  "Audi", "BMW", "Chevrolet", "Dodge", "Ford", "Honda", "Hyundai", 
-  "Jeep", "Kia", "Lexus", "Mazda", "Mercedes-Benz", "Nissan", 
-  "Subaru", "Tesla", "Toyota", "Volkswagen", "Volvo"
-]
+  "Audi",
+  "BMW",
+  "Chevrolet",
+  "Dodge",
+  "Ford",
+  "Honda",
+  "Hyundai",
+  "Jeep",
+  "Kia",
+  "Lexus",
+  "Mazda",
+  "Mercedes-Benz",
+  "Nissan",
+  "Subaru",
+  "Tesla",
+  "Toyota",
+  "Volkswagen",
+  "Volvo",
+];
 
 // Vehicle types for dropdown
 const vehicleTypes = [
-  "Sedan", "SUV", "Truck", "Coupe", "Convertible", "Wagon", 
-  "Van/Minivan", "Hatchback", "Crossover", "Luxury", "Motorbike" // Added Motorbike
-]
+  "Sedan",
+  "SUV",
+  "Truck",
+  "Coupe",
+  "Convertible",
+  "Wagon",
+  "Van/Minivan",
+  "Hatchback",
+  "Crossover",
+  "Luxury",
+  "Motorbike", // Added Motorbike
+];
 
 // Vehicle transmission options
-const transmissionTypes = ["Automatic", "Manual", "Semi-automatic", "CVT"]
+const transmissionTypes = ["Automatic", "Manual", "Semi-automatic", "CVT"];
 
 // Fuel types
-const fuelTypes = ["Gasoline", "Diesel", "Electric", "Hybrid", "Plug-in Hybrid", "Hydrogen"]
+const fuelTypes = [
+  "Gasoline",
+  "Diesel",
+  "Electric",
+  "Hybrid",
+  "Plug-in Hybrid",
+  "Hydrogen",
+];
 
 // Available vehicle features
 const featureGroups = {
   exterior: [
-    "Sunroof/Moonroof", "Panoramic Roof", "Alloy Wheels", "Roof Rack", 
-    "Running Boards", "Towing Package", "LED Headlights", "Fog Lights"
+    "Sunroof/Moonroof",
+    "Panoramic Roof",
+    "Alloy Wheels",
+    "Roof Rack",
+    "Running Boards",
+    "Towing Package",
+    "LED Headlights",
+    "Fog Lights",
   ],
   interior: [
-    "Leather Seats", "Heated Seats", "Ventilated Seats", "Memory Seats", 
-    "Power Seats", "Rear Seat Entertainment", "Ambient Lighting", "Premium Audio"
+    "Leather Seats",
+    "Heated Seats",
+    "Ventilated Seats",
+    "Memory Seats",
+    "Power Seats",
+    "Rear Seat Entertainment",
+    "Ambient Lighting",
+    "Premium Audio",
   ],
   safety: [
-    "Airbags", "Anti-lock Braking", "Stability Control", "Blind Spot Monitoring",
-    "Lane Departure Warning", "Forward Collision Warning", "Automatic Emergency Braking",
-    "Rear Cross Traffic Alert", "360-Degree Camera", "Parking Sensors"
+    "Airbags",
+    "Anti-lock Braking",
+    "Stability Control",
+    "Blind Spot Monitoring",
+    "Lane Departure Warning",
+    "Forward Collision Warning",
+    "Automatic Emergency Braking",
+    "Rear Cross Traffic Alert",
+    "360-Degree Camera",
+    "Parking Sensors",
   ],
   technology: [
-    "Bluetooth", "Apple CarPlay", "Android Auto", "Navigation System",
-    "WiFi Hotspot", "Wireless Charging", "Digital Instrument Cluster",
-    "Heads-Up Display", "Remote Start", "Keyless Entry"
+    "Bluetooth",
+    "Apple CarPlay",
+    "Android Auto",
+    "Navigation System",
+    "WiFi Hotspot",
+    "Wireless Charging",
+    "Digital Instrument Cluster",
+    "Heads-Up Display",
+    "Remote Start",
+    "Keyless Entry",
   ],
   driverAssistance: [
-    "Adaptive Cruise Control", "Lane Keeping Assist", "Self-Parking",
-    "Traffic Sign Recognition", "Driver Attention Monitoring", "Night Vision"
+    "Adaptive Cruise Control",
+    "Lane Keeping Assist",
+    "Self-Parking",
+    "Traffic Sign Recognition",
+    "Driver Attention Monitoring",
+    "Night Vision",
   ],
   performance: [
-    "Sport Package", "Performance Tires", "Sport Suspension", "Sport Exhaust",
-    "Limited Slip Differential", "Launch Control", "Multiple Driving Modes"
-  ]
-}
+    "Sport Package",
+    "Performance Tires",
+    "Sport Suspension",
+    "Sport Exhaust",
+    "Limited Slip Differential",
+    "Launch Control",
+    "Multiple Driving Modes",
+  ],
+};
 
 export default function AdvancedSellForm() {
-  const { toast } = useToast()
-  const router = useRouter()
-  const { user } = useAuth()
-  const { createListing, getListing, updateListing, loading: isSubmitting } = useMarketplace()
-  const [activeTab, setActiveTab] = useState("basic")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isEditMode, setIsEditMode] = useState(false)
-  const [editingListingId, setEditingListingId] = useState<string | null>(null)
-  const [existingImages, setExistingImages] = useState<string[]>([])
-  
+  const { toast } = useToast();
+  const router = useRouter();
+  const { user } = useAuth();
+  const {
+    createListing,
+    getListing,
+    updateListing,
+    loading: isSubmitting,
+  } = useMarketplace();
+  const { isAdmin } = useAdmin();
+  const [activeTab, setActiveTab] = useState("basic");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingListingId, setEditingListingId] = useState<string | null>(null);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+
   // Form state
   const [formData, setFormData] = useState({
     // Basic info
@@ -83,7 +162,7 @@ export default function AdvancedSellForm() {
     year: new Date().getFullYear().toString(),
     price: "",
     vehicleType: "Sedan",
-    
+
     // Details
     mileage: "",
     vin: "",
@@ -93,58 +172,63 @@ export default function AdvancedSellForm() {
     engineSize: "",
     fuelType: "Gasoline",
     doors: "4",
-    
+
     // Condition and history
-    condition: "Used",
+    condition: "Foreign Used",
     ownerHistory: "1",
     accidentHistory: "No",
     serviceHistory: "",
-    
+
     // Description
     title: "",
     description: "",
     sellingReason: "",
-    
+
     // Features (will be populated with checked features)
     features: {} as Record<string, boolean>,
-    
+
     // Images
     images: [] as File[],
-    
+
     // Contact details (optional, can use user profile info)
     contactName: "",
     contactEmail: "",
     contactPhone: "",
     location: "",
-    
+
     // Listing options
     listingDuration: "30",
     featured: false,
     negotiable: true,
-    
+    // Second-hand flag (admin controls marking)
+    secondHand: false,
+    // Direct import flag (admin only)
+    directImport: false,
+
     // Timestamps and IDs will be added on submission
-  })
-  
+  });
+
   // Check for edit mode when component mounts
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const editId = urlParams.get('edit') || sessionStorage.getItem('editListingId')
-    
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId =
+      urlParams.get("edit") || sessionStorage.getItem("editListingId");
+
     if (editId) {
-      setIsEditMode(true)
-      setEditingListingId(editId)
-      loadExistingListing(editId)
+      setIsEditMode(true);
+      setEditingListingId(editId);
+      loadExistingListing(editId);
       // Clear from sessionStorage after loading
-      sessionStorage.removeItem('editListingId')
+      sessionStorage.removeItem("editListingId");
     }
-  }, [])
+  }, []);
 
   // Load existing listing data for editing
   const loadExistingListing = async (listingId: string) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const listing = await getListing(listingId)
-      
+      const listing = await getListing(listingId);
+
       // Pre-fill the form with existing data
       setFormData({
         make: listing.make || "",
@@ -160,7 +244,7 @@ export default function AdvancedSellForm() {
         engineSize: listing.engineSize || "",
         fuelType: listing.fuelType || "Gasoline",
         doors: listing.doors?.toString() || "4",
-        condition: listing.condition || "Used",
+        condition: listing.condition || "Foreign Used",
         ownerHistory: listing.ownerHistory || "1",
         accidentHistory: listing.accidentHistory || "No",
         serviceHistory: listing.serviceHistory || "",
@@ -175,124 +259,130 @@ export default function AdvancedSellForm() {
         location: listing.location || "",
         listingDuration: listing.listingDuration || "30",
         featured: listing.featured || false,
-        negotiable: listing.negotiable !== undefined ? listing.negotiable : true,
-      })
-      
+        negotiable:
+          listing.negotiable !== undefined ? listing.negotiable : true,
+        secondHand: listing.secondHand || false,
+        directImport: listing.directImport || false,
+      });
+
       // Store existing images separately
-      setExistingImages(listing.images || [])
-      
+      setExistingImages(listing.images || []);
+
       toast({
         title: "Listing loaded",
         description: "You can now edit the vehicle listing.",
-      })
-      
+      });
     } catch (error: any) {
-      console.error("Error loading listing:", error)
+      console.error("Error loading listing:", error);
       toast({
         title: "Error loading listing",
         description: error.message || "Failed to load the listing for editing.",
         variant: "destructive",
-      })
+      });
       // Redirect back to admin on error
-      router.push('/admin/listings')
+      router.push("/admin/listings");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  
+  };
+
   // Populate user data if available
   useEffect(() => {
     if (user) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         contactName: user.name || prev.contactName,
-        contactEmail: user.email || prev.contactEmail
-      }))
+        contactEmail: user.email || prev.contactEmail,
+      }));
     }
-  }, [user])
-  
+  }, [user]);
+
   // Initialize features as all unchecked
   useEffect(() => {
-    const initialFeatures = {} as Record<string, boolean>
-    
-    Object.values(featureGroups).forEach(group => {
-      group.forEach(feature => {
-        initialFeatures[feature] = false
-      })
-    })
-    
-    setFormData(prev => ({
+    const initialFeatures = {} as Record<string, boolean>;
+
+    Object.values(featureGroups).forEach((group) => {
+      group.forEach((feature) => {
+        initialFeatures[feature] = false;
+      });
+    });
+
+    setFormData((prev) => ({
       ...prev,
-      features: initialFeatures
-    }))
-  }, [])
-  
+      features: initialFeatures,
+    }));
+  }, []);
+
   // Handle text inputs
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-  
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   // Handle select inputs
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-      ...(name === "vehicleType" && value === "Motorbike" ? { doors: "0" } : {}) // force 0 doors for motorbikes
-    }))
-  }
-  
+      ...(name === "vehicleType" && value === "Motorbike"
+        ? { doors: "0" }
+        : {}), // force 0 doors for motorbikes
+    }));
+  };
+
   // Handle checkbox changes for features
   const handleFeatureChange = (feature: string, checked: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       features: {
         ...prev.features,
-        [feature]: checked
-      }
-    }))
-  }
-  
+        [feature]: checked,
+      },
+    }));
+  };
+
   // Handle checkbox for other boolean options
   const handleCheckboxChange = (name: string, checked: boolean) => {
-    setFormData(prev => ({ ...prev, [name]: checked }))
-  }
-  
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
   // Handle file uploads
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const fileArray = Array.from(e.target.files)
-      setFormData(prev => ({ 
-        ...prev, 
-        images: [...prev.images, ...fileArray].slice(0, 10) // Limit to 10 images
-      }))
+      const fileArray = Array.from(e.target.files);
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...fileArray].slice(0, 10), // Limit to 10 images
+      }));
     }
-  }
-  
+  };
+
   // Remove an image from the selection
   const removeImage = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }))
-  }
-  
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!user) {
       toast({
         title: "Authentication required",
         description: "Please sign in to list a vehicle",
-        variant: "destructive"
-      })
-      return
+        variant: "destructive",
+      });
+      return;
     }
-    
+
     try {
-      setIsLoading(true)
-      
+      setIsLoading(true);
+
       const listingData = {
         // Basic info
         make: formData.make,
@@ -302,7 +392,7 @@ export default function AdvancedSellForm() {
         vehicleType: formData.vehicleType,
         title: formData.title,
         description: formData.description,
-        
+
         // Details
         mileage: formData.mileage,
         vin: formData.vin,
@@ -312,98 +402,120 @@ export default function AdvancedSellForm() {
         engineSize: formData.engineSize,
         fuelType: formData.fuelType,
         doors: formData.doors,
-        
+
         // Condition and history
         condition: formData.condition as any,
         ownerHistory: formData.ownerHistory,
         accidentHistory: formData.accidentHistory,
         serviceHistory: formData.serviceHistory,
         sellingReason: formData.sellingReason,
-        
+
         // Features
         features: formData.features,
-        
+
         // Contact details
         contactName: formData.contactName,
         contactEmail: formData.contactEmail,
         contactPhone: formData.contactPhone,
         location: formData.location,
-        
+
         // Listing options
         listingDuration: formData.listingDuration,
         featured: formData.featured,
         negotiable: formData.negotiable,
-        
+        // Second hand marker
+        secondHand: formData.secondHand || false,
+
         // Required properties to satisfy the type
         images: [] as string[],
         userId: user?.id || "",
         userEmail: user?.email || "",
+        // Direct import marker
+        directImport: formData.directImport || false,
         listingType: "sale" as const,
-        dealer: { name: formData.contactName || "Dealer", verified: true } // added dealer info
-      }
-      
+        dealer: { name: formData.contactName || "Dealer", verified: true }, // added dealer info
+      };
+
       // Use the marketplace context to create or update the listing
       if (isEditMode && editingListingId) {
         // Update existing listing
-        await updateListing(editingListingId, listingData, formData.images)
-        
+        await updateListing(editingListingId, listingData, formData.images);
+
         toast({
           title: "Listing updated successfully",
           description: "Your vehicle listing has been updated.",
-        })
-        
+        });
+
         // Redirect back to admin listings page
-        router.push('/admin/listings')
+        router.push("/admin/listings");
       } else {
         // Create new listing
-        const listingId = await createListing(listingData, formData.images)
-        
+        const listingId = await createListing(listingData, formData.images);
+
         toast({
           title: "Listing created successfully",
           description: "Your vehicle has been listed on the marketplace.",
-        })
-        
-        // Redirect to the listing page
-        router.push(`/marketplace/${listingId}`)
+        });
+
+        // Redirect to the appropriate listing page
+        if (formData.secondHand) {
+          router.push(`/second-hand/${listingId}`);
+        } else {
+          router.push(`/marketplace/${listingId}`);
+        }
       }
-      
     } catch (error: any) {
-      console.error(`Error ${isEditMode ? 'updating' : 'creating'} listing:`, error)
+      console.error(
+        `Error ${isEditMode ? "updating" : "creating"} listing:`,
+        error
+      );
       toast({
-        title: `Error ${isEditMode ? 'updating' : 'creating'} listing`,
-        description: `There was a problem ${isEditMode ? 'updating' : 'creating'} your listing. Please try again.`,
-        variant: "destructive"
-      })
+        title: `Error ${isEditMode ? "updating" : "creating"} listing`,
+        description: `There was a problem ${
+          isEditMode ? "updating" : "creating"
+        } your listing. Please try again.`,
+        variant: "destructive",
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  
+  };
+
   const nextTab = () => {
-    if (activeTab === "basic") setActiveTab("details")
-    else if (activeTab === "details") setActiveTab("features")
-    else if (activeTab === "features") setActiveTab("images")
-    else if (activeTab === "images") setActiveTab("contact")
-  }
-  
+    if (activeTab === "basic") setActiveTab("details");
+    else if (activeTab === "details") setActiveTab("features");
+    else if (activeTab === "features") setActiveTab("images");
+    else if (activeTab === "images") setActiveTab("contact");
+  };
+
   const prevTab = () => {
-    if (activeTab === "contact") setActiveTab("images")
-    else if (activeTab === "images") setActiveTab("features")
-    else if (activeTab === "features") setActiveTab("details")
-    else if (activeTab === "details") setActiveTab("basic")
-  }
-  
+    if (activeTab === "contact") setActiveTab("images");
+    else if (activeTab === "images") setActiveTab("features");
+    else if (activeTab === "features") setActiveTab("details");
+    else if (activeTab === "details") setActiveTab("basic");
+  };
+
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-5 mb-8">
-          <TabsTrigger value="basic" disabled={isLoading}>Basic Info</TabsTrigger>
-          <TabsTrigger value="details" disabled={isLoading}>Vehicle Details</TabsTrigger>
-          <TabsTrigger value="features" disabled={isLoading}>Features</TabsTrigger>
-          <TabsTrigger value="images" disabled={isLoading}>Images</TabsTrigger>
-          <TabsTrigger value="contact" disabled={isLoading}>Contact & Options</TabsTrigger>
+          <TabsTrigger value="basic" disabled={isLoading}>
+            Basic Info
+          </TabsTrigger>
+          <TabsTrigger value="details" disabled={isLoading}>
+            Vehicle Details
+          </TabsTrigger>
+          <TabsTrigger value="features" disabled={isLoading}>
+            Features
+          </TabsTrigger>
+          <TabsTrigger value="images" disabled={isLoading}>
+            Images
+          </TabsTrigger>
+          <TabsTrigger value="contact" disabled={isLoading}>
+            Contact & Options
+          </TabsTrigger>
         </TabsList>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information Tab */}
           <TabsContent value="basic" className="space-y-6">
@@ -420,57 +532,61 @@ export default function AdvancedSellForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {vehicleMakes.map((make) => (
-                      <SelectItem key={make} value={make}>{make}</SelectItem>
+                      <SelectItem key={make} value={make}>
+                        {make}
+                      </SelectItem>
                     ))}
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="model">Model*</Label>
-                <Input 
-                  id="model" 
-                  name="model" 
-                  value={formData.model} 
-                  onChange={handleInputChange} 
-                  required 
+                <Input
+                  id="model"
+                  name="model"
+                  value={formData.model}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="year">Year*</Label>
-                <Input 
-                  id="year" 
-                  name="year" 
-                  type="number" 
+                <Input
+                  id="year"
+                  name="year"
+                  type="number"
                   min="1900"
                   max={new Date().getFullYear() + 1}
-                  value={formData.year} 
-                  onChange={handleInputChange} 
-                  required 
+                  value={formData.year}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="price">Price (USD)*</Label>
-                <Input 
-                  id="price" 
-                  name="price" 
+                <Input
+                  id="price"
+                  name="price"
                   type="number"
                   min="0"
                   step="1"
-                  value={formData.price} 
-                  onChange={handleInputChange} 
-                  required 
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="vehicleType">Vehicle Type*</Label>
                 <Select
                   value={formData.vehicleType}
-                  onValueChange={(value) => handleSelectChange("vehicleType", value)}
+                  onValueChange={(value) =>
+                    handleSelectChange("vehicleType", value)
+                  }
                   required
                 >
                   <SelectTrigger id="vehicleType">
@@ -478,25 +594,27 @@ export default function AdvancedSellForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {vehicleTypes.map((type) => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="title">Listing Title*</Label>
-                <Input 
-                  id="title" 
-                  name="title" 
-                  value={formData.title} 
+                <Input
+                  id="title"
+                  name="title"
+                  value={formData.title}
                   onChange={handleInputChange}
                   placeholder="e.g. 2021 BMW X5 xDrive - Excellent Condition"
-                  required 
+                  required
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="description">Description*</Label>
               <Textarea
@@ -509,67 +627,69 @@ export default function AdvancedSellForm() {
                 required
               />
             </div>
-            
+
             <div className="flex justify-end">
               <Button type="button" onClick={nextTab}>
                 Next: Vehicle Details
               </Button>
             </div>
           </TabsContent>
-          
+
           {/* Vehicle Details Tab */}
           <TabsContent value="details" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="mileage">Mileage*</Label>
-                <Input 
-                  id="mileage" 
-                  name="mileage" 
+                <Input
+                  id="mileage"
+                  name="mileage"
                   type="number"
                   min="0"
-                  value={formData.mileage} 
-                  onChange={handleInputChange} 
-                  required 
+                  value={formData.mileage}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="vin">VIN (Vehicle Identification Number)</Label>
-                <Input 
-                  id="vin" 
-                  name="vin" 
-                  value={formData.vin} 
-                  onChange={handleInputChange} 
+                <Input
+                  id="vin"
+                  name="vin"
+                  value={formData.vin}
+                  onChange={handleInputChange}
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="exteriorColor">Exterior Color*</Label>
-                <Input 
-                  id="exteriorColor" 
-                  name="exteriorColor" 
-                  value={formData.exteriorColor} 
-                  onChange={handleInputChange} 
-                  required 
+                <Input
+                  id="exteriorColor"
+                  name="exteriorColor"
+                  value={formData.exteriorColor}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="interiorColor">Interior Color*</Label>
-                <Input 
-                  id="interiorColor" 
-                  name="interiorColor" 
-                  value={formData.interiorColor} 
-                  onChange={handleInputChange} 
-                  required 
+                <Input
+                  id="interiorColor"
+                  name="interiorColor"
+                  value={formData.interiorColor}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="transmission">Transmission*</Label>
                 <Select
                   value={formData.transmission}
-                  onValueChange={(value) => handleSelectChange("transmission", value)}
+                  onValueChange={(value) =>
+                    handleSelectChange("transmission", value)
+                  }
                   required
                 >
                   <SelectTrigger id="transmission">
@@ -577,17 +697,21 @@ export default function AdvancedSellForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {transmissionTypes.map((type) => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="fuelType">Fuel Type*</Label>
                 <Select
                   value={formData.fuelType}
-                  onValueChange={(value) => handleSelectChange("fuelType", value)}
+                  onValueChange={(value) =>
+                    handleSelectChange("fuelType", value)
+                  }
                   required
                 >
                   <SelectTrigger id="fuelType">
@@ -595,23 +719,25 @@ export default function AdvancedSellForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {fuelTypes.map((type) => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="engineSize">Engine Size/Power</Label>
-                <Input 
-                  id="engineSize" 
-                  name="engineSize" 
-                  placeholder="e.g. 2.0L Turbo, 300hp" 
-                  value={formData.engineSize} 
-                  onChange={handleInputChange} 
+                <Input
+                  id="engineSize"
+                  name="engineSize"
+                  placeholder="e.g. 2.0L Turbo, 300hp"
+                  value={formData.engineSize}
+                  onChange={handleInputChange}
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="doors">Number of Doors*</Label>
                 <Select
@@ -630,21 +756,25 @@ export default function AdvancedSellForm() {
                     <SelectItem value="5">5</SelectItem>
                   </SelectContent>
                 </Select>
-                {formData.vehicleType === 'Motorbike' && (
-                  <p className="text-xs text-muted-foreground mt-1">Doors set to 0 for motorbike.</p>
+                {formData.vehicleType === "Motorbike" && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Doors set to 0 for motorbike.
+                  </p>
                 )}
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Vehicle History</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <Label htmlFor="condition">Condition*</Label>
-                  <RadioGroup 
-                    value={formData.condition} 
-                    onValueChange={(value) => handleSelectChange("condition", value)}
+                  <RadioGroup
+                    value={formData.condition}
+                    onValueChange={(value) =>
+                      handleSelectChange("condition", value)
+                    }
                     required
                   >
                     <div className="flex items-center space-x-2">
@@ -652,21 +782,31 @@ export default function AdvancedSellForm() {
                       <Label htmlFor="condition-new">New</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Used" id="condition-used" />
-                      <Label htmlFor="condition-used">Used</Label>
+                      <RadioGroupItem
+                        value="Foreign Used"
+                        id="condition-foreign-used"
+                      />
+                      <Label htmlFor="condition-foreign-used">
+                        Foreign Used
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Certified Pre-Owned" id="condition-cpo" />
+                      <RadioGroupItem
+                        value="Certified Pre-Owned"
+                        id="condition-cpo"
+                      />
                       <Label htmlFor="condition-cpo">Certified Pre-Owned</Label>
                     </div>
                   </RadioGroup>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="ownerHistory">Previous Owners*</Label>
-                  <RadioGroup 
-                    value={formData.ownerHistory} 
-                    onValueChange={(value) => handleSelectChange("ownerHistory", value)}
+                  <RadioGroup
+                    value={formData.ownerHistory}
+                    onValueChange={(value) =>
+                      handleSelectChange("ownerHistory", value)
+                    }
                     required
                   >
                     <div className="flex items-center space-x-2">
@@ -687,12 +827,14 @@ export default function AdvancedSellForm() {
                     </div>
                   </RadioGroup>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="accidentHistory">Accident History*</Label>
-                  <RadioGroup 
-                    value={formData.accidentHistory} 
-                    onValueChange={(value) => handleSelectChange("accidentHistory", value)}
+                  <RadioGroup
+                    value={formData.accidentHistory}
+                    onValueChange={(value) =>
+                      handleSelectChange("accidentHistory", value)
+                    }
                     required
                   >
                     <div className="flex items-center space-x-2">
@@ -710,7 +852,7 @@ export default function AdvancedSellForm() {
                   </RadioGroup>
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="serviceHistory">Service History</Label>
                 <Textarea
@@ -722,7 +864,7 @@ export default function AdvancedSellForm() {
                   className="min-h-24"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="sellingReason">Reason for Selling</Label>
                 <Textarea
@@ -735,7 +877,7 @@ export default function AdvancedSellForm() {
                 />
               </div>
             </div>
-            
+
             <div className="flex justify-between">
               <Button type="button" variant="outline" onClick={prevTab}>
                 Back: Basic Info
@@ -745,31 +887,42 @@ export default function AdvancedSellForm() {
               </Button>
             </div>
           </TabsContent>
-          
+
           {/* Features Tab */}
           <TabsContent value="features" className="space-y-6">
             <div className="space-y-6">
               <h3 className="text-lg font-medium">Vehicle Features</h3>
-              <p className="text-muted-foreground">Select all features that apply to your vehicle</p>
-              
+              <p className="text-muted-foreground">
+                Select all features that apply to your vehicle
+              </p>
+
               {/* Features section with collapsible cards */}
               <div className="space-y-4">
                 {Object.entries(featureGroups).map(([groupName, features]) => (
                   <Card key={groupName}>
                     <CardContent className="pt-6">
-                      <h4 className="text-base font-medium capitalize mb-4">{groupName} Features</h4>
+                      <h4 className="text-base font-medium capitalize mb-4">
+                        {groupName} Features
+                      </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {features.map((feature) => (
-                          <div key={feature} className="flex items-center space-x-2">
-                            <Checkbox 
-                              id={`feature-${feature.replace(/\s+/g, '-').toLowerCase()}`}
+                          <div
+                            key={feature}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={`feature-${feature
+                                .replace(/\s+/g, "-")
+                                .toLowerCase()}`}
                               checked={formData.features[feature] || false}
-                              onCheckedChange={(checked) => 
+                              onCheckedChange={(checked) =>
                                 handleFeatureChange(feature, checked === true)
                               }
                             />
-                            <Label 
-                              htmlFor={`feature-${feature.replace(/\s+/g, '-').toLowerCase()}`}
+                            <Label
+                              htmlFor={`feature-${feature
+                                .replace(/\s+/g, "-")
+                                .toLowerCase()}`}
                             >
                               {feature}
                             </Label>
@@ -780,7 +933,7 @@ export default function AdvancedSellForm() {
                   </Card>
                 ))}
               </div>
-              
+
               {/* Additional features not in the list */}
               <div>
                 <Label htmlFor="additionalFeatures">Additional Features</Label>
@@ -792,7 +945,7 @@ export default function AdvancedSellForm() {
                 />
               </div>
             </div>
-            
+
             <div className="flex justify-between">
               <Button type="button" variant="outline" onClick={prevTab}>
                 Back: Vehicle Details
@@ -802,25 +955,28 @@ export default function AdvancedSellForm() {
               </Button>
             </div>
           </TabsContent>
-          
+
           {/* Images Tab */}
           <TabsContent value="images" className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Vehicle Images</h3>
               <p className="text-muted-foreground">
-                Upload high-quality images of your vehicle (up to 10 images). Include exterior, 
-                interior, engine, and any notable features or damage.
+                Upload high-quality images of your vehicle (up to 10 images).
+                Include exterior, interior, engine, and any notable features or
+                damage.
               </p>
-              
+
               {/* Show existing images in edit mode */}
               {isEditMode && existingImages.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="text-base font-medium mb-3">Current Images ({existingImages.length})</h4>
+                  <h4 className="text-base font-medium mb-3">
+                    Current Images ({existingImages.length})
+                  </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {existingImages.map((imageUrl, index) => (
                       <div key={index} className="relative group">
-                        <img 
-                          src={imageUrl} 
+                        <img
+                          src={imageUrl}
                           alt={`Current vehicle image ${index + 1}`}
                           className="w-full h-32 object-cover rounded-md border"
                         />
@@ -831,49 +987,65 @@ export default function AdvancedSellForm() {
                     ))}
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Note: To change existing images, upload new ones below. Current images will be kept unless you delete the listing and recreate it.
+                    Note: To change existing images, upload new ones below.
+                    Current images will be kept unless you delete the listing
+                    and recreate it.
                   </p>
                 </div>
               )}
-              
+
               <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 p-6 rounded-lg text-center">
-                <Input 
-                  id="images" 
-                  type="file" 
-                  multiple 
+                <Input
+                  id="images"
+                  type="file"
+                  multiple
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <Label 
-                  htmlFor="images" 
+                <Label
+                  htmlFor="images"
                   className="cursor-pointer flex flex-col items-center justify-center"
                 >
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-primary">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="w-6 h-6 text-primary"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
                     </svg>
                   </div>
                   <span className="text-primary font-medium">
                     {isEditMode ? "Add New Images" : "Click to browse files"}
                   </span>
                   <span className="text-sm text-muted-foreground mt-1">
-                    {isEditMode ? "Upload additional images" : "or drag and drop images here"}
+                    {isEditMode
+                      ? "Upload additional images"
+                      : "or drag and drop images here"}
                   </span>
                 </Label>
               </div>
-              
+
               {/* New images preview */}
               {formData.images.length > 0 && (
                 <div>
                   <h4 className="text-base font-medium mb-3">
-                    {isEditMode ? "New Images to Add" : "Selected Images"} ({formData.images.length}/10)
+                    {isEditMode ? "New Images to Add" : "Selected Images"} (
+                    {formData.images.length}/10)
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {formData.images.map((file, index) => (
                       <div key={index} className="relative group">
-                        <img 
-                          src={URL.createObjectURL(file)} 
+                        <img
+                          src={URL.createObjectURL(file)}
                           alt={`Vehicle preview ${index + 1}`}
                           className="w-full h-32 object-cover rounded-md"
                         />
@@ -882,8 +1054,19 @@ export default function AdvancedSellForm() {
                           onClick={() => removeImage(index)}
                           className="absolute top-1 right-1 bg-black/70 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            className="w-4 h-4"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
                           </svg>
                         </button>
                         {index === 0 && (
@@ -896,20 +1079,21 @@ export default function AdvancedSellForm() {
                   </div>
                 </div>
               )}
-              
+
               {formData.images.length === 0 && !isEditMode && (
                 <p className="text-sm text-muted-foreground italic">
-                  No images selected yet. Listings with images get 10x more views!
+                  No images selected yet. Listings with images get 10x more
+                  views!
                 </p>
               )}
-              
+
               {formData.images.length === 0 && isEditMode && (
                 <p className="text-sm text-muted-foreground italic">
                   No new images selected. Current images will be maintained.
                 </p>
               )}
             </div>
-            
+
             <div className="flex justify-between">
               <Button type="button" variant="outline" onClick={prevTab}>
                 Back: Features
@@ -919,7 +1103,7 @@ export default function AdvancedSellForm() {
               </Button>
             </div>
           </TabsContent>
-          
+
           {/* Contact & Options Tab */}
           <TabsContent value="contact" className="space-y-6">
             <div className="space-y-4">
@@ -927,64 +1111,68 @@ export default function AdvancedSellForm() {
               <p className="text-muted-foreground">
                 How potential buyers should contact you about this vehicle
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="contactName">Contact Name*</Label>
-                  <Input 
-                    id="contactName" 
-                    name="contactName" 
-                    value={formData.contactName} 
-                    onChange={handleInputChange} 
-                    required 
+                  <Input
+                    id="contactName"
+                    name="contactName"
+                    value={formData.contactName}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="contactEmail">Contact Email*</Label>
-                  <Input 
-                    id="contactEmail" 
+                  <Input
+                    id="contactEmail"
                     name="contactEmail"
-                    type="email" 
-                    value={formData.contactEmail} 
-                    onChange={handleInputChange} 
-                    required 
+                    type="email"
+                    value={formData.contactEmail}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="contactPhone">Contact Phone</Label>
-                  <Input 
-                    id="contactPhone" 
-                    name="contactPhone" 
-                    value={formData.contactPhone} 
-                    onChange={handleInputChange} 
+                  <Input
+                    id="contactPhone"
+                    name="contactPhone"
+                    value={formData.contactPhone}
+                    onChange={handleInputChange}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="location">Vehicle Location*</Label>
-                  <Input 
-                    id="location" 
+                  <Input
+                    id="location"
                     name="location"
-                    placeholder="City, State/Province" 
-                    value={formData.location} 
-                    onChange={handleInputChange} 
-                    required 
+                    placeholder="City, State/Province"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Listing Options</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="listingDuration">Listing Duration (days)*</Label>
+                  <Label htmlFor="listingDuration">
+                    Listing Duration (days)*
+                  </Label>
                   <Select
                     value={formData.listingDuration}
-                    onValueChange={(value) => handleSelectChange("listingDuration", value)}
+                    onValueChange={(value) =>
+                      handleSelectChange("listingDuration", value)
+                    }
                     required
                   >
                     <SelectTrigger id="listingDuration">
@@ -999,13 +1187,13 @@ export default function AdvancedSellForm() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="flex flex-col space-y-4">
                   <div className="flex items-center space-x-2">
-                    <Checkbox 
+                    <Checkbox
                       id="featured"
                       checked={formData.featured}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         handleCheckboxChange("featured", checked === true)
                       }
                     />
@@ -1016,12 +1204,12 @@ export default function AdvancedSellForm() {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
-                    <Checkbox 
+                    <Checkbox
                       id="negotiable"
                       checked={formData.negotiable}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         handleCheckboxChange("negotiable", checked === true)
                       }
                     />
@@ -1033,23 +1221,62 @@ export default function AdvancedSellForm() {
                     </div>
                   </div>
                 </div>
+                {isAdmin && (
+                  <div className="mt-4 flex items-center space-x-2">
+                    <Checkbox
+                      id="secondHand"
+                      checked={formData.secondHand}
+                      onCheckedChange={(checked) =>
+                        handleCheckboxChange("secondHand", checked === true)
+                      }
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="secondHand">Mark as Second Hand</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Admin-only: mark this listing as a second hand vehicle
+                        to appear in the Second Hand section.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {isAdmin && (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="directImport"
+                      checked={formData.directImport}
+                      onCheckedChange={(checked) =>
+                        handleCheckboxChange("directImport", checked === true)
+                      }
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="directImport">Direct Import</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Admin-only: mark this vehicle as a direct import
+                        (overseas import to be cleared and shipped).
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-            
+
             <div className="flex justify-between pt-4">
               <Button type="button" variant="outline" onClick={prevTab}>
                 Back: Images
               </Button>
               <Button type="submit" disabled={isLoading} className="min-w-32">
-                {isLoading ? 
-                  (isEditMode ? "Updating..." : "Submitting...") : 
-                  (isEditMode ? "Update Vehicle" : "List Vehicle")
-                }
+                {isLoading
+                  ? isEditMode
+                    ? "Updating..."
+                    : "Submitting..."
+                  : isEditMode
+                  ? "Update Vehicle"
+                  : "List Vehicle"}
               </Button>
             </div>
           </TabsContent>
         </form>
       </Tabs>
     </div>
-  )
+  );
 }

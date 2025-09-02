@@ -47,7 +47,7 @@ export default function UploadMotorbikePage() {
     price: "",
     mileage: "",
     engineSize: "",
-    condition: "Used",
+  condition: "Foreign Used",
     description: "",
     title: "",
     images: [] as File[],
@@ -126,16 +126,26 @@ export default function UploadMotorbikePage() {
         contactPhone: formData.contactPhone,
         location: formData.location,
         
-        // Required properties to satisfy the type
-        images: [] as string[],
-        userId: user?.id || "",
-        userEmail: user?.email || "",
-        listingType: "sale" as const,
-        
-        // Defaults
-        transmission: "Manual",
-        fuelType: "Gasoline",
-        doors: "0",
+    // Required properties to satisfy the type (safe defaults)
+    images: [] as string[],
+    userId: user?.id || "",
+    userEmail: user?.email || "",
+    listingType: "sale" as const,
+      
+        // Defaults for detailed fields
+      transmission: "Manual",
+      fuelType: "Gasoline",
+      doors: "0",
+      exteriorColor: "Unknown",
+      interiorColor: "Unknown",
+      ownerHistory: "1",
+      accidentHistory: "No",
+      features: {},
+      featured: false,
+      negotiable: false,
+      // Listing specific defaults
+      listingDuration: "30",
+      dealer: { name: "", image: "", verified: false },
       }
       
       // Use the marketplace context to create the listing
@@ -285,8 +295,8 @@ export default function UploadMotorbikePage() {
                       <Label htmlFor="condition-new">New</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Used" id="condition-used" />
-                      <Label htmlFor="condition-used">Used</Label>
+                      <RadioGroupItem value="Foreign Used" id="condition-foreign-used" />
+                      <Label htmlFor="condition-foreign-used">Foreign Used</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="Certified Pre-Owned" id="condition-cpo" />

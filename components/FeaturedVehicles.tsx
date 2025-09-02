@@ -1,65 +1,76 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { StarIcon } from "lucide-react"
-import { BadgeLabel } from "@/components/ui/badge-label"
-import { VehicleListing, useMarketplace } from "@/contexts/MarketplaceContext"
-import { Skeleton } from "@/components/ui/skeleton"
-import { formatVehicleTitle, formatVehicleAlt } from "@/utils/vehicleDisplay"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { StarIcon } from "lucide-react";
+import { BadgeLabel } from "@/components/ui/badge-label";
+import { VehicleListing, useMarketplace } from "@/contexts/MarketplaceContext";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatVehicleTitle, formatVehicleAlt } from "@/utils/vehicleDisplay";
 
 export default function FeaturedVehicles() {
-  const { getListings } = useMarketplace()
-  const [featuredVehicles, setFeaturedVehicles] = useState<VehicleListing[]>([])
-  const [loading, setLoading] = useState(true)
+  const { getListings } = useMarketplace();
+  const [featuredVehicles, setFeaturedVehicles] = useState<VehicleListing[]>(
+    []
+  );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFeaturedVehicles = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         // Get featured vehicles (newest listings marked as featured)
-        const result = await getListings({
-          featured: true,
-          status: "active"
-        }, 4)
-        setFeaturedVehicles(result.listings)
+        const result = await getListings(
+          {
+            featured: true,
+            status: "active",
+          },
+          4
+        );
+        setFeaturedVehicles(result.listings);
       } catch (error) {
-        console.error("Error fetching featured vehicles:", error)
+        console.error("Error fetching featured vehicles:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchFeaturedVehicles()
-  }, [getListings])
+    fetchFeaturedVehicles();
+  }, [getListings]);
 
   // Helper function to format price
   const formatPrice = (price: string) => {
-    const numPrice = parseInt(price)
-    return numPrice.toLocaleString('en-US', { 
-      style: 'currency', 
-      currency: 'USD',
-      maximumFractionDigits: 0 
-    })
-  }
+    const numPrice = parseInt(price);
+    return numPrice.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    });
+  };
 
   // Condition display
   const getConditionStars = (condition: string) => {
     switch (condition) {
-      case "New": return 5;
-      case "Certified Pre-Owned": return 4;
-      case "Used": return 3;
-      default: return 3;
+      case "New":
+        return 5;
+      case "Certified Pre-Owned":
+        return 4;
+      case "Foreign Used":
+        return 3;
+      default:
+        return 3;
     }
-  }
+  };
 
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Featured Vehicles</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+          Featured Vehicles
+        </h2>
         <p className="text-center text-muted-foreground mb-12">
           Explore our handpicked selection of premium vehicles
         </p>
@@ -88,26 +99,34 @@ export default function FeaturedVehicles() {
               <Card key={vehicle.id} className="bg-background overflow-hidden">
                 <div className="relative aspect-[4/3]">
                   <BadgeLabel variant="featured">FEATURED</BadgeLabel>
-                  <Image 
-                    src={vehicle.images[0] || "/placeholder.svg"} 
-                    alt={formatVehicleAlt(vehicle.year, vehicle.make, vehicle.model)} 
-                    fill 
-                    className="object-cover" 
+                  <Image
+                    src={vehicle.images[0] || "/placeholder.svg"}
+                    alt={formatVehicleAlt(
+                      vehicle.year,
+                      vehicle.make,
+                      vehicle.model
+                    )}
+                    fill
+                    className="object-cover"
                   />
                 </div>
                 <CardContent className="p-4">
                   <h3 className="text-xl font-bold mb-1">
-                    {formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model)}
+                    {formatVehicleTitle(
+                      vehicle.year,
+                      vehicle.make,
+                      vehicle.model
+                    )}
                   </h3>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
-                      <StarIcon 
-                        key={i} 
+                      <StarIcon
+                        key={i}
                         className={`w-4 h-4 ${
-                          i < getConditionStars(vehicle.condition) 
-                            ? "text-gray-800 dark:text-yellow-500 fill-gray-800 dark:fill-yellow-500" 
+                          i < getConditionStars(vehicle.condition)
+                            ? "text-gray-800 dark:text-yellow-500 fill-gray-800 dark:fill-yellow-500"
                             : "text-gray-400"
-                        }`} 
+                        }`}
                       />
                     ))}
                   </div>
@@ -115,8 +134,15 @@ export default function FeaturedVehicles() {
                     {formatPrice(vehicle.price)}
                   </p>
                   <p className="text-sm text-gray-400 line-clamp-2">
-                    {vehicle.description || `${formatVehicleTitle(vehicle.year, vehicle.make, vehicle.model)} - 
-                    ${vehicle.mileage} miles, ${vehicle.transmission}, ${vehicle.fuelType}`}
+                    {vehicle.description ||
+                      `${formatVehicleTitle(
+                        vehicle.year,
+                        vehicle.make,
+                        vehicle.model
+                      )} - 
+                    ${vehicle.mileage} miles, ${vehicle.transmission}, ${
+                        vehicle.fuelType
+                      }`}
                   </p>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
@@ -129,22 +155,31 @@ export default function FeaturedVehicles() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-400">No featured vehicles available at the moment.</p>
+            <p className="text-gray-400">
+              No featured vehicles available at the moment.
+            </p>
             <Link href="/marketplace">
-              <Button variant="link" className="mt-4 text-gray-800 dark:text-yellow-400">View All Vehicles</Button>
+              <Button
+                variant="link"
+                className="mt-4 text-gray-800 dark:text-yellow-400"
+              >
+                View All Vehicles
+              </Button>
             </Link>
           </div>
         )}
 
         <div className="flex justify-center mt-10">
           <Link href="/marketplace">
-            <Button variant="outline" className="border-white dark:text-primary dark:hover:text-gray-800 hover:bg-white hover:text-yellow-400">
+            <Button
+              variant="outline"
+              className="border-white dark:text-primary dark:hover:text-gray-800 hover:bg-white hover:text-yellow-400"
+            >
               Browse All Vehicles
             </Button>
           </Link>
         </div>
       </div>
     </section>
-  )
+  );
 }
-
