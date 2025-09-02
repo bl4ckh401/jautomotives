@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 interface BadgeLabelProps {
   children: React.ReactNode
   className?: string
-  variant?: "available" | "sold" | "pending"
+  variant?: "available" | "sold" | "pending" | "featured"
 }
 
 export function BadgeLabel({ children, className, variant = "available" }: BadgeLabelProps) {
@@ -15,6 +15,7 @@ export function BadgeLabel({ children, className, variant = "available" }: Badge
         variant === "available" && "bg-pistachio/90 text-night",
         variant === "sold" && "bg-cherry_blossom_pink/90 text-night",
         variant === "pending" && "bg-flax/90 text-night",
+        variant === "featured" && "bg-yellow-400 text-night",
         className,
       )}
     >

@@ -17,7 +17,8 @@ export default function SellForm() {
     year: "",
     price: "",
     description: "",
-    images: null,
+  images: null,
+  secondHand: false,
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -34,7 +35,7 @@ export default function SellForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically send the data to your backend
-    console.log(formData)
+  console.log(formData)
     toast({
       title: "Vehicle listed successfully",
       description: "Your luxury vehicle has been added to the marketplace.",
@@ -72,6 +73,17 @@ export default function SellForm() {
       <div>
         <Label htmlFor="images">Images</Label>
         <Input id="images" name="images" type="file" multiple onChange={handleFileChange} accept="image/*" required />
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="secondHand"
+          name="secondHand"
+          type="checkbox"
+          checked={formData.secondHand}
+          onChange={(e) => setFormData((prev) => ({ ...prev, secondHand: e.target.checked }))}
+          className="h-4 w-4"
+        />
+        <Label htmlFor="secondHand">Mark as Second Hand</Label>
       </div>
       <Button type="submit" className="w-full">
         List Vehicle

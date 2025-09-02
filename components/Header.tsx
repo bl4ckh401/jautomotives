@@ -11,6 +11,7 @@ import {
   User,
   LogOut,
   Car,
+  Truck,
   Calendar,
   PhoneCall,
   Info,
@@ -109,6 +110,9 @@ export default function Header() {
                   <NavDropdownItem href="/marketplace">
                     All Vehicles
                   </NavDropdownItem>
+                  <NavDropdownItem href="/second-hand">
+                    Second Hand
+                  </NavDropdownItem>
                   <NavDropdownItem href="/motorbikes">
                     Motorbikes
                   </NavDropdownItem>
@@ -131,11 +135,11 @@ export default function Header() {
                 <DropdownMenuLabel>Car Rental Services</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <NavDropdownItem href="/rental/wedding">
-                    Wedding Car Rental
-                  </NavDropdownItem>
                   <NavDropdownItem href="/rental/office">
                     Office Pick-Up and Drop-Off
+                  </NavDropdownItem>
+                  {/* <NavDropdownItem href="/rental/wedding">
+                    Wedding Car Rental
                   </NavDropdownItem>
                   <NavDropdownItem href="/rental/chauffeur">
                     Chauffeur-Driven Rentals
@@ -148,16 +152,16 @@ export default function Header() {
                   </NavDropdownItem>
                   <NavDropdownItem href="/rental/long-term">
                     Long-Term Car Hire
-                  </NavDropdownItem>
+                  </NavDropdownItem> */}
                   <NavDropdownItem href="/rental/airport">
                     Airport Transfer
                   </NavDropdownItem>
-                  <NavDropdownItem href="/rental/self-drive">
+                  {/* <NavDropdownItem href="/rental/self-drive">
                     Self-Drive Car Hire
                   </NavDropdownItem>
                   <NavDropdownItem href="/rental/event">
                     Event Car Hire
-                  </NavDropdownItem>
+                  </NavDropdownItem> */}
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -213,6 +217,11 @@ export default function Header() {
               <Mail className="w-4 h-4 mr-1" />
               <span>Contact</span>
             </NavLink> */}
+
+            <NavLink href="/direct-import">
+              <Truck className="w-4 h-4 mr-1" />
+              <span>Direct Imports</span>
+            </NavLink>
           </nav>
 
           {/* Right side actions */}
@@ -345,6 +354,7 @@ export default function Header() {
                 icon={<Car className="w-5 h-5" />}
                 items={[
                   { href: "/marketplace", label: "All Vehicles" },
+                  { href: "/second-hand", label: "Second Hand" },
                   { href: "/motorbikes", label: "Motorbikes" },
                   { href: "/trade-in", label: "Trade-In Vehicles" },
                 ]}
@@ -397,6 +407,10 @@ export default function Header() {
               <MobileNavLink href="/fleet" icon={<Car className="w-5 h-5" />}>
                 Our Fleet
               </MobileNavLink> */}
+
+              <MobileNavLink href="/direct-import" icon={<Truck className="w-5 h-5" />}>
+                Direct Imports
+              </MobileNavLink>
 
               {!user ? (
                 <div className="flex flex-col space-y-2 pt-2">
