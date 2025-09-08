@@ -217,6 +217,11 @@ export function MarketplaceProvider({
   // Cache invalidation and refresh function
   const refreshData = useCallback(async () => {
     try {
+      if (!db) {
+        console.warn("Skipping refreshData: Firestore db not initialized");
+        setError("Database not initialized");
+        return;
+      }
       setLoading(true);
       const querySnapshot = await getDocs(collection(db, "vehicleListings"));
       const fetchedListings = querySnapshot.docs.map((doc) => ({
@@ -240,7 +245,11 @@ export function MarketplaceProvider({
     if (!isInitialized) {
       console.log("Initial data load - one time only");
       setIsInitialized(true);
-      refreshData();
+      if (db) {
+        refreshData();
+      } else {
+        console.warn("Skipping initial refresh - Firestore not initialized");
+      }
     }
   }, [isInitialized]); // Remove refreshData from dependencies
 
