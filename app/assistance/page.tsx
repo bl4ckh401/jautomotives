@@ -55,7 +55,7 @@ export default function AssistancePage() {
         <h2 className="text-3xl font-bold mb-4">Need Immediate Assistance?</h2>
         <Button size="lg" className="bg-red-600 hover:bg-red-700">
           <Phone className="mr-2 h-5 w-5" />
-          Call Now: 0726 692704
+          Call Now: 0795 684601
         </Button>
       </div>
     </div>

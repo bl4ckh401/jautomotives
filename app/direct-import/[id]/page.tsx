@@ -20,27 +20,44 @@ export default function DirectImportDetail() {
   const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false)
 
   useEffect(() => {
-    let mounted = true
-    ;(async () => {
-      setLoading(true)
-      try {
-        const v = await getListing(id)
-        if (!mounted) return
-        if (!v) {
+    setLoading(true)
+    const { doc, onSnapshot } = require("firebase/firestore")
+    const { db } = require("@/lib/firebase")
+
+    const docRef = doc(db, "vehicleListings", id)
+    const unsubscribe = onSnapshot(
+      docRef,
+      (snap: any) => {
+        if (!snap.exists()) {
+          setVehicle(null)
           setError("Vehicle not found")
-        } else {
-          setVehicle(v)
+          setLoading(false)
+          return
         }
-      } catch (err: any) {
-        console.error(err)
+
+        const data = { id: snap.id, ...snap.data() }
+
+        // Only show if marked as direct import
+        if (!data.directImport) {
+          setVehicle(null)
+          setError("This vehicle is not a direct import")
+          setLoading(false)
+          return
+        }
+
+        setVehicle(data)
+        setError(null)
+        setLoading(false)
+      },
+      (err: any) => {
+        console.error("Direct import detail realtime error:", err)
         setError(err?.message || "Failed to load vehicle")
-      } finally {
         setLoading(false)
       }
-    })()
+    )
 
-    return () => { mounted = false }
-  }, [getListing, id])
+    return () => unsubscribe()
+  }, [id])
 
   if (loading && !vehicle) {
     return (
@@ -90,7 +107,11 @@ export default function DirectImportDetail() {
             </div>
           </div>
 
-          <div className="text-2xl font-semibold">KES {parseInt(vehicle.price || '0').toLocaleString()}</div>
+          <div className="text-2xl font-semibold">
+            {((vehicle.directImport === true) || (typeof vehicle.price === 'string' && vehicle.price.trim().startsWith('$')))
+              ? (typeof vehicle.price === 'string' ? vehicle.price : `$${vehicle.price}`)
+              : `KES ${parseInt(String(vehicle.price || '0').replace(/[^0-9.-]+/g, '') || '0').toLocaleString()}`}
+          </div>
 
           <div className="bg-muted/30 p-3 rounded-md">
             <div className="flex items-center">

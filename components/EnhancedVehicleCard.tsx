@@ -27,8 +27,8 @@ interface EnhancedVehicleCardProps {
     id: string
     make: string
     model: string
-    year: number
-    price: number
+  year: number
+  price: number | string
     mileage: number
     fuelType: string
     transmission: string
@@ -68,13 +68,44 @@ export default function EnhancedVehicleCard({
     onFavorite?.(vehicle.id)
   }
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | string, isDirectImport?: boolean) => {
+    // Direct import: show USD as stored in Firestore (prefer raw $ string if present)
+    if (isDirectImport) {
+      if (typeof price === 'string') {
+        const p = price.trim()
+        if (p.startsWith('$')) return p
+        // attempt to extract numeric value and format as USD
+        const n = parseFloat(p.replace(/[^0-9.-]+/g, ''))
+        if (!isNaN(n)) {
+          return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          }).format(n)
+        }
+        return p
+      }
+      if (typeof price === 'number') {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(price)
+      }
+      return ''
+    }
+
+    // Default: KES formatting, accept numeric or numeric string
+    const numeric = typeof price === 'number' ? price : parseFloat(String(price).replace(/[^0-9.-]+/g, ''))
+    if (isNaN(numeric)) return String(price || '')
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'KES',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price)
+    }).format(numeric)
   }
 
   if (viewMode === 'list') {
@@ -185,7 +216,7 @@ export default function EnhancedVehicleCard({
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2">
-                  {vehicle.tags.map((tag) => (
+                  {(vehicle.tags || []).map((tag) => (
                     <Badge 
                       key={tag} 
                       variant="secondary" 
@@ -233,11 +264,13 @@ export default function EnhancedVehicleCard({
               <div className="flex items-center justify-between pt-6 mt-6 border-t border-border">
                 <div className="flex items-baseline gap-2">
                   <div className="text-3xl font-bold text-green-400 dark:text-yellow-400">
-                    {formatPrice(vehicle.price)}
+                    {formatPrice(vehicle.price, (vehicle as any).directImport === true)}
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    KES {Math.round(vehicle.price / 60).toLocaleString()}/mo*
-                  </div>
+                  {!((vehicle as any).directImport === true) && (
+                    <div className="text-sm text-muted-foreground">
+                      KES {Math.round((typeof vehicle.price === 'number' ? vehicle.price : parseFloat(String(vehicle.price).replace(/[^0-9.-]+/g, '')) || 0) / 60).toLocaleString()}/mo*
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex items-center gap-3">
@@ -269,16 +302,16 @@ export default function EnhancedVehicleCard({
     <Card className="marketplace-card group">
       <div className="aspect-video relative overflow-hidden">
         <Image
-          src={vehicle.images[currentImageIndex]}
+          src={(vehicle.images || [])[currentImageIndex] || '/placeholder.svg'}
           alt={formatVehicleAlt(vehicle.year, vehicle.make, vehicle.model)}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-700"
         />
         
         {/* Image Navigation */}
-        {vehicle.images.length > 1 && (
+    {(vehicle.images || []).length > 1 && (
           <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1">
-            {vehicle.images.map((_, index) => (
+      {(vehicle.images || []).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentImageIndex(index)}
@@ -334,7 +367,7 @@ export default function EnhancedVehicleCard({
         <div className="absolute bottom-4 right-4">
           <Badge variant="secondary" className="bg-black/60 text-white border-0 backdrop-blur-sm">
             <Camera className="w-3 h-3 mr-1" />
-            {vehicle.images.length}
+            {(vehicle.images || []).length}
           </Badge>
         </div>
       </div>
@@ -357,7 +390,7 @@ export default function EnhancedVehicleCard({
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2">
-          {vehicle.tags.slice(0, 3).map((tag) => (
+          {((vehicle.tags || []) as string[]).slice(0, 3).map((tag) => (
             <Badge 
               key={tag} 
               variant="secondary" 
@@ -366,9 +399,9 @@ export default function EnhancedVehicleCard({
               {tag}
             </Badge>
           ))}
-          {vehicle.tags.length > 3 && (
+          {((vehicle.tags || []) as string[]).length > 3 && (
             <Badge variant="secondary" className="text-xs bg-secondary/50 text-muted-foreground">
-              +{vehicle.tags.length - 3}
+              +{((vehicle.tags || []) as string[]).length - 3}
             </Badge>
           )}
         </div>
@@ -397,7 +430,7 @@ export default function EnhancedVehicleCard({
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div>
             <div className="text-2xl font-bold text-green-400 dark:text-yellow-400">
-              {formatPrice(vehicle.price)}
+              {formatPrice(vehicle.price, (vehicle as any).directImport === true)}
             </div>
             {/* <div className="text-xs text-muted-foreground">
               KES {Math.round(vehicle.price / 60).toLocaleString()}/mo*
@@ -443,7 +476,7 @@ export default function EnhancedVehicleCard({
           make: vehicle.make,
           model: vehicle.model,
           year: vehicle.year,
-          image: vehicle.images[0] || '/placeholder.svg',
+          image: (vehicle.images || [])[0] || '/placeholder.svg',
           price: vehicle.price
         }}
       />

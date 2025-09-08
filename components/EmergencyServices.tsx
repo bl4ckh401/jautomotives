@@ -59,7 +59,7 @@ export default function EmergencyServices() {
         <div className="text-center">
           <div className="inline-flex items-center bg-red-600 rounded-full px-8 py-4 text-primary text-xl font-bold">
             <Phone className="w-6 h-6 mr-3 animate-pulse" />
-            Call Now: 0726 692704
+            Call Now: 0795 684601
           </div>
         </div>
       </div>

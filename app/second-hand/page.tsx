@@ -33,29 +33,34 @@ export default function SecondHandPage() {
   }, [getListings])
 
   return (
-    <main className="container mx-auto px-4 py-12">
-      <div className="flex items-center justify-between mb-6">
+    <main className="container mx-auto px-4 pt-28 md:pt-8 sm:px-6 lg:px-8 py-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Second Hand Vehicles</h1>
-          <p className="text-muted-foreground">Vehicles marked as second hand by admin/sellers.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Second Hand Vehicles</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">Vehicles marked as second hand by admin/sellers.</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/second-hand/sell" className="btn btn-primary">
-            Sell Your Vehicle
-          </Link>
-          <Link href="/marketplace" className="text-sm text-foreground/80 hover:text-jaba-gold">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <Link href="/marketplace" className="text-sm text-foreground/80 hover:text-jaba-gold text-center w-full sm:w-auto py-2">
             Back to Marketplace
           </Link>
         </div>
       </div>
 
       {loading ? (
-        <div>Loading...</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="animate-pulse border border-border rounded-xl p-4">
+              <div className="aspect-video bg-muted rounded-md mb-4" />
+              <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+              <div className="h-3 bg-muted rounded w-1/2" />
+            </div>
+          ))}
+        </div>
       ) : vehicles.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">No second hand listings yet.</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {vehicles.map((v) => (
             <EnhancedVehicleCard key={v.id} vehicle={{
               id: v.id,

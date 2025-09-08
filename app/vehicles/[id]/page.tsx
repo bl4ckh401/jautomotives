@@ -126,6 +126,29 @@ export default function VehiclePage() {
     { label: vehicle?.title || "Vehicle Details", href: `/vehicles/${vehicle?.id}` },
   ]
 
+  // Price formatter supporting direct import USD/raw strings or local KES
+  const formatPrice = (price: number | string | undefined, isDirectImport?: boolean) => {
+    if (isDirectImport) {
+      if (typeof price === "string") {
+        const p = price.trim()
+        if (p.startsWith("$")) return p
+        const n = parseFloat(p.replace(/[^0-9.-]+/g, ""))
+        if (!isNaN(n)) {
+          return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n)
+        }
+        return p
+      }
+      if (typeof price === "number") {
+        return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price)
+      }
+      return ""
+    }
+
+    const numeric = typeof price === "number" ? price : parseFloat(String(price || "").replace(/[^0-9.-]+/g, ""))
+    if (isNaN(numeric)) return String(price || "")
+    return `KES ${parseInt(String(numeric || 0)).toLocaleString()}`
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Link href="/marketplace" className="flex items-center text-primary hover:underline mb-4">
@@ -142,7 +165,7 @@ export default function VehiclePage() {
             <div>
               <h1 className="text-3xl font-bold">{vehicle?.title}</h1>
               <p className="text-2xl font-semibold mt-2">
-                KES {parseInt(vehicle?.price || "0").toLocaleString()}
+                {formatPrice(vehicle?.price as any, (vehicle as any).directImport === true)}
               </p>
             </div>
             <Badge variant="outline" className="uppercase">
@@ -263,7 +286,7 @@ export default function VehiclePage() {
             model: vehicle.model || "",
             year: vehicle.year || "",
             image: vehicle.images?.[0] || "/placeholder-car.jpg",
-            price: vehicle.price || ""
+            price: formatPrice(vehicle.price as any, (vehicle as any).directImport === true) || ""
           }}
         />
       )}
@@ -280,7 +303,7 @@ export default function VehiclePage() {
             model: vehicle.model || "",
             year: vehicle.year || "",
             image: vehicle.images?.[0] || "/placeholder-car.jpg",
-            price: vehicle.price || ""
+            price: formatPrice(vehicle.price as any, (vehicle as any).directImport === true) || ""
           }}
         />
       )}

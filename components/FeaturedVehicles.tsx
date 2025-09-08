@@ -41,14 +41,44 @@ export default function FeaturedVehicles() {
     fetchFeaturedVehicles();
   }, [getListings]);
 
-  // Helper function to format price
-  const formatPrice = (price: string) => {
-    const numPrice = parseInt(price);
-    return numPrice.toLocaleString("en-US", {
+  // Helper function to format price (supports direct import USD or local KES)
+  const formatPrice = (price: number | string, isDirectImport?: boolean) => {
+    // Direct import: show USD as stored in Firestore (prefer raw $ string if present)
+    if (isDirectImport) {
+      if (typeof price === "string") {
+        const p = price.trim();
+        if (p.startsWith("$")) return p;
+        const n = parseFloat(p.replace(/[^0-9.-]+/g, ""));
+        if (!isNaN(n)) {
+          return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          }).format(n);
+        }
+        return p;
+      }
+      if (typeof price === "number") {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(price);
+      }
+      return "";
+    }
+
+    // Default: KES formatting, accept numeric or numeric string
+    const numeric = typeof price === "number" ? price : parseFloat(String(price).replace(/[^0-9.-]+/g, ""));
+    if (isNaN(numeric)) return String(price || "");
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: "KES",
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    });
+    }).format(numeric);
   };
 
   // Condition display
@@ -59,9 +89,9 @@ export default function FeaturedVehicles() {
       case "Certified Pre-Owned":
         return 4;
       case "Foreign Used":
-        return 3;
+        return 5;
       default:
-        return 3;
+        return 5;
     }
   };
 
@@ -78,17 +108,22 @@ export default function FeaturedVehicles() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, index) => (
-              <Card key={index} className="bg-background overflow-hidden">
+              <Card key={index} className="bg-background overflow-hidden flex flex-col h-full">
                 <Skeleton className="aspect-[4/3] w-full" />
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-full" />
+                <div className="p-4 space-y-2 flex-1 flex flex-col">
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
                   <div className="flex gap-1 py-2">
                     {[...Array(5)].map((_, i) => (
                       <Skeleton key={i} className="h-4 w-4 rounded-full" />
                     ))}
                   </div>
+                </div>
+                <div className="p-4 pt-0">
+                  <Skeleton className="h-10 w-full" />
                 </div>
               </Card>
             ))}
@@ -96,7 +131,7 @@ export default function FeaturedVehicles() {
         ) : featuredVehicles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredVehicles.map((vehicle) => (
-              <Card key={vehicle.id} className="bg-background overflow-hidden">
+              <Card key={vehicle.id} className="bg-background overflow-hidden flex flex-col h-full">
                 <div className="relative aspect-[4/3]">
                   <BadgeLabel variant="featured">FEATURED</BadgeLabel>
                   <Image
@@ -110,7 +145,7 @@ export default function FeaturedVehicles() {
                     className="object-cover"
                   />
                 </div>
-                <CardContent className="p-4">
+                <CardContent className="p-4 min-h-16 flex-1 flex flex-col">
                   <h3 className="text-xl font-bold mb-1">
                     {formatVehicleTitle(
                       vehicle.year,
@@ -131,7 +166,7 @@ export default function FeaturedVehicles() {
                     ))}
                   </div>
                   <p className="text-lg font-bold dark:text-primary mb-2 text-gray-800 dark:text-yellow-400">
-                    {formatPrice(vehicle.price)}
+                    {formatPrice(vehicle.price as any, (vehicle as any).directImport === true)}
                   </p>
                   <p className="text-sm text-gray-400 line-clamp-2">
                     {vehicle.description ||
