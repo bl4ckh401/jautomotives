@@ -556,6 +556,12 @@ export function MarketplaceProvider({
               where("secondHand", "==", (filters as any).secondHand)
             );
           }
+          // Support directImport filter explicitly
+          if ((filters as any).directImport !== undefined) {
+            queryConstraints.push(
+              where("directImport", "==", (filters as any).directImport)
+            );
+          }
         }
 
         // Add sort order

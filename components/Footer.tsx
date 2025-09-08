@@ -80,7 +80,7 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-bold mb-4">Contact</h4>
             <p className="text-black dark:text-gray-100">Kiambu Road, opposite Walkabout</p>
-            <p className="text-black dark:text-gray-100">Phone: 0726 692704 / 0733 692704</p>
+            <p className="text-black dark:text-gray-100">Phone: 0795 684601 / 0733 692704</p>
             <p className="text-black dark:text-gray-100">Email: info@jabaautomobiles.com</p>
           </div>
         </div>

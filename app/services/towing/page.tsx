@@ -14,7 +14,7 @@ export default function TowingService() {
         "Heavy-duty towing",
         "Accident recovery",
       ]}
-      emergencyNumber="0726 692704"
+      emergencyNumber="0795 684601"
     />
   )
 }
