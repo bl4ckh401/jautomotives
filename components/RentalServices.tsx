@@ -7,7 +7,7 @@ export default function RentalServices() {
     {
       icon: <Calendar className="w-8 h-8" />,
       title: "Wedding Car Rental",
-      description: "Make your special day even more memorable with our luxury wedding cars",
+      description: "Make your special day even more memorable with our  wedding cars",
     },
     {
       icon: <Users className="w-8 h-8" />,

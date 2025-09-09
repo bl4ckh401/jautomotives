@@ -9,10 +9,10 @@ const luxuryCars = [
   { name: "Jaguar XJ", image: "/images/jaguar-xj.jpg" },
 ]
 
-export default function LuxuryCarsPage() {
+export default function CarsPage() {
   return (
     <FleetCategoryPage
-      title="Our Luxury Car Fleet"
+      title="Our  Car Fleet"
       description="Indulge in our premium selection of luxury vehicles, offering unparalleled comfort, style, and performance."
       vehicles={luxuryCars}
     />

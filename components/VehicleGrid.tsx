@@ -8,10 +8,10 @@ import CarListingSchema from "./CarListingSchema"
 import SocialShare from "./SocialShare"
 import LazyImage from "./LazyImage"
 
-// ... (luxuryVehicles array remains the same)
+// ... (Vehicles array remains the same)
 
 export default function VehicleGrid() {
-  const [vehicles] = useState(luxuryVehicles)
+  const [vehicles] = useState(Vehicles)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -19,19 +19,19 @@ export default function VehicleGrid() {
         <Card key={vehicle.id} className="overflow-hidden">
           <CarListingSchema
             name={vehicle.name}
-            description={`Luxury ${vehicle.brand} ${vehicle.model} available for purchase with cryptocurrency`}
+            description={` ${vehicle.brand} ${vehicle.model} available for purchase with cryptocurrency`}
             brand={vehicle.brand}
             model={vehicle.model}
             year={vehicle.year}
             price={vehicle.price}
             currency={vehicle.currency}
-            image={`https://cryptodrive-luxury.com${vehicle.image}`}
-            url={`https://cryptodrive-luxury.com/vehicles/${vehicle.id}`}
+            image={`https://cryptodrive-.com${vehicle.image}`}
+            url={`https://cryptodrive-.com/vehicles/${vehicle.id}`}
           />
           <div className="relative h-48">
             <LazyImage
               src={vehicle.image}
-              alt={`${vehicle.name} - Luxury car available for purchase with cryptocurrency`}
+              alt={`${vehicle.name} -  car available for purchase with cryptocurrency`}
               width={400}
               height={300}
             />
@@ -48,8 +48,8 @@ export default function VehicleGrid() {
               <Button className="w-full">View Details</Button>
             </Link>
             <SocialShare
-              url={`https://cryptodrive-luxury.com/vehicles/${vehicle.id}`}
-              title={`Check out this ${vehicle.name} on CryptoDrive Luxury!`}
+              url={`https://cryptodrive-.com/vehicles/${vehicle.id}`}
+              title={`Check out this ${vehicle.name} on CryptoDrive !`}
             />
           </CardFooter>
         </Card>

@@ -26,7 +26,7 @@ export default function ChauffeurDrivenRentalsPage() {
           <h2 className="text-2xl font-semibold mb-4">Key Benefits</h2>
           <ul className="list-disc list-inside mb-6">
             <li>Professional, experienced chauffeurs</li>
-            <li>Luxury vehicles for all occasions</li>
+            <li> vehicles for all occasions</li>
             <li>Door-to-door service</li>
             <li>Flexible booking options</li>
             <li>24/7 customer support</li>

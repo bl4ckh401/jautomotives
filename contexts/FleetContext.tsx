@@ -37,7 +37,7 @@ export function FleetProvider({ children }: { children: ReactNode }) {
     fetchFleetVehicles()
   }, [])
 
-  // Filter vehicles by type (sedan, suv, luxury, etc.)
+  // Filter vehicles by type (sedan, suv, , etc.)
   const getVehiclesByType = (type: string) => {
     return vehicles.filter(
       vehicle => vehicle.type.toLowerCase() === type.toLowerCase()

@@ -14,12 +14,12 @@ export default function VIPRentalPage() {
         </div>
         <div>
           <p className="text-lg mb-4">
-            Our VIP Rental service offers the pinnacle of luxury and exclusivity. Perfect for high-profile events,
+            Our VIP Rental service offers the pinnacle of  and exclusivity. Perfect for high-profile events,
             celebrity transport, or when you simply want to indulge in the extraordinary.
           </p>
           <h2 className="text-2xl font-semibold mb-4">Key Benefits</h2>
           <ul className="list-disc list-inside mb-6">
-            <li>Ultra-luxury vehicles</li>
+            <li>Ultra- vehicles</li>
             <li>Highly trained and discreet chauffeurs</li>
             <li>Personalized service</li>
             <li>Enhanced privacy and security measures</li>

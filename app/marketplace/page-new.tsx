@@ -387,7 +387,7 @@ export default function MarketplacePage() {
     if (activeCategory !== 'all') {
       filtered = filtered.filter(vehicle => {
         switch (activeCategory) {
-          case 'luxury': return vehicle.price > 60000
+          case '': return vehicle.price > 60000
           case 'suv': return vehicle.tags?.includes('SUV')
           case 'sedan': return vehicle.tags?.includes('Sedan')
           case 'electric': return vehicle.fuelType?.toLowerCase().includes('electric')
@@ -430,7 +430,7 @@ export default function MarketplacePage() {
 
   const categories = [
     { id: 'all', label: 'All Vehicles', icon: Car, count: vehicles.length },
-    { id: 'luxury', label: 'Luxury', icon: Crown, count: vehicles.filter(v => v.price > 60000).length },
+    { id: '', label: '', icon: Crown, count: vehicles.filter(v => v.price > 60000).length },
     { id: 'suv', label: 'SUV', icon: Truck, count: vehicles.filter(v => v.tags?.includes('SUV')).length },
     { id: 'sedan', label: 'Sedan', icon: Car, count: vehicles.filter(v => v.tags?.includes('Sedan')).length },
     { id: 'electric', label: 'Electric', icon: Zap, count: vehicles.filter(v => v.fuelType?.toLowerCase().includes('electric')).length },
@@ -465,7 +465,7 @@ export default function MarketplacePage() {
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Discover premium vehicles from verified dealers. Experience luxury, performance, and reliability all in one place.
+              Discover premium vehicles from verified dealers. Experience , performance, and reliability all in one place.
             </p>
 
             {/* Search Bar */}

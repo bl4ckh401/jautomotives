@@ -135,6 +135,9 @@ export default function Header() {
                 <DropdownMenuLabel>Car Rental Services</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                  <NavDropdownItem href="/rental/airport">
+                    Airport Transfer
+                  </NavDropdownItem>
                   <NavDropdownItem href="/rental/office">
                     Office Pick-Up and Drop-Off
                   </NavDropdownItem>
@@ -153,9 +156,6 @@ export default function Header() {
                   <NavDropdownItem href="/rental/long-term">
                     Long-Term Car Hire
                   </NavDropdownItem> */}
-                  <NavDropdownItem href="/rental/airport">
-                    Airport Transfer
-                  </NavDropdownItem>
                   {/* <NavDropdownItem href="/rental/self-drive">
                     Self-Drive Car Hire
                   </NavDropdownItem>
@@ -364,15 +364,19 @@ export default function Header() {
                 title="Car Rental Services"
                 icon={<Calendar className="w-5 h-5" />}
                 items={[
-                  { href: "/rental/wedding", label: "Wedding Car Rental" },
-                  { href: "/rental/office", label: "Office Pick-Up and Drop-Off" },
-                  { href: "/rental/chauffeur", label: "Chauffeur-Driven Rentals" },
-                  { href: "/rental/vip", label: "VIP Rental" },
-                  { href: "/rental/corporate", label: "Corporate Car Rental" },
-                  { href: "/rental/long-term", label: "Long-Term Car Hire" },
                   { href: "/rental/airport", label: "Airport Transfer" },
-                  { href: "/rental/self-drive", label: "Self-Drive Car Hire" },
-                  { href: "/rental/event", label: "Event Car Hire" },
+
+                  // { href: "/rental/wedding", label: "Wedding Car Rental" },
+                  {
+                    href: "/rental/office",
+                    label: "Office Pick-Up and Drop-Off",
+                  },
+                  // { href: "/rental/chauffeur", label: "Chauffeur-Driven Rentals" },
+                  // { href: "/rental/vip", label: "VIP Rental" },
+                  // { href: "/rental/corporate", label: "Corporate Car Rental" },
+                  // { href: "/rental/long-term", label: "Long-Term Car Hire" },
+                  // { href: "/rental/self-drive", label: "Self-Drive Car Hire" },
+                  // { href: "/rental/event", label: "Event Car Hire" },
                 ]}
               />
 
@@ -408,7 +412,10 @@ export default function Header() {
                 Our Fleet
               </MobileNavLink> */}
 
-              <MobileNavLink href="/direct-import" icon={<Truck className="w-5 h-5" />}>
+              <MobileNavLink
+                href="/direct-import"
+                icon={<Truck className="w-5 h-5" />}
+              >
                 Direct Imports
               </MobileNavLink>
 

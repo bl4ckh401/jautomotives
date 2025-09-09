@@ -15,7 +15,7 @@ import { FleetVehicle } from "@/services/fleetService"
 const categoryTitles: Record<string, string> = {
   sedan: "Sedans",
   suv: "SUVs",
-  luxury: "Luxury Cars",
+  luxury: " Cars",
   van: "Vans",
   truck: "Trucks"
 }

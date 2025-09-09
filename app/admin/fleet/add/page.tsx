@@ -121,7 +121,7 @@ export default function AddFleetVehiclePage() {
                   <SelectItem value="suv">SUV</SelectItem>
                   <SelectItem value="truck">Truck</SelectItem>
                   <SelectItem value="van">Van</SelectItem>
-                  <SelectItem value="luxury">Luxury</SelectItem>
+                  <SelectItem value=""></SelectItem>
                 </SelectContent>
               </Select>
             </div>

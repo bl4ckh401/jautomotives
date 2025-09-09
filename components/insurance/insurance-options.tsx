@@ -24,7 +24,7 @@ export default function InsuranceOptions() {
                   <TableHead>Basic Plan</TableHead>
                   <TableHead>Standard Plan</TableHead>
                   <TableHead>Premium Plan</TableHead>
-                  <TableHead>Luxury Plan</TableHead>
+                  <TableHead> Plan</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -115,7 +115,7 @@ export default function InsuranceOptions() {
                     </div>
                   </TableCell>
                   <TableCell>Economy Car</TableCell>
-                  <TableCell>Luxury Car</TableCell>
+                  <TableCell> Car</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Gap Insurance</TableCell>

@@ -48,7 +48,7 @@ export default function SearchResults({
           <CardContent className="p-4">
             <img
               src={vehicle.image || "/placeholder.svg"}
-              alt={`${vehicle.name} - Luxury car available for purchase with cryptocurrency`}
+              alt={`${vehicle.name} -  car available for purchase with cryptocurrency`}
               width={400}
               height={300}
               className="rounded-lg mb-4"
