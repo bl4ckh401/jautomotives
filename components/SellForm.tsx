@@ -37,7 +37,7 @@ export default function SellForm() {
     console.log(formData)
     toast({
       title: "Vehicle listed successfully",
-      description: "Your luxury vehicle has been added to the marketplace.",
+      description: "Your  vehicle has been added to the marketplace.",
     })
   }
 

@@ -175,6 +175,40 @@ export default function VehiclePage() {
 
           <p className="text-gray-400">{vehicle?.description}</p>
 
+          {/* Features badges (mirror RentalDetails style) */}
+          {vehicle?.features && Object.keys(vehicle.features).length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-sm font-medium mb-2">Features</h3>
+                <div className="flex flex-wrap gap-2">
+                {Object.entries(vehicle.features as Record<string, any>)
+                  .filter(([_, value]) => {
+                  // show only meaningful features:
+                  // - boolean: only true
+                  // - string: exclude empty or "false"
+                  if (typeof value === "boolean") return value === true
+                  if (typeof value === "string") {
+                    const v = (value as string).trim().toLowerCase()
+                    return v !== "" && v !== "false"
+                  }
+                  return !!value
+                  })
+                  .map(([name, value]) => {
+                  const isTrueBoolean = typeof value === "boolean" && value === true
+                  const displayValue =
+                    typeof value === "string" && (value as string).trim().toLowerCase() !== "true"
+                    ? `: ${value}`
+                    : ""
+                  return (
+                    <Badge key={name} variant={isTrueBoolean ? "secondary" : "outline"}>
+                    {name}
+                    {displayValue}
+                    </Badge>
+                  )
+                  })}
+                </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Button
               className="bg-emerald-600 hover:bg-emerald-700 text-primary w-full"

@@ -15,7 +15,7 @@ export default function ProfileForm() {
   const [formData, setFormData] = useState({
     name: "John Doe",
     email: "john@example.com",
-    bio: "Crypto enthusiast and luxury car lover.",
+    bio: "Crypto enthusiast and  car lover.",
     avatar: "/avatars/01.png",
   })
 

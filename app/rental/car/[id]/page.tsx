@@ -6,7 +6,7 @@ const carDetails = {
     name: "Rolls-Royce Phantom",
     image: "/images/rolls-royce-phantom.jpg",
     price: 50000,
-    description: "The epitome of luxury, perfect for making a grand entrance on your special day.",
+    description: "The epitome of , perfect for making a grand entrance on your special day.",
     features: [
       "Spacious interior with premium leather seats",
       "State-of-the-art sound system",
@@ -32,7 +32,7 @@ const carDetails = {
     name: "Bentley Continental",
     image: "/images/bentley-continental.jpg",
     price: 40000,
-    description: "A blend of sportiness and luxury, perfect for stylish couples.",
+    description: "A blend of sportiness and , perfect for stylish couples.",
     features: [
       "Handcrafted interior with premium materials",
       "Powerful performance for smooth rides",

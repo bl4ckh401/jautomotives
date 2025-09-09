@@ -32,7 +32,10 @@ import {
   Play,
   CheckCircle,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Car,
+  Crown,
+  Truck
 } from "lucide-react"
 import { useMarketplace } from "@/contexts/MarketplaceContext"
 import { VehicleListing } from "@/contexts/MarketplaceContext"
@@ -287,9 +290,9 @@ function PremiumVehicleCard({ vehicle, viewMode = 'grid' }: { vehicle: any, view
         </p>
 
         {/* Tags */}
-        {((vehicle.tags || []) as string[]).length > 0 && (
+        {vehicle.tags && (
           <div className="flex flex-wrap gap-1">
-            {((vehicle.tags || []) as string[]).slice(0, 3).map((tag: string, index: number) => (
+            {vehicle.tags.slice(0, 3).map((tag: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-xs bg-jaba-gold/10 text-jaba-gold border-jaba-gold/20">
                 {tag}
               </Badge>
@@ -395,7 +398,7 @@ export default function MarketplacePage() {
     if (activeCategory !== 'all') {
       filtered = filtered.filter(vehicle => {
         switch (activeCategory) {
-          case 'luxury': return vehicle.price > 60000
+          case '': return vehicle.price > 60000
           case 'suv': return vehicle.tags?.includes('SUV')
           case 'sedan': return vehicle.tags?.includes('Sedan')
           case 'electric': return vehicle.fuelType?.toLowerCase().includes('electric')
@@ -438,7 +441,7 @@ export default function MarketplacePage() {
 
   const categories = [
     { id: 'all', label: 'All Vehicles', icon: Car, count: vehicles.length },
-    { id: 'luxury', label: 'Luxury', icon: Crown, count: vehicles.filter(v => v.price > 60000).length },
+    { id: '', label: '', icon: Crown, count: vehicles.filter(v => v.price > 60000).length },
     { id: 'suv', label: 'SUV', icon: Truck, count: vehicles.filter(v => v.tags?.includes('SUV')).length },
     { id: 'sedan', label: 'Sedan', icon: Car, count: vehicles.filter(v => v.tags?.includes('Sedan')).length },
     { id: 'electric', label: 'Electric', icon: Zap, count: vehicles.filter(v => v.fuelType?.toLowerCase().includes('electric')).length },
@@ -451,12 +454,7 @@ export default function MarketplacePage() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-background via-card to-background border-b border-border">
-        <div
-          className="absolute inset-0 opacity-50"
-          style={{
-            backgroundImage: `url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23FFD700" fill-opacity="0.05"%3E%3Ccircle cx="7" cy="7" r="3"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')`
-          }}
-        />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23FFD700" fill-opacity="0.05"%3E%3Ccircle cx="7" cy="7" r="3"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50" />
         
         <div className="container mx-auto px-4 py-16 relative">
           <div className="max-w-4xl mx-auto text-center">
@@ -478,7 +476,7 @@ export default function MarketplacePage() {
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Discover premium vehicles from verified dealers. Experience luxury, performance, and reliability all in one place.
+              Discover premium vehicles from verified dealers. Experience , performance, and reliability all in one place.
             </p>
 
             {/* Search Bar */}

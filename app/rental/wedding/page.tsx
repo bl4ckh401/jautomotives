@@ -14,12 +14,12 @@ export default function WeddingCarRentalPage() {
         </div>
         <div>
           <p className="text-lg mb-4">
-            Make your special day even more memorable with our luxury wedding car rental service. We offer a wide range
+            Make your special day even more memorable with our  wedding car rental service. We offer a wide range
             of elegant vehicles to suit your style and budget.
           </p>
           <h2 className="text-2xl font-semibold mb-4">Key Benefits</h2>
           <ul className="list-disc list-inside mb-6">
-            <li>Elegant and well-maintained luxury vehicles</li>
+            <li>Elegant and well-maintained  vehicles</li>
             <li>Professional and courteous chauffeurs</li>
             <li>Customizable decorations</li>
             <li>Punctual service for stress-free travel</li>

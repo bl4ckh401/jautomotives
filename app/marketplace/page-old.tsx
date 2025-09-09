@@ -58,8 +58,8 @@ export default function MarketplacePage() {
       location: 'Los Angeles, CA',
       isNew: true,
       isFeatured: true,
-      tags: ['Premium', 'AWD', 'Luxury'],
-      description: 'Ultimate luxury SUV with M Performance enhancements'
+      tags: ['Premium', 'AWD', ''],
+      description: 'Ultimate  SUV with M Performance enhancements'
     },
     {
       id: '2',
@@ -95,7 +95,7 @@ export default function MarketplacePage() {
       isNew: false,
       isFeatured: true,
       tags: ['Performance', 'Wagon', 'Rare'],
-      description: 'High-performance luxury wagon - rare find'
+      description: 'High-performance  wagon - rare find'
     },
   ]
 
@@ -111,7 +111,7 @@ export default function MarketplacePage() {
 
   const categories = [
     { id: 'all', name: 'All Vehicles', count: 156 },
-    { id: 'luxury', name: 'Luxury', count: 89 },
+    { id: '', name: '', count: 89 },
     { id: 'suv', name: 'SUV', count: 45 },
     { id: 'sedan', name: 'Sedan', count: 34 },
     { id: 'sports', name: 'Sports', count: 23 },

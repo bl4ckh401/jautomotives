@@ -123,7 +123,7 @@ export default function InsuranceCalculator() {
                       <SelectItem value="standard">Standard Plan</SelectItem>
                       <SelectItem value="comprehensive">Comprehensive Plan</SelectItem>
                       <SelectItem value="premium">Premium Plan</SelectItem>
-                      <SelectItem value="luxury">Luxury Plan</SelectItem>
+                      <SelectItem value="luxury"> Plan</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

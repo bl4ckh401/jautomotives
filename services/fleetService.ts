@@ -6,7 +6,7 @@ export interface FleetVehicle {
   make: string
   model: string
   year: number
-  type: "sedan" | "suv" | "truck" | "van" | "luxury"
+  type: "sedan" | "suv" | "truck" | "van" | ""
   status: "available" | "in-use" | "maintenance"
   dailyRate: number
   imageUrl: string

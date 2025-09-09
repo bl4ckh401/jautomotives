@@ -37,7 +37,7 @@ export default function ConciergeService() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Luxury Concierge Service</CardTitle>
+        <CardTitle> Concierge Service</CardTitle>
         <CardDescription>Experience unparalleled service with our luxury concierge team</CardDescription>
       </CardHeader>
       <CardContent>

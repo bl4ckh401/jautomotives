@@ -150,7 +150,7 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
               {vehicle.type.toUpperCase()}
             </Badge>
             <Badge 
-              variant={vehicle.status === "available" ? "success" : "secondary"}
+              // variant={vehicle.status === "available" ? "success" : "secondary"}
               className="ml-2"
             >
               {vehicle.status === "available" ? "Available" : "Unavailable"}

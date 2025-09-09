@@ -31,7 +31,7 @@ const vehicleMakes = [
 // Vehicle types for dropdown
 const vehicleTypes = [
   "Sedan", "SUV", "Truck", "Coupe", "Convertible", "Wagon", 
-  "Van/Minivan", "Hatchback", "Crossover", "Luxury"
+  "Van/Minivan", "Hatchback", "Crossover", ""
 ]
 
 // Vehicle transmission options

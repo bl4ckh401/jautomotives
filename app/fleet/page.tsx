@@ -15,7 +15,7 @@ import FleetCategoryCarousel from "@/components/FleetCategoryCarousel"
 const fleetCategories = [
   { title: "Sedans", icon: Car, link: "/fleet/sedan", type: "sedan" },
   { title: "SUVs", icon: Car, link: "/fleet/suv", type: "suv" },
-  { title: "Luxury Cars", icon: Briefcase, link: "/fleet/luxury", type: "luxury" },
+  { title: " Cars", icon: Briefcase, link: "/fleet/luxury", type: "luxury" },
   { title: "Vans", icon: Car, link: "/fleet/van", type: "van" },
   { title: "Trucks", icon: Truck, link: "/fleet/truck", type: "truck" },
 ]

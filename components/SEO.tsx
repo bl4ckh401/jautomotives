@@ -9,8 +9,8 @@ interface SEOProps {
 
 export default function SEO({
   title = "Jaba Automotives | Buy and Sell Cars with Cryptocurrency",
-  description = "Jaba Automotives is the premier marketplace for buying and selling high-end vehicles using cryptocurrency. Explore our selection of luxury cars and experience seamless crypto transactions.",
-  keywords = "luxury cars, cryptocurrency, bitcoin, ethereum, car marketplace, exotic cars, crypto payments, blockchain automotive",
+  description = "Jaba Automotives is the premier marketplace for buying and selling high-end vehicles using cryptocurrency. Explore our selection of  cars and experience seamless crypto transactions.",
+  keywords = " cars, cryptocurrency, bitcoin, ethereum, car marketplace, exotic cars, crypto payments, blockchain automotive",
   ogImage = "/logo.png",
 }: SEOProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jabaautomotives.com"

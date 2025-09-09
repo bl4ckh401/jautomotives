@@ -55,7 +55,7 @@ const vehicleTypes = [
   "Van/Minivan",
   "Hatchback",
   "Crossover",
-  "Luxury",
+  "",
   "Motorbike", // Added Motorbike
 ];
 

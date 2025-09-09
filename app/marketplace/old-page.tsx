@@ -27,7 +27,7 @@ export default function MarketplacePage() {
         // Only load data for the current active tab to improve performance
         if (activeTab === "vehicles" && vehicles.length === 0) {
           const result = await getListings({
-            vehicleType: ["Sedan", "SUV", "Truck", "Coupe", "Convertible", "Wagon", "Van/Minivan", "Hatchback", "Crossover", "Luxury"],
+            vehicleType: ["Sedan", "SUV", "Truck", "Coupe", "Convertible", "Wagon", "Van/Minivan", "Hatchback", "Crossover", ""],
             sortBy: "newest"
           }, 9);
           setVehicles(result.listings);

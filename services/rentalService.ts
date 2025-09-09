@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   updateDoc,
   where,
+  Timestamp,
 } from "firebase/firestore"
 import type { RentalCategory } from "@/lib/rentalCategories"
 
@@ -30,8 +31,9 @@ export interface RentalVehicle {
   available: boolean
   description?: string
   features?: string[]
-  createdAt?: Date
-  updatedAt?: Date
+  // converted to ISO string when returned from service
+  createdAt?: string
+  updatedAt?: string
 }
 
 export const rentalCollection = collection(db, "rentalVehicles")
@@ -60,6 +62,16 @@ export const deleteRentalVehicle = async (id: string): Promise<void> => {
   await deleteDoc(ref)
 }
 
+const normalizeTimestamps = (data: any) => {
+  if (!data || typeof data !== "object") return data
+  const out = { ...data }
+  if (out.createdAt instanceof Timestamp) out.createdAt = out.createdAt.toDate().toISOString()
+  if (out.updatedAt instanceof Timestamp) out.updatedAt = out.updatedAt.toDate().toISOString()
+  if (out.expiresAt instanceof Timestamp) out.expiresAt = out.expiresAt.toDate().toISOString()
+  // normalize nested booking/other date fields if present
+  return out
+}
+
 export const getRentalVehicles = async (filters?: {
   category?: RentalCategory
   available?: boolean
@@ -72,12 +84,12 @@ export const getRentalVehicles = async (filters?: {
     q = query(q, where("available", "==", filters.available))
   }
   const snapshot = await getDocs(q)
-  return snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as any) })) as RentalVehicle[]
+  return snapshot.docs.map((d) => normalizeTimestamps({ id: d.id, ...(d.data() as any) })) as RentalVehicle[]
 }
 
 export const getRentalVehicleById = async (id: string): Promise<RentalVehicle | null> => {
   const ref = doc(rentalCollection, id)
   const snap = await getDoc(ref)
   if (!snap.exists()) return null
-  return { id: snap.id, ...(snap.data() as any) } as RentalVehicle
+  return normalizeTimestamps({ id: snap.id, ...(snap.data() as any) }) as RentalVehicle
 }

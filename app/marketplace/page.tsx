@@ -107,8 +107,8 @@ export default function MarketplacePage() {
         SUV: "suv",
         Sedan: "sedan",
         Truck: "truck",
-        Coupe: "luxury",
-        Convertible: "luxury",
+        Coupe: "",
+        Convertible: "",
       };
       setActiveCategory(categoryMap[bodyType] || "all");
     }
@@ -215,7 +215,7 @@ export default function MarketplacePage() {
     if (activeCategory !== "all") {
       filtered = filtered.filter((vehicle) => {
         switch (activeCategory) {
-          case "luxury":
+          case "":
             return vehicle.numericPrice > 60000;
           case "suv":
             return vehicle.tags?.includes("SUV");
@@ -277,8 +277,8 @@ export default function MarketplacePage() {
   const categories = [
     { id: "all", label: "All Vehicles", icon: Car, count: vehicles.length },
     {
-      id: "luxury",
-      label: "Luxury",
+      id: "",
+      label: "",
       icon: Crown,
       count: vehicles.filter((v) => v.numericPrice > 60000).length,
     },
@@ -350,7 +350,7 @@ export default function MarketplacePage() {
 
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
               Discover premium vehicles from verified dealers. Experience
-              luxury, performance, and reliability all in one place.
+              , performance, and reliability all in one place.
             </p>
 
             {/* Search Bar */}
@@ -376,7 +376,7 @@ export default function MarketplacePage() {
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-green-400 dark:text-yellow-400">
-                  50+
+                  {Array.from(new Set(vehicles.map((v) => v.dealer?.name).filter(Boolean))).length}+
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Verified Dealers
@@ -384,7 +384,7 @@ export default function MarketplacePage() {
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-green-400 dark:text-yellow-400">
-                  4.9
+                  5.0
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Average Rating

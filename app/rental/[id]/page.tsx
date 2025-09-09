@@ -9,7 +9,7 @@ export default async function RentalPage({ params }: Props) {
   if (!rental) return notFound()
 
   return (
-    <div className="container py-8">
+    <div className="py-8">
       <RentalDetails rental={rental} />
     </div>
   )

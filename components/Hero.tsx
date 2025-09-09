@@ -4,7 +4,7 @@ import { ChevronDown, Star, Award, Users, Car } from "lucide-react"
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center w-full overflow-hidden">
+    <section className="relative min-h-screen pt-16 flex flex-col items-center justify-center text-center w-full overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
           src="https://dragon2000-multisite.s3.eu-west-2.amazonaws.com/wp-content/uploads/sites/309/2022/06/15163512/Avanti-car-hero_result.jpg"
