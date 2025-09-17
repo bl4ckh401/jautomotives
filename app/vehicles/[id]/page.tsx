@@ -99,10 +99,10 @@ export async function generateMetadata({ params }: VehiclePageProps): Promise<Me
       canonical: canonicalUrl,
     },
     robots: {
-      index: shouldIndex,
+      index: true,
       follow: true,
       googleBot: {
-        index: shouldIndex,
+        index: true,
         follow: true,
         "max-video-preview": -1,
         "max-image-preview": "large",
