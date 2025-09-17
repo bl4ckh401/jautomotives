@@ -96,6 +96,7 @@ export function generateVehicleKeywords(vehicle: VehicleListing): string[] {
     vehicle.model,
     vehicle.year,
     `${vehicle.year} ${vehicle.make}`,
+    `${vehicle.year} ${vehicle.model}`,
     `${vehicle.make} ${vehicle.model}`,
     `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
     
@@ -201,14 +202,6 @@ export function generateVehicleOGImage(vehicle: VehicleListing): string {
  * Check if vehicle should be indexed by search engines
  */
 export function shouldIndexVehicle(vehicle: VehicleListing): boolean {
-  // Only index active vehicles with complete information
-  return (
-    vehicle.status === 'active' &&
-    Boolean(vehicle.title) &&
-    Boolean(vehicle.make) &&
-    Boolean(vehicle.model) &&
-    Boolean(vehicle.year) &&
-    Boolean(vehicle.price) &&
-    Boolean(vehicle.description)
-  )
+  // Always index active vehicles - be more permissive for SEO
+  return vehicle.status === 'active'
 }
