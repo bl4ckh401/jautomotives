@@ -32,22 +32,27 @@ export default function Footer() {
             <ul>
               <li>
                 <Link href="/marketplace" className="hover:text-primary text-black dark:text-gray-100">
-                  Buy Cars
+                  Buy Cars Kenya
                 </Link>
               </li>
               <li>
-                <Link href="/sell" className="hover:text-primary text-black dark:text-gray-100">
-                  Sell Your Car
+                <Link href="/second-hand" className="hover:text-primary text-black dark:text-gray-100">
+                  Second Hand Cars
+                </Link>
+              </li>
+              <li>
+                <Link href="/direct-import" className="hover:text-primary text-black dark:text-gray-100">
+                  Import Cars Kenya
+                </Link>
+              </li>
+              <li>
+                <Link href="/motorbikes" className="hover:text-primary text-black dark:text-gray-100">
+                  Motorbikes Kenya
                 </Link>
               </li>
               <li>
                 <Link href="/rental" className="hover:text-primary text-black dark:text-gray-100">
                   Car Rental
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/towing" className="hover:text-primary text-black dark:text-gray-100">
-                  Towing Services
                 </Link>
               </li>
             </ul>
@@ -78,10 +83,11 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-bold mb-4">Contact</h4>
-            <p className="text-black dark:text-gray-100">Kiambu Road, opposite Walkabout</p>
-            <p className="text-black dark:text-gray-100">Phone: 0795 684601 / 0733 692704</p>
-            <p className="text-black dark:text-gray-100">Email: info@jabaautomobiles.com</p>
+            <h4 className="text-lg font-bold mb-4">Contact JABA Automobiles Kenya</h4>
+            <p className="text-black dark:text-gray-100">Kiambu Road, opposite Walkabout, Nairobi</p>
+            <p className="text-black dark:text-gray-100">Phone: +254 795 684601 / +254 733 692704</p>
+            <p className="text-black dark:text-gray-100">Email: jabaautos@gmail.com</p>
+            <p className="text-black dark:text-gray-100 text-sm mt-2">Serving: Nairobi, Mombasa, Kisumu, Nakuru, Eldoret</p>
           </div>
         </div>
         {/* <Card>
@@ -94,7 +100,10 @@ export default function Footer() {
   </CardContent>
 </Card> */}
         <div className="mt-8 text-center">
-          <p className="text-black dark:text-gray-100">&copy; 2023 JABA Automobiles. All rights reserved.</p>
+          <p className="text-black dark:text-gray-100">&copy; 2025 JABA Automobiles Kenya. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Kenya's #1 Car Dealer | Buy Cars, Motorbikes, Import Vehicles | Toyota, Nissan, Subaru, Mercedes, BMW
+          </p>
         </div>
       </div>
     </footer>

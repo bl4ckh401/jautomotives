@@ -1,88 +1,50 @@
-"use client"
+import type { Metadata } from "next"
+import SecondHandClient from "./SecondHandClient"
 
-import { useEffect, useState } from "react"
-import { useMarketplace } from "@/contexts/MarketplaceContext"
-import EnhancedVehicleCard from "@/components/EnhancedVehicleCard"
-import Link from "next/link"
-
-// export const metadata = {
-//   title: "Second Hand Vehicles - JABA Motors",
-//   description: "Browse second hand vehicles listed by users.",
-// };
+export const metadata: Metadata = {
+  title: "Second Hand Cars Kenya - Used Cars for Sale | JABA Automobiles",
+  description: "Buy quality second hand cars in Kenya. Certified used Toyota, Nissan, Subaru, Mercedes vehicles. Best second hand car dealer in Nairobi, Mombasa, Kisumu. Affordable prices, quality guaranteed.",
+  keywords: "second hand cars Kenya, used cars Kenya, second hand cars Nairobi, used cars Nairobi, second hand Toyota Kenya, used Nissan Kenya, second hand Subaru Kenya, pre-owned cars Kenya, certified used cars Kenya, affordable cars Kenya, JABA Automobiles",
+  openGraph: {
+    title: "Second Hand Cars Kenya - Used Cars for Sale | JABA Automobiles",
+    description: "Kenya's best second hand car dealer. Quality used Toyota, Nissan, Subaru vehicles. Best prices in Nairobi, Mombasa, Kisumu.",
+    url: "/second-hand",
+    siteName: "JABA Automobiles Kenya",
+    locale: "en_KE",
+    type: "website",
+  },
+  alternates: {
+    canonical: "/second-hand",
+  },
+}
 
 export default function SecondHandPage() {
-  const { getListings } = useMarketplace()
-  const [vehicles, setVehicles] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const loadSecondHand = async () => {
-      setLoading(true)
-      try {
-        const res = await getListings({} as any, 50)
-        const secondHand = res.listings.filter((l: any) => l.secondHand === true)
-        setVehicles(secondHand)
-      } catch (error) {
-        console.error("Error loading second hand listings:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadSecondHand()
-  }, [getListings])
-
   return (
-    <main className="container mx-auto px-4 pt-28 md:pt-8 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Second Hand Vehicles</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">Vehicles marked as second hand by admin/sellers.</p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Link href="/marketplace" className="text-sm text-foreground/80 hover:text-jaba-gold text-center w-full sm:w-auto py-2">
-            Back to Marketplace
-          </Link>
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="animate-pulse border border-border rounded-xl p-4">
-              <div className="aspect-video bg-muted rounded-md mb-4" />
-              <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-              <div className="h-3 bg-muted rounded w-1/2" />
-            </div>
-          ))}
-        </div>
-      ) : vehicles.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">No second hand listings yet.</div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {vehicles.map((v) => (
-            <EnhancedVehicleCard key={v.id} vehicle={{
-              id: v.id,
-              make: v.make,
-              model: v.model,
-              year: parseInt(v.year) || 0,
-              price: parseInt(v.price) || 0,
-              mileage: parseInt(v.mileage) || 0,
-              fuelType: v.fuelType || "",
-              transmission: v.transmission || "",
-              seats: parseInt(v.doors) || 4,
-              rating: 4.5,
-              images: v.images || ["/placeholder-car.jpg"],
-              location: v.location || "",
-              isNew: v.condition === "New",
-              isFeatured: v.featured || false,
-              tags: [v.vehicleType, v.condition].filter(Boolean),
-              description: v.description || "",
-            }} onViewDetails={() => window.location.href = `/vehicles/${v.id}`} />
-          ))}
-        </div>
-      )}
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AutoDealer",
+            name: "JABA Automobiles - Second Hand Cars Kenya",
+            description: "Kenya's trusted dealer for quality second hand and used cars",
+            url: "https://jabaautomotives.com/second-hand",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "Kiambu Road, opposite Walkabout",
+              addressLocality: "Nairobi",
+              addressCountry: "KE",
+            },
+            telephone: ["+254795684601", "+254733692704"],
+            email: "jabaautos@gmail.com",
+            areaServed: ["Kenya", "Nairobi", "Mombasa", "Kisumu", "Nakuru", "Eldoret"],
+            speciality: "Second hand and used vehicles",
+            makesOffered: ["Toyota", "Nissan", "Subaru", "Mercedes-Benz", "BMW", "Honda", "Mazda"],
+          }),
+        }}
+      />
+      <SecondHandClient />
+    </>
   )
 }

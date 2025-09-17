@@ -18,7 +18,7 @@ interface SearchSectionProps {
   onSearch?: (searchParams: any) => void
 }
 
-export default function SearchSection({ onSearch }: SearchSectionProps) {
+export function SearchSection({ onSearch }: SearchSectionProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [keyword, setKeyword] = useState("")
   const [brand, setBrand] = useState("")
