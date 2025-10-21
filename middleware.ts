@@ -37,12 +37,26 @@ export async function middleware(request: NextRequest) {
     })
 
     if (response.status === 403) {
-      return NextResponse.rewrite(new URL('/suspended', request.url))
+      const htmlContent = await response.text()
+      return new NextResponse(htmlContent, {
+        status: 403,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'private, no-store, max-age=0'
+        }
+      })
     }
 
     if (!response.ok) {
       console.error('AuthZ check failed:', response.status)
-      return NextResponse.rewrite(new URL('/suspended', request.url))
+      const htmlContent = await response.text()
+      return new NextResponse(htmlContent, {
+        status: 403,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'private, no-store, max-age=0'
+        }
+      })
     }
 
     return NextResponse.next()
