@@ -300,9 +300,9 @@ export function AdminUsersTable({ users, loading = false, onRefresh }: AdminUser
   }
 
   return (
-    <div>
-      <div className="rounded-md">
-        <Table>
+    <div className="w-full">
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -333,14 +333,19 @@ export function AdminUsersTable({ users, loading = false, onRefresh }: AdminUser
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="text-sm text-muted-foreground">
-          Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-            users.length,
-          )}{" "}
-          of {users.length} entries
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-2 sm:px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
+          <span className="hidden sm:inline">
+            Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+            {Math.min(
+              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+              users.length,
+            )}{" "}
+            of {users.length} entries
+          </span>
+          <span className="sm:hidden">
+            {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -349,10 +354,12 @@ export function AdminUsersTable({ users, loading = false, onRefresh }: AdminUser
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            <span className="hidden sm:inline">Previous</span>
+            <span className="sm:hidden">←</span>
           </Button>
           <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Next
+            <span className="hidden sm:inline">Next</span>
+            <span className="sm:hidden">→</span>
           </Button>
         </div>
       </div>

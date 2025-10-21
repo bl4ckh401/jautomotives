@@ -1,0 +1,93 @@
+/* Admin Responsive Styles */
+
+/* Mobile-first table styles */
+@media (max-width: 640px) {
+  /* Make tables scrollable on mobile */
+  .admin-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reduce padding on mobile */
+  .admin-card {
+    padding: 1rem;
+  }
+
+  /* Stack form elements */
+  .admin-form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Adjust font sizes */
+  .admin-heading {
+    font-size: 1.5rem;
+  }
+
+  .admin-subheading {
+    font-size: 0.875rem;
+  }
+
+  /* Hide less important columns on mobile */
+  .hide-mobile {
+    display: none;
+  }
+
+  /* Adjust button sizes */
+  .admin-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .admin-sidebar {
+    width: 200px;
+  }
+
+  .admin-content {
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+  .admin-sidebar {
+    width: 256px;
+  }
+
+  .admin-content {
+    padding: 2rem;
+  }
+}
+
+/* Table responsive utilities */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+  min-width: 640px;
+}
+
+/* Card responsive utilities */
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
