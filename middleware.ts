@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
     if (response.status === 403) {
       const htmlContent = await response.text()
       return new NextResponse(htmlContent, {
-        status: 403,
+        status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
           'Cache-Control': 'private, no-store, max-age=0'
@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
       console.error('AuthZ check failed:', response.status)
       const htmlContent = await response.text()
       return new NextResponse(htmlContent, {
-        status: 403,
+        status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
           'Cache-Control': 'private, no-store, max-age=0'
