@@ -39,7 +39,7 @@ export default function SellVehiclePage() {
   }
 
   return (
-    <main className="container mx-auto px-4 py-12 min-h-screen">
+    <main className="container mx-auto px-4 py-8 md:py-12 pt-24 md:pt-28 min-h-screen">
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

@@ -21,6 +21,48 @@ const nextConfig = {
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/marketplace/old-page',
+        destination: '/marketplace',
+        permanent: true,
+      },
+      {
+        source: '/marketplace/page-old',
+        destination: '/marketplace',
+        permanent: true,
+      },
+      {
+        source: '/marketplace/page-new',
+        destination: '/marketplace',
+        permanent: true,
+      },
+      {
+        source: '/marketplace/premium-page',
+        destination: '/marketplace',
+        permanent: true,
+      },
+      {
+        source: '/theme/new-page',
+        destination: '/theme',
+        permanent: true,
+      },
+    ]
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'index, follow',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 mergeConfig(nextConfig, userConfig)

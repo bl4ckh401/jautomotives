@@ -498,21 +498,24 @@ export default function AdvancedSellForm() {
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-5 mb-8">
-          <TabsTrigger value="basic" disabled={isLoading}>
-            Basic Info
+        <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1 mb-6 md:mb-8 h-auto">
+          <TabsTrigger value="basic" disabled={isLoading} className="text-xs sm:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Basic Info</span>
+            <span className="sm:hidden">Basic</span>
           </TabsTrigger>
-          <TabsTrigger value="details" disabled={isLoading}>
-            Vehicle Details
+          <TabsTrigger value="details" disabled={isLoading} className="text-xs sm:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Vehicle Details</span>
+            <span className="sm:hidden">Details</span>
           </TabsTrigger>
-          <TabsTrigger value="features" disabled={isLoading}>
+          <TabsTrigger value="features" disabled={isLoading} className="text-xs sm:text-sm px-2 py-2">
             Features
           </TabsTrigger>
-          <TabsTrigger value="images" disabled={isLoading}>
+          <TabsTrigger value="images" disabled={isLoading} className="text-xs sm:text-sm px-2 py-2">
             Images
           </TabsTrigger>
-          <TabsTrigger value="contact" disabled={isLoading}>
-            Contact & Options
+          <TabsTrigger value="contact" disabled={isLoading} className="text-xs sm:text-sm px-2 py-2">
+            <span className="hidden sm:inline">Contact & Options</span>
+            <span className="sm:hidden">Contact</span>
           </TabsTrigger>
         </TabsList>
 
@@ -629,8 +632,9 @@ export default function AdvancedSellForm() {
             </div>
 
             <div className="flex justify-end">
-              <Button type="button" onClick={nextTab}>
-                Next: Vehicle Details
+              <Button type="button" onClick={nextTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Next: Vehicle Details</span>
+                <span className="sm:hidden">Next</span>
               </Button>
             </div>
           </TabsContent>
@@ -878,12 +882,14 @@ export default function AdvancedSellForm() {
               </div>
             </div>
 
-            <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={prevTab}>
-                Back: Basic Info
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <Button type="button" variant="outline" onClick={prevTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Back: Basic Info</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <Button type="button" onClick={nextTab}>
-                Next: Features
+              <Button type="button" onClick={nextTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Next: Features</span>
+                <span className="sm:hidden">Next</span>
               </Button>
             </div>
           </TabsContent>
@@ -946,12 +952,14 @@ export default function AdvancedSellForm() {
               </div>
             </div>
 
-            <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={prevTab}>
-                Back: Vehicle Details
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <Button type="button" variant="outline" onClick={prevTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Back: Vehicle Details</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <Button type="button" onClick={nextTab}>
-                Next: Images
+              <Button type="button" onClick={nextTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Next: Images</span>
+                <span className="sm:hidden">Next</span>
               </Button>
             </div>
           </TabsContent>
@@ -1094,12 +1102,14 @@ export default function AdvancedSellForm() {
               )}
             </div>
 
-            <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={prevTab}>
-                Back: Features
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <Button type="button" variant="outline" onClick={prevTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Back: Features</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <Button type="button" onClick={nextTab}>
-                Next: Contact & Options
+              <Button type="button" onClick={nextTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Next: Contact & Options</span>
+                <span className="sm:hidden">Next</span>
               </Button>
             </div>
           </TabsContent>
@@ -1260,11 +1270,12 @@ export default function AdvancedSellForm() {
               </div>
             </div>
 
-            <div className="flex justify-between pt-4">
-              <Button type="button" variant="outline" onClick={prevTab}>
-                Back: Images
+            <div className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={prevTab} className="w-full sm:w-auto">
+                <span className="hidden sm:inline">Back: Images</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <Button type="submit" disabled={isLoading} className="min-w-32">
+              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto sm:min-w-32">
                 {isLoading
                   ? isEditMode
                     ? "Updating..."

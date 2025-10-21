@@ -23,7 +23,7 @@ const navItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
 
   return (
     <>
@@ -31,7 +31,7 @@ export function AdminSidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white dark:bg-gray-800 shadow-md"
         onClick={() => setCollapsed(!collapsed)}
       >
         {collapsed ? <Menu className="h-6 w-6" /> : <X className="h-6 w-6" />}
@@ -40,9 +40,9 @@ export function AdminSidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 transition-all duration-300 ease-in-out",
+          "bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 transition-all duration-300 ease-in-out overflow-y-auto",
           collapsed ? "-translate-x-full" : "translate-x-0",
-          "fixed md:static inset-y-0 z-40 md:translate-x-0",
+          "fixed lg:static inset-y-0 z-40 lg:translate-x-0",
         )}
       >
         <div className="p-6">
@@ -77,7 +77,7 @@ export function AdminSidebar() {
       </aside>
 
       {/* Backdrop for mobile */}
-      {!collapsed && <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setCollapsed(true)} />}
+      {!collapsed && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setCollapsed(true)} />}
     </>
   )
 }

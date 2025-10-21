@@ -1,5 +1,18 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /forgot-password
+Disallow: /_next/
+Disallow: /marketplace/old-page
+Disallow: /marketplace/page-old
+Disallow: /marketplace/page-new
+Disallow: /marketplace/premium-page
+Disallow: /theme/new-page
 
-Sitemap: https://cryptodrive-.com/sitemap.xml
+Sitemap: https://jabaautomotives.com/sitemap.xml
 

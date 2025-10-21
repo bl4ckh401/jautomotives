@@ -70,32 +70,32 @@ export default function AdminListingsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Car Listings</h1>
-          <p className="text-muted-foreground">Manage all vehicle listings</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Car Listings</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Manage all vehicle listings</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 text-xs md:text-sm"
             onClick={() => handleExport('csv')}
           >
-            <FileDown className="h-4 w-4" /> Export CSV
+            <FileDown className="h-3 w-3 md:h-4 md:w-4" /> <span className="hidden sm:inline">Export</span> CSV
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 text-xs md:text-sm"
             onClick={() => handleExport('json')}
           >
-            <FileDown className="h-4 w-4" /> Export JSON
+            <FileDown className="h-3 w-3 md:h-4 md:w-4" /> <span className="hidden sm:inline">Export</span> JSON
           </Button>
           <Link href="/sell-vehicle">
-            <Button size="sm" className="flex items-center gap-1">
-              <Plus className="h-4 w-4" /> Add Listing
+            <Button size="sm" className="flex items-center gap-1 text-xs md:text-sm">
+              <Plus className="h-3 w-3 md:h-4 md:w-4" /> Add Listing
             </Button>
           </Link>
         </div>

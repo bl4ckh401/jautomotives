@@ -67,33 +67,34 @@ export function AdminDashboardContent() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6 py-16 md:py-0 ">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Welcome to your dashboard</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Admin Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Welcome to your dashboard</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
           <Button
             variant="outline"
             size="sm"
             onClick={fetchData}
             disabled={refreshing}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
           >
             {refreshing ? (
               <>
-                <span className="animate-spin">⟳</span> Refreshing...
+                <span className="animate-spin">⟳</span> <span className="hidden sm:inline">Refreshing...</span>
               </>
             ) : (
               <>
-                ⟳ Refresh Data
+                ⟳ <span className="hidden sm:inline">Refresh Data</span>
               </>
             )}
           </Button>
-          <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-md text-sm flex items-center">
+          <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 md:px-4 py-2 rounded-md text-xs md:text-sm flex items-center w-full sm:w-auto">
             <Calendar className="h-4 w-4 mr-2" />
-            {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            <span className="hidden md:inline">{new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
+            <span className="md:hidden">{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
           </div>
         </div>
       </div>
@@ -188,23 +189,23 @@ export function AdminDashboardContent() {
       </div>
 
       {/* Charts and Activity */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-        <Card className="col-span-1 md:col-span-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+        <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
-            <CardTitle>Performance Overview</CardTitle>
-            <CardDescription>Monitor key metrics over time</CardDescription>
+            <CardTitle className="text-lg md:text-xl">Performance Overview</CardTitle>
+            <CardDescription className="text-sm">Monitor key metrics over time</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[400px] mt-4">
+            <div className="h-[300px] md:h-[400px] mt-4">
               <AdminChart data={chartData} loading={loading} />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates and events</CardDescription>
+            <CardTitle className="text-lg md:text-xl">Recent Activity</CardTitle>
+            <CardDescription className="text-sm">Latest updates and events</CardDescription>
           </CardHeader>
           <CardContent>
             <AdminRecentActivity />
