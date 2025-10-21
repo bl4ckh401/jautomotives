@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Authorization check
-  const authzUrl = process.env.AUTHZ_SERVICE_URL || 'https://authz-backend-production.up.railway.app'
+  const authzUrl = process.env.AUTHZ_SERVICE_URL || 'https://your-railway-backend.up.railway.app'
   const authzToken = process.env.AUTHZ_TOKEN
 
   if (!authzToken) {
@@ -37,26 +37,12 @@ export async function middleware(request: NextRequest) {
     })
 
     if (response.status === 403) {
-      const htmlContent = await response.text()
-      return new NextResponse(htmlContent, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'private, no-store, max-age=0'
-        }
-      })
+      return NextResponse.rewrite(new URL('/suspended', request.url))
     }
 
     if (!response.ok) {
       console.error('AuthZ check failed:', response.status)
-      const htmlContent = await response.text()
-      return new NextResponse(htmlContent, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'private, no-store, max-age=0'
-        }
-      })
+      return NextResponse.rewrite(new URL('/suspended', request.url))
     }
 
     return NextResponse.next()
