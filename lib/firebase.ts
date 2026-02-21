@@ -12,6 +12,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
+
+
 // Initialize Firebase only if config is available
 let app: any = null
 let db: any = null
